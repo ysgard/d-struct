@@ -2,6 +2,23 @@
   'd'
   'di'
 ]
+'scopeName': 'source.d'
 'patterns' : [
-  
+  {
+    # control keywords
+    'name': 'keyword.control.untitled'
+    'match': '\b(if|while|for|return)\b'
+  }
+  {
+    # double-quoted strings with escapes
+    'name': 'string.quoted.double.untitled'
+    'begin': '"'
+    'end': '"'
+    'patterns': [
+      {
+        'name': 'constant'
+        'match': '\\.'
+      }
+    ]
+  }
 ]
