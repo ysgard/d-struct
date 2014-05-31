@@ -2,7 +2,7 @@
   "name": "d-struct",
   "main": "./lib/d-struct",
   "version": "0.0.0",
-  "description": "D-Struct\n\nA package providing syntax, snippets and dub integration for the D programming language (Dlang)",
+  "description": "A package providing syntax, snippets and dub integration for the D programming language (Dlang)",
   "activationEvents": ["d-struct:toggle"],
   "repository": "https://github.com/atom/d-struct",
   "license": "MIT",
