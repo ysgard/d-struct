@@ -1,13 +1,16 @@
 {
   "name": "d-struct",
   "main": "./lib/d-struct",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A package providing syntax, snippets and dub integration for the D programming language (Dlang)",
   "activationEvents": ["d-struct:toggle"],
   "repository": "https://github.com/atom/d-struct",
   "license": "MIT",
+  "readme": "# Support for the D language\nSyntax highlighting, snippets and dub integration.\n",
+  "readmeFilename": "README.md",
   "engines": {
-    "atom": ">0.50.0"
+    "atom": ">0.50.0",
+    "node": ">0.10.0"
   },
   "dependencies": {
   }
