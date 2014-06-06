@@ -79,6 +79,12 @@
     {
         'include': '#comments'
     }
+    {
+        'include': '#primitive-types'
+    }
+    {
+        'include': '#constants-and-special-vars'
+    }
 
 ]
 # Repository of base constructs
@@ -153,9 +159,6 @@
                 'name': 'comment.block.empty.d'
             }
             {
-                'include': 'text.html.ddoc'
-            }
-            {
                 'include': '#comments-inline'
             }
         ]
@@ -164,9 +167,6 @@
             {
                 # C-style comments
                 'begin': '/\\*'
-                #'captures':
-                #    '0':
-                #        'name': 'punctuation.definition.comment.d'
                 'end': '\\*/'
                 'name': 'comment.block.d'
             }
@@ -185,6 +185,19 @@
         ]
     'constants-and-special-vars':
         'patterns': [
+            {
+                # Special constants
+                'match': '\\b(true|false|null)\\b'
+                'name': 'constant.language.d'
+            }
+            {
+                # Special variables
+                'match': '\\b(this|super)\\b'
+                'name': 'variable.language.d'
+            }
+            {
+                'include': '#numerics'
+            }
 
         ]
     'enums':
@@ -202,6 +215,29 @@
     'methods':
         'patterns': [
 
+        ]
+    'numerics':
+        # Match all numerics D is capable of (a lot!)
+        'patterns': [
+            {
+                # Handle the weirdness that is hexadecimal floats
+                'match': '\\b0[xX][0-9a-fA-F_]*(\.[0-9a-fA-F_]*)?([pP]|([pP][\+-]))[0-9][0-9_]*[LfF]?\\b'
+                'name': 'constant.numeric.float.hexidecimal.d'
+            }
+            {
+                'match': '(((0[1-9_])|[1-9])?[0-9_]*\.?[0-9_]*([eE][\+-]?)?[0-9][0-9_]*[lfF]?)\\b'
+                'name': 'constant.numeric.float.d'
+            }
+            {
+                # Hex, binary and octal integers
+                'match': '\\b0(((x|X)[0-9a-fA-F_]+)|([0-7_]+)|(b|B)[01_]+)([lL][uU]|[uU][lL]|[uUlL])?\\b'
+                'name': 'constant.numeric.integer.other.d'
+            }
+            {
+                # base-10 integers
+                'match': '\\b[1-9][0-9_]*([lL][uU]|[uU][lL]|[uUlL])?\\b'
+                'name': 'constant.numeric.integer.decimal.d'
+            }
         ]
     'object-types':
         'patterns': [
@@ -225,7 +261,8 @@
         ]
     'primitive-types':
         'patterns': [
-
+            'match': '\\b(void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar)\\b'
+            'name': 'storage.type.primitive.d'
         ]
     'storage-modifiers':
         'patterns': [

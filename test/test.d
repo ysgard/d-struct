@@ -12,6 +12,17 @@
  */
 module object;
 
+int x = 14_000_000;
+int a = 1.0;
+int b = .345E2f;
+int c = 10f;
+int d = 10.;
+int e = 0x1.ffffffffp1023;
+int f = 0xFp1F;
+int g = 0747574737;
+int h = 0747344354Lu;
+
+
 private
 {
     extern(C) void rt_finalize(void *ptr, bool det=true);
