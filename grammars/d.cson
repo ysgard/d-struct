@@ -45,7 +45,8 @@
 #    other
 # meta - larger blocks, like a whole function name.  Not styled
 #    ???
-# punctuation - not described in Textmate, presumably an Atom addition
+# punctuation - not described in Textmate, presumably an Atom addition?
+#    definition
 #    separator
 #    terminator
 # storage
@@ -72,6 +73,9 @@
 
 
 'patterns' : [
+    {
+        'include': '#strings'
+    }
 
 ]
 # Repository of base constructs
@@ -194,7 +198,24 @@
         ]
     'strings':
         'patterns': [
-
+            {
+                'begin': '"'
+                'beginCaptures':
+                    '0':
+                        'name': 'punctuation.definition.string.begin.d'
+                'end': '"'
+                'endCaptures':
+                    '0':
+                        'name': 'punctuation.definition.string.end.d'
+                'name': 'string.quoted.double.d'
+                # Deal with escape characters
+                'patterns': [
+                    {
+                        'match': '\\\\.'
+                        'name': 'constant.character.escape.d'
+                    }
+                ]
+            }
         ]
     'throws':
         'patterns': [
