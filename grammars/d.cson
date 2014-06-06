@@ -4,22 +4,210 @@
 ]
 'name': 'D'
 'scopeName': 'source.d'
+# Root groups
+# comment
+#    line
+#        double-slash
+#    block
+#        documentation
+# constant
+#    numeric
+#    character
+#    language
+#    other
+# entity - a block within the document
+#    name
+#        function
+#        type
+#        tag
+#        section
+#    other
+#        inherited-class
+#        attribute-name
+# invalid
+#    illegal
+#    deprecated
+# keyword
+#    control
+#    operator
+#    other
+# markup
+#    underline
+#        link
+#    bold
+#    heading
+#    italic
+#    list
+#        numbered
+#        unnumbered
+#    quote
+#    raw
+#    other
+# meta - larger blocks, like a whole function name.  Not styled
+#    ???
+# punctuation - not described in Textmate, presumably an Atom addition
+#    separator
+#    terminator
+# storage
+#    type
+#    modifier
+# string
+#    quoted
+#        single
+#        double
+#        triple
+#        other
+# support - items provided by the language/frameworkd, for example typeid() in D
+#    function
+#    class
+#    type
+#    constant
+#    variable
+#    other
+# variable
+#    parameter
+#    language
+#    other
+
+
+
 'patterns' : [
-  {
-    # control keywords
-    'name': 'keyword.control.untitled'
-    'match': '\b(if|while|for|return)\b'
-  }
-  {
-    # double-quoted strings with escapes
-    'name': 'string.quoted.double.untitled'
-    'begin': '"'
-    'end': '"'
-    'patterns': [
-      {
-        'name': 'constant'
-        'match': '\\.'
-      }
-    ]
-  }
+
 ]
+# Repository of base constructs
+# Use these to match code patterns
+#
+# all-types
+# annotations
+# anonymous-classes-and-new
+# assertions
+# class
+# class-body
+# code
+# comments
+# comments-inline
+# constants-and-special-vars
+# enums
+# keywords
+# method-call
+# methods
+# object-types
+# object-types-inherited
+# parameters
+# parens
+# primitive-arrays
+# primitive-types
+# storage-modifiers
+# strings
+# throws
+# values
+# variables
+
+'repository':
+    'all-types':
+        'patterns': [
+
+        ]
+    'annotations':
+        'patterns': [
+
+        ]
+    'code':
+        'patterns': [
+
+        ]
+    'anonymous-classes-and-new':
+        'patterns': [
+
+        ]
+    'assertions':
+        'patterns': [
+
+        ]
+    'class':
+        'patterns': [
+
+        ]
+    'class-body':
+        'patterns': [
+
+        ]
+    'code':
+        'patterns': [
+
+        ]
+    'comments':
+        'patterns': [
+
+        ]
+    'comments-inline':
+        'patterns': [
+
+        ]
+    'constants-and-special-vars':
+        'patterns': [
+
+        ]
+    'enums':
+        'patterns': [
+
+        ]
+    'keywords':
+        'patterns': [
+
+        ]
+    'method-call':
+        'patterns': [
+
+        ]
+    'methods':
+        'patterns': [
+
+        ]
+    'object-types':
+        'patterns': [
+
+        ]
+    'object-types-inherited':
+        'patterns': [
+
+        ]
+    'parameters':
+        'patterns': [
+
+        ]
+    'parens':
+        'patterns': [
+
+        ]
+    'primitive-arrays':
+        'patterns': [
+
+        ]
+    'primitive-types':
+        'patterns': [
+
+        ]
+    'storage-modifiers':
+        'patterns': [
+
+        ]
+    'strings':
+        'patterns': [
+
+        ]
+    'throws':
+        'patterns': [
+
+        ]
+    'values':
+        'patterns': [
+
+        ]
+    'variables':
+        'patterns': [
+
+        ]
+# Repository end
+#
+# End of d.cson
