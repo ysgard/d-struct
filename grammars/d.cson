@@ -76,6 +76,9 @@
     {
         'include': '#strings'
     }
+    {
+        'include': '#comments'
+    }
 
 ]
 # Repository of base constructs
@@ -142,11 +145,43 @@
         ]
     'comments':
         'patterns': [
-
+            {
+                'captures':
+                    '0':
+                        'name': 'punctuation.definition.comment.d'
+                'match': '/\\*\\*/'
+                'name': 'comment.block.empty.d'
+            }
+            {
+                'include': 'text.html.ddoc'
+            }
+            {
+                'include': '#comments-inline'
+            }
         ]
     'comments-inline':
         'patterns': [
-
+            {
+                # C-style comments
+                'begin': '/\\*'
+                #'captures':
+                #    '0':
+                #        'name': 'punctuation.definition.comment.d'
+                'end': '\\*/'
+                'name': 'comment.block.d'
+            }
+            {
+                # C++-style comments
+                'begin': '//'
+                'end': '$'
+                'name': 'comment.block.d'
+            }
+            {
+                # Embedded documentation style
+                'begin': '/\\+\\+'
+                'end': '\\+/'
+                'name': 'comment.block.embedded.d'
+            }
         ]
     'constants-and-special-vars':
         'patterns': [
