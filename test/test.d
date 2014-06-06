@@ -24,7 +24,7 @@ int h = 0747344354Lu;
 
 bool hey = true;
 
-@safe
+if (bool == true) {;}
 
 private
 {

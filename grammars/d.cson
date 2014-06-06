@@ -88,6 +88,9 @@
     {
         'include': '#attributes'
     }
+    {
+        'include': '#keywords'
+    }
 ]
 # Repository of base constructs
 # Use these to match code patterns
@@ -133,6 +136,10 @@
             {
                 'match': '(@(safe|system|trusted))\\b'
                 'name': 'keyword.other.safety.d'
+            }
+            {
+                'match': '(@property)\\b'
+                'name': 'keyword.other.property.d'
             }
         ]
     'code':
@@ -216,6 +223,11 @@
         ]
     'keywords':
         'patterns': [
+            {
+                # Control keywords
+                'match': '\\b(case|do|else|for|foreach|goto|if|switch|while)\\b'
+                'name': 'keyword.control.d'
+            }
 
         ]
     'method-call':
@@ -267,6 +279,8 @@
         ]
     'primitive-arrays':
         'patterns': [
+            'match': '\\b(?:void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t)(\\[\\])*\\b'
+            'name': 'storage.type.primitive.array.d'
 
         ]
     'primitive-types':
