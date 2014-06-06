@@ -85,7 +85,9 @@
     {
         'include': '#constants-and-special-vars'
     }
-
+    {
+        'include': '#attributes'
+    }
 ]
 # Repository of base constructs
 # Use these to match code patterns
@@ -94,6 +96,7 @@
 # annotations
 # anonymous-classes-and-new
 # assertions
+# attributes
 # class
 # class-body
 # code
@@ -124,6 +127,13 @@
     'annotations':
         'patterns': [
 
+        ]
+    'attributes':
+        'patterns': [
+            {
+                'match': '(@(safe|system|trusted))\\b'
+                'name': 'keyword.other.safety.d'
+            }
         ]
     'code':
         'patterns': [
@@ -261,7 +271,7 @@
         ]
     'primitive-types':
         'patterns': [
-            'match': '\\b(void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar)\\b'
+            'match': '\\b(void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t)\\b'
             'name': 'storage.type.primitive.d'
         ]
     'storage-modifiers':

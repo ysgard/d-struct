@@ -12,7 +12,7 @@
  */
 module object;
 
-int x = 14_000_000;
+int x = int(14_000_000);
 int a = 1.0;
 int b = .345E2f;
 int c = 10f;
@@ -22,6 +22,9 @@ int f = 0xFp1F;
 int g = 0747574737;
 int h = 0747344354Lu;
 
+bool hey = true;
+
+@safe
 
 private
 {
