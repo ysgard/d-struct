@@ -91,6 +91,9 @@
     {
         'include': '#keywords'
     }
+    {
+        'include': '#storage-modifiers'
+    }
 ]
 # Repository of base constructs
 # Use these to match code patterns
@@ -290,7 +293,10 @@
         ]
     'storage-modifiers':
         'patterns': [
-
+            {
+                'match': '\\b(?:align|auto|const|export|extern|in|inout|nothrow|out|pure)\\b'
+                'name': 'storage.modifier.data.d'
+            }
         ]
     'strings':
         'patterns': [
