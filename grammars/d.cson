@@ -94,6 +94,9 @@
     {
         'include': '#storage-modifiers'
     }
+    {
+        'include': '#block-markup'
+    }
 ]
 # Repository of base constructs
 # Use these to match code patterns
@@ -137,17 +140,9 @@
     'attributes':
         'patterns': [
             {
-                'match': '(@(safe|system|trusted))\\b'
+                'match': '(@(safe|system|trusted|property))\\b'
                 'name': 'keyword.other.safety.d'
             }
-            {
-                'match': '(@property)\\b'
-                'name': 'keyword.other.property.d'
-            }
-        ]
-    'code':
-        'patterns': [
-
         ]
     'anonymous-classes-and-new':
         'patterns': [
@@ -156,6 +151,27 @@
     'assertions':
         'patterns': [
 
+        ]
+    'block-markup':
+        'patterns': [
+            {
+                # single-line asm
+                'match': '(asm)\\s+([^\\{\\}$]+)'
+                'captures':
+                    '1':
+                        'name': 'keyword.other.asm.d'
+                    '2':
+                        'name': 'string.quoted.asm.d'
+            }
+            {
+                # block-level asm
+                'begin': '(asm)(?:\\s+{)'
+                'beginCaptures':
+                    '1':
+                        'name': 'keyword.other.asm.d'
+                'end': '}'
+                'contentName': 'string.quoted.asm.d'
+            }
         ]
     'class':
         'patterns': [

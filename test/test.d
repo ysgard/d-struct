@@ -26,6 +26,12 @@ bool hey = true;
 
 if (bool == true) {;}
 
+asm mov eax, eab 0x0239433
+asm {
+    move eab, eac 0x000033
+    goto meh
+}
+
 private
 {
     extern(C) void rt_finalize(void *ptr, bool det=true);
