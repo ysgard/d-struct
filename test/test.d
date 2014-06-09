@@ -12,7 +12,7 @@
  */
 module object;
 
-int x = int(14_000_000);
+int x = 14_000_000;
 int a = 1.0;
 int b = .345E2f;
 int c = 10f;

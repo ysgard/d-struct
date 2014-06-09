@@ -244,8 +244,62 @@
         'patterns': [
             {
                 # Control keywords
-                'match': '\\b(case|do|else|for|foreach|goto|if|switch|while)\\b'
+                'match': '\\b(case|continue|default|do|else|for|foreach|goto|if|return|switch|while)\\b'
                 'name': 'keyword.control.d'
+            }
+            {
+                # ternary keywords
+                'match': '\\?|:'
+                'name': 'keyword.control.ternary.d'
+            }
+            {
+                # Exception keywords
+                'match': '\\b(try|catch|finally|throw|nothrow)\\b'
+                'name': 'keyword.control.catch-exception.d'
+            }
+            {
+                # Type operators
+                'match': '\\b(typeid|typeof)\\b'
+                'name': 'keyword.operator.d'
+            }
+            {
+                # Bitwise operators & comparison
+                'match': '(<<|>>>?|~|\\^|\\||&)'
+                'name': 'keyword.operator.bitwise.d'
+            }
+            {
+                # Bitwise assignment
+                'match': '((&|\\^|\\||<<|>>>?)=)'
+                'name': 'keyword.operator.assignment.bitwise.d'
+            }
+            {
+                # Comparison operators
+                'match': '(==|!=|<=|>=|<|>|\\bis\\b|\\b!is\\b|\\bin\\b)'
+                'name': 'keyword.operator.comparison.d'
+            }
+            {
+                # Arithmetic & concatenation
+                'match': '(\\-|\\+|\\*|\\/|%|\\^\\^|~)'
+                'name': 'keyword.operator.arithmetic.d'
+            }
+            {
+                # Assignment
+                'match': '([+*/%-~]?=)'
+                'name': 'keyword.operator.assignment.d'
+            }
+            {
+                # logical operators
+                'match': '(!|&&|\\|\\|)'
+                'name': 'keyword.operator.logical.d'
+            }
+            {
+                # dereferencing, method refers, etc..
+                'match': '\\b(\\S+)\\.'
+            }
+            {
+                # statement terminator (semicolon)
+                'match': ';'
+                'name': 'punctuation.terminator.d'
             }
 
         ]
@@ -290,6 +344,9 @@
         ]
     'parameters':
         'patterns': [
+            {
+
+            }
 
         ]
     'parens':
@@ -298,19 +355,19 @@
         ]
     'primitive-arrays':
         'patterns': [
-            'match': '\\b(?:void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t)(\\[\\])*\\b'
+            'match': '\\b(?:void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t|string|wstring|dstring)(\\[\\])*\\b'
             'name': 'storage.type.primitive.array.d'
 
         ]
     'primitive-types':
         'patterns': [
-            'match': '\\b(void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t)\\b'
+            'match': '\\b(void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t|string|wstring|dstring)\\b'
             'name': 'storage.type.primitive.d'
         ]
     'storage-modifiers':
         'patterns': [
             {
-                'match': '\\b(?:align|auto|const|export|extern|in|inout|nothrow|out|pure)\\b'
+                'match': '\\b(?:align|auto|const|export|extern|in|inout|out|pure)\\b'
                 'name': 'storage.modifier.data.d'
             }
         ]
