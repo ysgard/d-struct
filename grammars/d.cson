@@ -353,6 +353,17 @@
                 'match': ';'
                 'name': 'punctuation.terminator.d'
             }
+            {
+                # alias
+                'match': '(alias)\\s+(.+)\\s+(.+);'
+                'captures':
+                    '1':
+                        'name': 'keyword.other.alias.d'
+                    '2':
+                        'name': 'variable.parameter.alias.d'
+                    '3':
+                        'name': 'variable.parameter.alias.d'
+            }
 
         ]
     'method-call':
@@ -418,18 +429,11 @@
         'patterns': [
 
         ]
-    'primitive-arrays':
-        'patterns': [
-            'match': '\\b((?:void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t|string|wstring|dstring)(\\[\\])*\\*{0,3})\\b'
-            'name': 'storage.type.primitive.array.d'
-
-        ]
     'primitive-types':
         'patterns': [
-            {
-                'match': '\\b((?:void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t|string|wstring|dstring)\\*{0,3})\\b'
-                'name': 'storage.type.primitive.d'
-            }
+            'match': '\\b((void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t|string|wstring|dstring)(\\*{0,3})((\\[\\])*))\\s'
+            'name': 'storage.type.primitive.array.d'
+
         ]
     'storage-modifiers':
         'patterns': [

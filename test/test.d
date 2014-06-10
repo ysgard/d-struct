@@ -25,7 +25,7 @@ int e = ( fgf 0x1.ffffffffp1023);
 int f = ( fgf 0xFp1F);
 int g = ( fgf 0747574737);
 int h = ( 0747344354Lu );
-int i = p2.3;
+int i = p2.3
 int j = Αλφα;
 
 bool hey = true;
@@ -55,13 +55,16 @@ alias immutable(char)[]  string;
 alias immutable(wchar)[] wstring;
 alias immutable(dchar)[] dstring;
 
+
+int x = 3 * 3
+
 class Object
 {
     string   toString();
     size_t   toHash() @trusted nothrow;
     int      opCmp(Object o);
     bool     opEquals(Object o);
-
+void*[]
     interface Monitor
     {
         void lock();
