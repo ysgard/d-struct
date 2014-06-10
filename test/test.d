@@ -32,6 +32,21 @@ bool hey = true;
 
 if (bool == true) {;}
 
+object.call_me_something(size_t j);
+
+
+enforce(kdjflkdjlfkd);
+assert(kdjflkdjlfd);
+try {
+    jdkjfldkf
+} catch {
+    dkfjldjfl
+} finally {
+    jdklfjldk
+}
+T info(R, V) {
+    jdkfjldk;
+}
 asm mov eax, eab 0x0239433
 asm {
     move eab, eac 0x000033
@@ -64,7 +79,7 @@ class Object
     size_t   toHash() @trusted nothrow;
     int      opCmp(Object o);
     bool     opEquals(Object o);
-void*[]
+void*[](
     interface Monitor
     {
         void lock();
@@ -120,11 +135,12 @@ class TypeInfo_Typedef : TypeInfo
     TypeInfo base;
     string   name;
     void[]   m_init;
+
 }
 
 class TypeInfo_Enum : TypeInfo_Typedef
 {
-
+    size_t(something);
 }
 
 class TypeInfo_Pointer : TypeInfo
@@ -326,7 +342,19 @@ struct ModuleInfo
 
     static int opApply(scope int delegate(ref ModuleInfo*) dg);
 }
-
+assert(kdjfldjlk);
+enforce(jdlfjldkkf);
+try {
+    jdkfjlkd
+} catch {
+    jdkljfld
+}
+in {
+    jdkfjldfjl
+}
+body {
+    dkflkdjflkd
+}
 class Throwable : Object
 {
     interface TraceInfo

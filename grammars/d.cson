@@ -114,35 +114,12 @@
 
 'patterns' : [
     {
-        'include': '#strings'
-    }
-    {
-        'include': '#comments'
-    }
-    {
-        'include': '#primitive-types'
-    }
-    {
-        'include': '#constants-and-special-vars'
-    }
-    {
-        'include': '#attributes'
-    }
-    {
-        'include': '#keywords'
-    }
-    {
-        'include': '#storage-modifiers'
-    }
-    {
-        'include': '#block-markup'
-    }
-    {
         'include': '#package'
     }
     {
-        'include': '#variables'
+        'include': '#code'
     }
+
 ]
 # Repository of base constructs
 # Use these to match code patterns
@@ -159,6 +136,7 @@
 # comments-inline
 # constants-and-special-vars
 # enums
+# functions
 # keywords
 # method-call
 # methods
@@ -166,11 +144,9 @@
 # object-types-inherited
 # parameters
 # parens
-# primitive-arrays
 # primitive-types
 # storage-modifiers
 # strings
-# throws
 # values
 # variables
 
@@ -195,8 +171,27 @@
 
         ]
     'assertions':
+        # assert, enforce, exceptions and other contract structures
         'patterns': [
-
+            {
+                # Exception keywords
+                'match': '\\b(try|catch|finally|throw|nothrow|in|body)\\b'
+                'name': 'keyword.other.exception.d'
+            }
+            {
+                # assertions
+                'match': '\\b(assert|enforce|invariant)'
+                'name': 'entity.name.function.assertion.d'
+            }
+        ]
+    'block':
+        # meta-pattern - any legal code that can exist inside { }
+        'begin': '{'
+        'end': '}'
+        'patterns': [
+            {
+                'include': '#code'
+            }
         ]
     'block-markup':
         'patterns': [
@@ -228,7 +223,44 @@
 
         ]
     'code':
+        # Meta class - basically all legal code that can be in a block
         'patterns': [
+            {
+                'include': '#functions'
+            }
+            {
+                'include': '#assertions'
+            }
+            {
+                'include': '#strings'
+            }
+            {
+                'include': '#comments'
+            }
+            {
+                'include': '#primitive-types'
+            }
+            {
+                'include': '#constants-and-special-vars'
+            }
+            {
+                'include': '#attributes'
+            }
+            {
+                'include': '#keywords'
+            }
+            {
+                'include': '#storage-modifiers'
+            }
+            {
+                'include': '#block-markup'
+            }
+            {
+                'include': '#variables'
+            }
+            {
+                'include': '#methods'
+            }
 
         ]
     'comments':
@@ -286,6 +318,16 @@
         'patterns': [
 
         ]
+    'functions':
+        # Base functions
+        'patterns': [
+            {
+                'match': '\\s+([a-zA-Z_][a-zA-Z0-9_]+)\\s*\\('
+                'captures':
+                    '1':
+                        'name': 'entity.name.function.d'
+            }
+        ]
     'keywords':
         'patterns': [
             {
@@ -297,11 +339,6 @@
                 # ternary keywords
                 'match': '\\?|:'
                 'name': 'keyword.control.ternary.d'
-            }
-            {
-                # Exception keywords
-                'match': '\\b(try|catch|finally|throw|nothrow)\\b'
-                'name': 'keyword.control.catch-exception.d'
             }
             {
                 # Type operators
@@ -372,6 +409,14 @@
         ]
     'methods':
         'patterns': [
+            {
+                'match': '([a-zA-Z_][a-zA-Z0-9_]*)(\\.[a-zA-Z_][a-zA-Z0-9]+)+'
+                'captures':
+                    '1':
+                        'name': 'entity.name.class.called.d'
+                    '2':
+                        'name': 'entity.name.function.method.d'
+            }
 
         ]
     'numerics':
@@ -400,6 +445,7 @@
     'object-types':
         'patterns': [
 
+
         ]
     'object-types-inherited':
         'patterns': [
@@ -419,26 +465,40 @@
             }
         ]
     'parameters':
+        # tag generic function and methos parameters
         'patterns': [
+            # inout, in and out are parameter specific, handle them only here
             {
-
+                'include': '#code'
+                'name': 'variable.parameter.d'
             }
 
         ]
     'parens':
+        # meta-pattern
         'patterns': [
+            'begin': '\\('
+            'end': '\\)'
+            'patterns': [
+                {
+                    'include': '#code'
+                }
+            ]
 
         ]
     'primitive-types':
         'patterns': [
-            'match': '\\b((void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t|string|wstring|dstring)(\\*{0,3})((\\[\\])*))\\s'
-            'name': 'storage.type.primitive.array.d'
-
+            {
+            'match': '\\b((void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t|string|wstring|dstring|T|T1|T2|T3|V|R|E|S|U)(\\*{0,3})((\\[\\])*)(\\()?)\\s'
+            'captures':
+                '1':
+                    'name': 'storage.type.primitive.array.d'
+            }
         ]
     'storage-modifiers':
         'patterns': [
             {
-                'match': '\\b(?:align|auto|const|export|extern|in|inout|out|pure|static)\\b'
+                'match': '\\b(?:align|auto|const|export|extern|in|inout|out|pure|ref|static)\\b'
                 'name': 'storage.modifier.data.d'
             }
         ]
@@ -462,10 +522,6 @@
                     }
                 ]
             }
-        ]
-    'throws':
-        'patterns': [
-
         ]
     'values':
         'patterns': [
