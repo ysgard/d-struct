@@ -10,17 +10,22 @@
  *    (See accompanying file LICENSE or copy at
  *          http://www.boost.org/LICENSE_1_0.txt)
  */
+static import std.stdio : say=writeln;
+import io = std.stdio : writeln, File;
+static ~this
+private enum WinVersion { preVista, vista, postVista }
 module object;
 
-int x = 14_000_000;
-int a = 1.0;
-int b = .345E2f;
-int c = 10f;
-int d = 10.;
-int e = 0x1.ffffffffp1023;
-int f = 0xFp1F;
-int g = 0747574737;
-int h = 0747344354Lu;
+int x = ( fgf14_000_000);
+int a = ( fgf1.0);
+int b = ( fgf.345E2f);
+int c = ( fgf10f);
+int d = ( fgf10.);
+int e = ( fgf0x1.ffffffffp1023);
+int f = ( fgf0xFp1F);
+int g = ( fgf0747574737);
+int h = ( 0747344354Lu);
+int i = p2.3
 
 bool hey = true;
 

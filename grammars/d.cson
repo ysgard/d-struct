@@ -1,3 +1,43 @@
+# D Language grammar for Atom
+#
+# Props to http://www.regexr.com/ for helping me out with the regular
+# expressions - really useful.
+#
+# Author: Jan Van Uytven
+
+# For colors, as an example, Monokai defines the following.  It is probably
+# likely that this are 'baseline' rules, as Monokai is one of the most
+# popular styles
+# .comment -> warm grey
+# .string -> warm yellow
+# .constant.numeric -> violet
+# .constant.language -> violet
+# .constant.character -> violet
+# .constant.other -> violet
+# .keyword -> coral
+# .storage -> coral
+# .storage.type -> blue italic
+# .entity.name.class -> lime underline
+# .entity.other.inherited-class -> lime italic underline
+# .entity.name.function -> lime
+# .entity.name.instance -> lt blue
+# .variable.parameter -> orange italic
+# .entity.name.tag -> coral
+# .entity.other.attribute-name -> lime
+# .support.function -> blue
+# .support.type -> italic blue
+# .support.class -> italic blue
+# .invalid -> white on coral
+# .invalid.deprecated -> white on purple
+# .gfm.markup.heading -> bold lime
+# .gfm.markup.underline -> warm yellow underline
+# .gfm.markup.bold -> bold
+# .gfm.markup.italic -> italic
+# .gfm.markup.raw -> blue
+# .gfm.markup.variable.list -> bold coral
+# .gfm.markup.link -> lt grey
+# .gfm.markup.link,entity -> violet
+
 'fileTypes' : [
   'd'
   'di'
@@ -97,6 +137,9 @@
     {
         'include': '#block-markup'
     }
+    {
+        'include': '#package'
+    }
 ]
 # Repository of base constructs
 # Use these to match code patterns
@@ -161,7 +204,7 @@
                     '1':
                         'name': 'keyword.other.asm.d'
                     '2':
-                        'name': 'string.quoted.asm.d'
+                        'name': 'gfm.markup.raw.asm.d'
             }
             {
                 # block-level asm
@@ -170,7 +213,7 @@
                     '1':
                         'name': 'keyword.other.asm.d'
                 'end': '}'
-                'contentName': 'string.quoted.asm.d'
+                'contentName': 'gfm.markup.raw.asm.d'
             }
         ]
     'class':
@@ -259,7 +302,7 @@
             }
             {
                 # Type operators
-                'match': '\\b(typeid|typeof)\\b'
+                'match': '(\\b(typeid|typeof|is|!is)\\b)'
                 'name': 'keyword.operator.d'
             }
             {
@@ -274,8 +317,13 @@
             }
             {
                 # Comparison operators
-                'match': '(==|!=|<=|>=|<|>|\\bis\\b|\\b!is\\b|\\bin\\b)'
+                'match': '(==|!=|<=|>=|<|>)'
                 'name': 'keyword.operator.comparison.d'
+            }
+            {
+                # Slice and array-specific operators
+                'match': '(\\bin\\b)'
+                'name': 'keyword.operator.array.d'
             }
             {
                 # Arithmetic & concatenation
@@ -294,7 +342,8 @@
             }
             {
                 # dereferencing, method refers, etc..
-                'match': '\\b(\\S+)\\.'
+                'match': ''
+                'name': 'keyword.operator.dereference.d'
             }
             {
                 # statement terminator (semicolon)
@@ -316,21 +365,21 @@
         'patterns': [
             {
                 # Handle the weirdness that is hexadecimal floats
-                'match': '\\b0[xX][0-9a-fA-F_]*(\.[0-9a-fA-F_]*)?([pP]|([pP][\+-]))[0-9][0-9_]*[LfF]?\\b'
+                'match': '[^a-zA-Z]0[xX][0-9a-fA-F_]*(\\.[0-9a-fA-F_]*)?([pP]|([pP][\+-]))[0-9][0-9_]*[LfF]?'
                 'name': 'constant.numeric.float.hexidecimal.d'
             }
             {
-                'match': '(((0[1-9_])|[1-9])?[0-9_]*\.?[0-9_]*([eE][\+-]?)?[0-9][0-9_]*[lfF]?)\\b'
+                'match': '[^a-zA-Z](((0[1-9_])|[1-9])?[0-9_]*\\.[0-9_]*([eE][\+-]?)?[0-9][0-9_]*[lfF]?)'
                 'name': 'constant.numeric.float.d'
             }
             {
                 # Hex, binary and octal integers
-                'match': '\\b0(((x|X)[0-9a-fA-F_]+)|([0-7_]+)|(b|B)[01_]+)([lL][uU]|[uU][lL]|[uUlL])?\\b'
+                'match': '[^a-zA-Z_]0(((x|X)[0-9a-fA-F_]+)|([0-7_]+)|(b|B)[01_]+)([lL][uU]|[uU][lL]|[uUlL])?'
                 'name': 'constant.numeric.integer.other.d'
             }
             {
                 # base-10 integers
-                'match': '\\b[1-9][0-9_]*([lL][uU]|[uU][lL]|[uUlL])?\\b'
+                'match': '[^a-zA-Z_][1-9][0-9_]*([lL][uU]|[uU][lL]|[uUlL])?'
                 'name': 'constant.numeric.integer.decimal.d'
             }
         ]
@@ -341,6 +390,19 @@
     'object-types-inherited':
         'patterns': [
 
+        ]
+    'package':
+        # Module-level imports, module decls and package decls
+        'patterns': [
+            {
+                # import packages
+                'match': '\\b(import|module)\\s+(.+)\\b'
+                'captures':
+                    '1':
+                        'name': 'keyword.other.import.d'
+                    '2':
+                        'name': 'support.class.import.d'
+            }
         ]
     'parameters':
         'patterns': [
@@ -367,7 +429,7 @@
     'storage-modifiers':
         'patterns': [
             {
-                'match': '\\b(?:align|auto|const|export|extern|in|inout|out|pure)\\b'
+                'match': '\\b(?:align|auto|const|export|extern|in|inout|out|pure|static)\\b'
                 'name': 'storage.modifier.data.d'
             }
         ]
