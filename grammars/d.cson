@@ -36,7 +36,7 @@
 # .gfm.markup.raw -> blue
 # .gfm.markup.variable.list -> bold coral
 # .gfm.markup.link -> lt grey
-# .gfm.markup.link,entity -> violet
+# .gfm.markup.link.entity -> violet
 
 'fileTypes' : [
   'd'
@@ -139,6 +139,9 @@
     }
     {
         'include': '#package'
+    }
+    {
+        'include': '#variables'
     }
 ]
 # Repository of base constructs
@@ -365,21 +368,21 @@
         'patterns': [
             {
                 # Handle the weirdness that is hexadecimal floats
-                'match': '[^a-zA-Z]0[xX][0-9a-fA-F_]*(\\.[0-9a-fA-F_]*)?([pP]|([pP][\+-]))[0-9][0-9_]*[LfF]?'
+                'match': '0[xX][0-9a-fA-F_]*(\\.[0-9a-fA-F_]*)?([pP]|([pP][\+-]))[0-9][0-9_]*[LfF]?'
                 'name': 'constant.numeric.float.hexidecimal.d'
             }
             {
-                'match': '[^a-zA-Z](((0[1-9_])|[1-9])?[0-9_]*\\.[0-9_]*([eE][\+-]?)?[0-9][0-9_]*[lfF]?)'
+                'match': '(((0[1-9_])|[1-9])?[0-9_]*\\.[0-9_]*([eE][\+-]?)?[0-9][0-9_]*[lfF]?)'
                 'name': 'constant.numeric.float.d'
             }
             {
                 # Hex, binary and octal integers
-                'match': '[^a-zA-Z_]0(((x|X)[0-9a-fA-F_]+)|([0-7_]+)|(b|B)[01_]+)([lL][uU]|[uU][lL]|[uUlL])?'
+                'match': '0(((x|X)[0-9a-fA-F_]+)|([0-7_]+)|(b|B)[01_]+)([lL][uU]|[uU][lL]|[uUlL])?'
                 'name': 'constant.numeric.integer.other.d'
             }
             {
                 # base-10 integers
-                'match': '[^a-zA-Z_][1-9][0-9_]*([lL][uU]|[uU][lL]|[uUlL])?'
+                'match': '[1-9][0-9_]*([lL][uU]|[uU][lL]|[uUlL])?'
                 'name': 'constant.numeric.integer.decimal.d'
             }
         ]
@@ -417,14 +420,16 @@
         ]
     'primitive-arrays':
         'patterns': [
-            'match': '\\b(?:void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t|string|wstring|dstring)(\\[\\])*\\b'
+            'match': '\\b((?:void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t|string|wstring|dstring)(\\[\\])*\\*{0,3})\\b'
             'name': 'storage.type.primitive.array.d'
 
         ]
     'primitive-types':
         'patterns': [
-            'match': '\\b(void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t|string|wstring|dstring)\\b'
-            'name': 'storage.type.primitive.d'
+            {
+                'match': '\\b((?:void|bool|byte|ubyte|short|ushort|int|uint|long|ulong|float|double|real|char|wchar|dchar|size_t|string|wstring|dstring)\\*{0,3})\\b'
+                'name': 'storage.type.primitive.d'
+            }
         ]
     'storage-modifiers':
         'patterns': [
@@ -464,7 +469,10 @@
         ]
     'variables':
         'patterns': [
-
+            {
+                'match': '\\b([a-zA-Z_][A-Za-z0-9_]+)\\b'
+                'name': 'support.variable.d'
+            }
         ]
 # Repository end
 #

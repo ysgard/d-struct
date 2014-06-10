@@ -16,16 +16,17 @@ static ~this
 private enum WinVersion { preVista, vista, postVista }
 module object;
 
-int x = ( fgf14_000_000);
-int a = ( fgf1.0);
-int b = ( fgf.345E2f);
-int c = ( fgf10f);
-int d = ( fgf10.);
-int e = ( fgf0x1.ffffffffp1023);
-int f = ( fgf0xFp1F);
-int g = ( fgf0747574737);
-int h = ( 0747344354Lu);
-int i = p2.3
+int x = ( fgf 14_000_000 );
+int a = ( fgf 1.0);
+int b = ( fgf .345E2f);
+int c = ( fgf 10f );
+int d = ( fgf 10.);
+int e = ( fgf 0x1.ffffffffp1023);
+int f = ( fgf 0xFp1F);
+int g = ( fgf 0747574737);
+int h = ( 0747344354Lu );
+int i = p2.3;
+int j = Αλφα;
 
 bool hey = true;
 
@@ -341,7 +342,7 @@ class Throwable : Object
     @safe pure nothrow this(string msg, Throwable next = null);
     @safe pure nothrow this(string msg, string file, size_t line, Throwable next = null);
     override string toString();
-    void toString(scope void delegate(in char[]) sink) const;
+    void toString(scope void** delegate(in char[]) sink) const;
 }
 
 
