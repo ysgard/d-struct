@@ -39,10 +39,10 @@
 # .gfm.markup.link.entity -> violet
 {
   'fileTypes' : [
-    'd',
-    'di'
+    # 'd',
+    # 'di'
   ],
-  'name': 'D',
+  'name': 'Dold',
   'scopeName': 'source.d',
 
   # Root groups
@@ -116,9 +116,9 @@
   'patterns' : [
     {
       'include': '#package'
-    }
+    },
     {
-      'include': '#comments'
+      'include': '#code'
     }
   ],
   # Repository of base constructs
@@ -150,10 +150,61 @@
 
   'repository': {
     'all-types': {
-     'patterns': [],
+      'patterns': [
+        {
+          'include': '#class'
+        },
+        {
+          'include': '#enum'
+        },
+        {
+          'include': '#primitive-types'
+        },
+        {
+          'include': '#struct'
+        },
+        {
+          'include': '#union'
+        }
+      ],
+    },
+    'all-values': {
+      'patterns': [
+        {
+          'include': '#numerics'
+        },
+        {
+          'include': '#strings'
+        },
+        {
+          'include': '#constants-and-special-vars'
+        },
+        # {
+        #   'include': '#variables'
+        # }
+      ]
     },
     'anonymous-classes-and-new': {
      'patterns': [],
+    },
+    'asm': {
+      'patterns': [
+        { # single-line asm
+          'match': '(asm)\\s+([^\\{\\}$]+)',
+          'captures': {
+            '1': { 'name': 'keyword.other.asm.d' },
+            '2': { 'name': 'gfm.markup.raw.asm.d' }
+          }
+        },
+        { # block-level asm
+          'begin': '(asm)(?:\\s+{)',
+          'beginCaptures': {
+            '1': { 'name': 'keyword.other.asm.d' }
+          },
+          'end': '}',
+          'contentName': 'gfm.markup.raw.asm.d'
+        }
+      ]
     },
     'assertions': {
       # assert, enforce, exceptions and other contract structures
@@ -182,35 +233,11 @@
       'end': '}',
       'patterns': [
         {
-          'include': '#code'
+          'include': '#block-code'
         }
       ]
     },
-    'block-markup': {
-      'patterns': [
-        { # single-line asm
-          'match': '(asm)\\s+([^\\{\\}$]+)',
-          'captures': {
-            '1': { 'name': 'keyword.other.asm.d' },
-            '2': { 'name': 'gfm.markup.raw.asm.d' }
-        },
-        { # block-level asm
-          'begin': '(asm)(?:\\s+{)',
-          'beginCaptures': {
-            '1': { 'name': 'keyword.other.asm.d' }
-          },
-          'end': '}',
-          'contentName': 'gfm.markup.raw.asm.d'
-        }
-      ]
-    },
-    'class': {
-      'patterns': []
-    },
-    'class-body': {
-      'patterns': []
-    },
-    'code': {
+    'block-code': {
       # Meta class - basically all legal code that can be in a block
       'patterns': [
         {
@@ -249,6 +276,33 @@
         {
           'include': '#methods'
         }
+      ]
+    },
+    'class': {
+      'patterns': []
+    },
+    'class-body': {
+      'patterns': []
+    },
+    'code': {
+      # Everything that's not a package, script header, module or import
+      'patterns': [
+        {
+          'include': '#all-types'
+        },
+        {
+          'include': '#all-values'
+        },
+        {
+          'include': '#asm'
+        },
+        {
+          'include': '#comments'
+        },
+        {
+          'include': '#keywords'
+        }
+
       ]
     },
     'comments': {
@@ -364,7 +418,8 @@
             '1': { 'name': 'keyword.other.alias.d' },
             '2': { 'name': 'variable.parameter.alias.d' },
             '3': { 'name': 'variable.parameter.alias.d' }
-        },
+          }
+        }
       ]
     },
     'method-call': {
@@ -378,6 +433,7 @@
             '1': { 'name': 'entity.name.class.called.d' },
             '2': { 'name': 'entity.name.function.method.d' }
           }
+        }
       ]
     },
     'numerics': {
@@ -411,11 +467,15 @@
       # Module-level imports, module decls and package decls
       'patterns': [
         { # import packages
-          'match': '\\b(import|module)\\s+(.+)',
+          'match': '\\b(import|module)\\s+(.+);',
           'captures': {
             '1': { 'name': 'keyword.other.import.d' },
             '2': { 'name': 'support.class.import.d' }
           }
+        },
+        { # rdmd script
+          'match': '^\\s*(#!.+)',
+          'name': 'gfm.markup.heading.script.d'
         }
       ]
     },
@@ -492,8 +552,10 @@
     'variables': {
       'patterns': [
         {
-          'match': '\\b([a-zA-Z_][A-Za-z0-9_]+)\\b',
-          'name': 'support.variable.d'
+          'match': '\\s+([a-zA-Z_][A-Za-z0-9_]+)\\b',
+          'captures': {
+            1: { 'name': 'invalid.deprecated.d' }
+          }
         }
       ]
     }
