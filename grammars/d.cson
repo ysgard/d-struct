@@ -1,0 +1,67 @@
+# D Language grammar for Atom
+#
+# Props to http://www.regexr.com/ for helping me out with the regular
+# expressions - really useful.
+#
+# Author: Jan Van Uytven
+
+# For colors, as an example, Monokai defines the following.  It is probably
+# likely that this are 'baseline' rules, as Monokai is one of the most
+# popular styles
+# .comment -> warm grey
+# .string -> warm yellow
+# .constant.numeric -> violet
+# .constant.language -> violet
+# .constant.character -> violet
+# .constant.other -> violet
+# .keyword -> coral
+# .storage -> coral
+# .storage.type -> blue italic
+# .entity.name.class -> lime underline
+# .entity.other.inherited-class -> lime italic underline
+# .entity.name.function -> lime
+# .entity.name.instance -> lt blue
+# .variable.parameter -> orange italic
+# .entity.name.tag -> coral
+# .entity.other.attribute-name -> lime
+# .support.function -> blue
+# .support.type -> italic blue
+# .support.class -> italic blue
+# .invalid -> white on coral
+# .invalid.deprecated -> white on purple
+# .gfm.markup.heading -> bold lime
+# .gfm.markup.underline -> warm yellow underline
+# .gfm.markup.bold -> bold
+# .gfm.markup.italic -> italic
+# .gfm.markup.raw -> blue
+# .gfm.markup.variable.list -> bold coral
+# .gfm.markup.link -> lt grey
+# .gfm.markup.link.entity -> violet
+{
+  'fileTypes': [
+    'd', 'di'
+  ],
+  'name': 'D',
+  'scopeName': 'source.d',
+
+  'patterns': [
+    {
+      'include': '#character'
+    }
+
+  ],
+
+  'repository': {
+
+
+
+
+
+
+
+
+
+
+
+  } # End of repository
+} # End of d.cson
