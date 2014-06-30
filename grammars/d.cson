@@ -1,0 +1,173 @@
+# D Language grammar for Atom
+#
+# Props to http://www.regexr.com/ for helping me out with the regular
+# expressions - really useful.
+#
+# Author: Jan Van Uytven
+
+# For colors, as an example, Monokai defines the following.  It is probably
+# likely that this are 'baseline' rules, as Monokai is one of the most
+# popular styles
+# .comment -> warm grey
+# .string -> warm yellow
+# .string source
+# .string.unquoted
+# .constant -> violet
+# .constant.numeric -> violet
+# .constant.language -> violet
+# .constant.character -> violet
+# .constant.other -> violet
+# .declaration.section entity.name.section
+# .declaration.tag
+# .deco.folding
+# .keyword -> coral
+# .keyword.control
+# .keyword.operator
+# .storage -> coral
+# .storage.type -> blue italic
+# .entity.other.inherited-class -> lime italic underline
+# .entity.name.function -> lime
+# .entity.name.instance -> lt blue
+# .entity.name.class -> lime underline
+# .entity.name.tag -> coral
+# .entity.name.type
+# .entity.other.attribute-name -> lime
+# .support.function -> blue
+# .support.type -> italic blue
+# .support.class -> italic blue
+# .support.constant
+# .support.variable
+# .invalid -> white on coral
+# .invalid.deprecated -> white on purple
+# .variable.parameter -> orange italic
+# .variable
+# .variable.language
+# .variable.other
+# .meta.embedded
+# .meta.preprocessor
+# .meta.section entity.name.section
+# .meta.tag
+# .text source
+# .gfm.markup.list
+# .gfm.markup.quote
+# .gfm.markup.heading -> bold lime
+# .gfm.markup.underline -> warm yellow underline
+# .gfm.markup.bold -> bold
+# .gfm.markup.italic -> italic
+# .gfm.markup.raw -> blue
+# .gfm.markup.variable.list -> bold coral
+# .gfm.markup.link -> lt grey
+# .gfm.markup.link.entity -> violet
+
+# The order of rules in the top-level 'patterns' is important - matching stops
+# as soon as a match is found, starting from the top down.  The patterns in the
+# repository, on the other hand, are unordered.
+
+{
+  'fileTypes': [
+    'd', 'di'
+  ],
+  'name': 'D',
+  'scopeName': 'source.d',
+
+  'patterns': [
+    {
+      'include': '#comment'
+    },
+    {
+      'include': '#identifier'
+    }
+
+  ],
+
+  'repository': {
+    #
+    # String literals
+    #
+    'string-literal': {
+      'patterns': [
+        {
+          'include': '#wysiwyg-string'
+        },
+        {
+          'include': '#alternate-wysiwyg-string'
+        },
+        {
+          'include': '#double-quoted-string'
+        },
+        {
+          'include': '#hex-string'
+        },
+        {
+          'include': '#delimited-string'
+        },
+        {
+          'include': '#token-string'
+        }
+      ]
+    },
+    'wysiwyg-string': {
+      'patterns': [
+        'match':
+      ]
+    }
+    #
+    # Identifiers
+    #
+    'identifier': {
+      'patterns': [
+        {
+          'match': '\\b[_\\w][_\\d\\w]*\\b'
+          'name': 'meta.name.identifier.d'
+        }
+      ]
+    },
+    #
+    # Comments
+    #
+    'comment': {
+      'patterns': [
+        {
+          'include': '#block-comment'
+        },
+        {
+          'include': '#line-comment'
+        },
+        {
+          'include': '#nesting-block-comment'
+        }
+      ]
+    },
+    'block-comment': {
+      'patterns': [
+        {
+          'begin': '/\\*',
+          'end': '\\*/',
+          'name': 'comment.block.d'
+        }
+      ]
+    },
+    'line-comment': {
+      'patterns': [
+        {
+          'match': '//.+$',
+          'name': 'comment.line.d'
+        }
+      ]
+    },
+    'nesting-block-comment': {
+      'patterns': [
+        {
+          'begin': '/\\+',
+          'end': '\\+/',
+          'name': 'comment.block.documentation.d',
+          'patterns': [
+            {
+              'include': '$self'
+            }
+          ]
+        }
+      ]
+    }
+  } # End of repository
+} # End of d.cson
