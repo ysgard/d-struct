@@ -8,6 +8,13 @@
    or to get generated documentation:
      dmd hello.d -D
   */
+
+this = r"This is a \'quoted\' \t\t string  \?  hello \0 \b \\ this  ";
+that = `Alternate \\ wysiwyg string`c;
+those = "This is a \xAF \uAFaf \U0009abab double-\amp;quoted\tstring\34"c;
+hstring = x"af d3 3b"c;
+dstring = q"<Hello thereH>";
+
 import std.stdio, std.string;  // References to  commonly used I/O routines.
 void main(char[][] args)   // 'void' here means return 0 by default.
 {

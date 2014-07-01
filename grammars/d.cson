@@ -1,8 +1,5 @@
 # D Language grammar for Atom
 #
-# Props to http://www.regexr.com/ for helping me out with the regular
-# expressions - really useful.
-#
 # Author: Jan Van Uytven
 
 # For colors, as an example, Monokai defines the following.  It is probably
@@ -59,10 +56,8 @@
 # .gfm.markup.link -> lt grey
 # .gfm.markup.link.entity -> violet
 
-# The order of rules in the top-level 'patterns' is important - matching stops
-# as soon as a match is found, starting from the top down.  The patterns in the
-# repository, on the other hand, are unordered.
-
+# The order of rules in 'patterns' is important - matching stops
+# as soon as a match is found, starting from the top down.
 {
   'fileTypes': [
     'd', 'di'
@@ -75,6 +70,9 @@
       'include': '#comment'
     },
     {
+      'include': '#string-literal'
+    }
+    {
       'include': '#identifier'
     }
 
@@ -86,29 +84,168 @@
     #
     'string-literal': {
       'patterns': [
-        {
-          'include': '#wysiwyg-string'
-        },
-        {
-          'include': '#alternate-wysiwyg-string'
-        },
-        {
-          'include': '#double-quoted-string'
-        },
-        {
-          'include': '#hex-string'
-        },
-        {
-          'include': '#delimited-string'
-        },
-        {
-          'include': '#token-string'
-        }
+        { 'include': '#wysiwyg-string' },
+        { 'include': '#alternate-wysiwyg-string' },
+        { 'include': '#hex-string' },
+        { 'include': '#delimited-string' },
+        { 'include': '#double-quoted-string' },
+        { 'include': '#token-string' }
       ]
     },
     'wysiwyg-string': {
       'patterns': [
-        'match':
+        'begin': 'r\\"',
+        'end': '\\"[cwd]?',
+        'name': 'string.wysiwyg-string.d',
+        'patterns': [
+          { 'include': '#wysiwyg-chars' }
+        ]
+      ]
+    },
+    'alternate-wysiwyg-string': {
+      'patterns': [
+        'begin': '`',
+        'end': '`[cwd]?',
+        'name': 'string.alternate-wysiwyg-string.d',
+        'patterns': [
+          { 'include': '#wysiwyg-characters' }
+        ]
+      ]
+    },
+    'double-quoted-string': {
+      'patterns': [
+        'begin': '"',
+        'end': '"[cwd]?',
+        'name': 'string.double-quoted-string.d',
+        'patterns': [
+          { 'include': '#double-quoted-characters' }
+        ]
+      ]
+    },
+    'hex-string': {
+      'patterns': [
+        'begin': 'x"',
+        'end': '"[cwd]?',
+        'name': 'string.hex-string.d',
+        'patterns': [
+          {
+            'match': '[a-fA-F0-9_\s]+',
+            'name': 'constant.character.hex-string.d'
+          }
+        ]
+      ]
+    },
+    'delimited-string': {
+      'begin': 'q"',
+      'end': '"',
+      'name': 'string.delimited.d',
+      'patterns': [
+        { 'include': '#delimited-string-bracket' },
+        { 'include': '#delimited-string-parens' },
+        { 'include': '#delimited-string-angle-brackets' },
+        { 'include': '#delimited-string-braces' },
+        { 'include': '#delimited-string-arbitrary' },
+      ]
+    }
+    'delimited-string-arbitrary': {
+      # Tricky one, as we can't match the arbitrary delimiter between a 'begin'
+      # or 'end', so we have to hack this one:
+      'patterns': [
+        'match': '(.)([\\w\\s\\n]*?)(\\1)'
+        'captures': {
+          '1': {
+            'name': 'constant.character.delimiter.d'
+          },
+          '2': {
+            'name': 'string.delimited.d'
+          },
+          '3': {
+            'name': 'constant.character.delimiter.d'
+          },
+        }
+      ]
+    },
+    'delimited-string-bracket': {
+      'patterns': [
+        'begin': '\\[',
+        'end': '\\]',
+        'name': 'constant.characters.delimited.brackets.d',
+        'patterns': [
+          { 'include': '#wysiwyg-characters' }
+        ]
+      ]
+    },
+    'delimited-string-parens': {
+      'patterns': [
+        'begin': '\\(',
+        'end': '\\)',
+        'name': 'constant.character.delimited.parens.d',
+        'patterns': [
+          { 'include': '#wysiwyg-characters' }
+        ]
+      ]
+    },
+    'delimited-string-angle-brackets': {
+      'patterns': [
+        'begin': '<',
+        'end': '>',
+        'name': 'constant.character.angle-brackets.d',
+        'patterns': [
+          { 'include': '#wysiwyg-characters' }
+        ]
+      ]
+    },
+    'delimited-string-braces': {
+      'patterns': [
+        'begin': '\\{',
+        'end': '\\}',
+        'name': 'constant.character.delimited.braces.d',
+        'patterns': [
+          { 'include': '#wysiwyg-characters' }
+        ]
+      ]
+    },
+
+    'wysiwyg-characters': {
+      'patterns': [
+        { 'include': '#character' },
+        { 'include': '#end-of-line' }
+      ]
+    },
+    'double-quoted-characters': {
+      'patterns': [
+        { 'include': '#character' },
+        { 'include': '#end-of-line' },
+        { 'include': '#escape-sequence' }
+      ]
+    }
+    'escape-sequence': {
+      'patterns': [
+        {
+          # I really need to expand this
+          'match': '(\\\\(?:quot|amp|lt|gt|tilde))',
+          'name': 'constant.character.escape-sequence.entity.d'
+        },
+        {
+          'match': '(\\\\x[0-9a-fA-F_]{2}|\\\\u[0-9a-fA-F_]{4}|\\\\U[0-9a-fA-F_]{8}|\\\\[0-7]{1,3})',
+          'name': 'constant.character.escape-sequence.number.d',
+        },
+        {
+          'match': '(\\\\t|\\\\\'|\\\\\"|\\\\\\?|\\\\0|\\\\a|\\\\b|\\\\f|\\\\n|\\\\r|\\\\v|\\\\\\\\)',
+          'name': 'constant.character.escape-sequence.d',
+        }
+      ]
+    },
+    'character': {
+      'patterns': [
+        'match': '[\\w\\s]',
+        'name': 'string.character.d'
+      ]
+    }
+    'end-of-line': {
+      'patterns': [
+        'match': '\\n',
+        'name': 'string.character.end-of-line.d'
       ]
     }
     #
@@ -127,15 +264,9 @@
     #
     'comment': {
       'patterns': [
-        {
-          'include': '#block-comment'
-        },
-        {
-          'include': '#line-comment'
-        },
-        {
-          'include': '#nesting-block-comment'
-        }
+        { 'include': '#block-comment' },
+        { 'include': '#line-comment' },
+        { 'include': '#nesting-block-comment' }
       ]
     },
     'block-comment': {
@@ -162,9 +293,7 @@
           'end': '\\+/',
           'name': 'comment.block.documentation.d',
           'patterns': [
-            {
-              'include': '$self'
-            }
+            { 'include': '$self' }
           ]
         }
       ]
