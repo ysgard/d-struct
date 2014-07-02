@@ -71,7 +71,10 @@
     },
     {
       'include': '#string-literal'
-    }
+    },
+    {
+      'include': '#integer-literal'
+    },
     {
       'include': '#identifier'
     }
@@ -79,6 +82,49 @@
   ],
 
   'repository': {
+    #
+    # Integer literals
+    #
+    'integer-literal': {
+      'patterns': [
+        { 'include': '#integer' },
+        { 'include': '#integer-suffix' }
+      ]
+    },
+    'integer': {
+      'patterns': [
+        { 'include': '#decimal-integer' },
+        { 'include': '#binary-integer' },
+        { 'include': '#hexadecimal-integer' }
+      ]
+    },
+    'integer-suffix': {
+      'patterns': [
+        'match': '(L|u|U|Lu|LU|uL|UL)',
+        'name': 'constant.numeric.integer.suffix.d'
+      ]
+    },
+    'decimal-integer': {
+      # We avoid including sub-rules at this point, as we can handle this
+      # with a single regex
+      'patterns': [
+        'match': '(0(?=[^\\dxXbB]))|([1-9][0-9_]*)',
+        'name': 'constant.numeric.integer.decimal.d'
+      ]
+    },
+    'binary-integer': {
+      'patterns': [
+        'match': '(0b|0B)[0-1_]+',
+        'name': 'constant.numeric.integer.binary.d'
+      ]
+    },
+    'hexadecimal-integer': {
+      'patterns': [
+        'match': '(0x|0X)([0-9a-fA-F][0-9a-fA-F_]*)',
+        'name': 'constant.numeric.integer.hexadecimal.d'
+      ]
+    },
+
     #
     # String literals
     #
