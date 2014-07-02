@@ -7,6 +7,11 @@ import two;
   Comments.
 */
 
+/+
+This was a /+ +/
++/
+
+
 // Another comment
 int hoy;
 struct hhhhhh;
