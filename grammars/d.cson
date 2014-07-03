@@ -73,6 +73,9 @@
       'include': '#string-literal'
     },
     {
+      'include': '#character-literal'
+    },
+    {
       'include': '#integer-literal'
     },
     {
@@ -279,6 +282,27 @@
         {
           'match': '(\\\\t|\\\\\'|\\\\\"|\\\\\\?|\\\\0|\\\\a|\\\\b|\\\\f|\\\\n|\\\\r|\\\\v|\\\\\\\\)',
           'name': 'constant.character.escape-sequence.d',
+        }
+      ]
+    },
+    #
+    # Character literal
+    #
+    'character-literal': {
+      'patterns': [
+        'match': "\'(?:(.)|(?:(?=\\\\)(.+)))\'"
+        'name': 'string.character-literal.d',
+        'captures': {
+          '1' : {
+            'patterns': [
+              { 'include': '#character' }
+            ]
+          },
+          '2': {
+            'patterns': [
+              { 'include': '#escape-sequence' }
+            ]
+          }
         }
       ]
     },
