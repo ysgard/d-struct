@@ -15,7 +15,7 @@ those = "This is a \xAF \uAFaf \U0009abab double-\amp;quot\heartsed\tstring\34"c
 hstring = x"af d3 3b"c;
 dstring = q"<Hello thereH>";
 tstring = q{ token this_is_a_var "a string" 3 2.35 throw }
-0 0 1 23 434_4343 00;
+0 0 1 23 434_4343 00; 0Lu 343Lu 0b01111Lu
 0x00 0x0f 0xf 0x_ 0XDD 0xffFF_fddf;
 0b_ 0b01011010100111;
 'c'
