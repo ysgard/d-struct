@@ -76,6 +76,9 @@
       'include': '#character-literal'
     },
     {
+      'include': '#float-literal'
+    },
+    {
       'include': '#integer-literal'
     },
     {
@@ -99,22 +102,42 @@
       # We avoid including sub-rules at this point, as we can handle this
       # with a single regex
       'patterns': [
-        'match': '(0(?=[^\\dxXbB]))|([1-9][0-9_]*)(Lu|LU|uL|ULL|u|U)?',
+        'match': '(0(?=[^\\dxXbB]))|([1-9][0-9_]*)(Lu|LU|uL|UL|L|u|U)?',
         'name': 'constant.numeric.integer.decimal.d'
       ]
     },
     'binary-integer': {
       'patterns': [
-        'match': '(0b|0B)[0-1_]+(Lu|LU|uL|ULL|u|U)?',
+        'match': '(0b|0B)[0-1_]+(Lu|LU|uL|UL|L|u|U)?',
         'name': 'constant.numeric.integer.binary.d'
       ]
     },
     'hexadecimal-integer': {
       'patterns': [
-        'match': '(0x|0X)([0-9a-fA-F][0-9a-fA-F_]*)(Lu|LU|uL|ULL|u|U)?',
+        'match': '(0x|0X)([0-9a-fA-F][0-9a-fA-F_]*)(Lu|LU|uL|UL|L|u|U)?',
         'name': 'constant.numeric.integer.hexadecimal.d'
       ]
     },
+    #
+    # Float literals
+    #
+    'float-literal': {
+      'patterns': [
+        { 'include': '#float' },
+      ]
+    },
+    'float': {
+      'patterns': [
+        { 'include': '#decimal-float' },
+      ]
+    },
+    'decimal-float': {
+      'patterns': [
+        'match': '[0-9_]*\\.[0-9_]*((e-|E-|e|E)[0-9]+)?[fF]?',
+        'name': 'constant.numeric.float.decimal.d'
+      ]
+    },
+
 
     #
     # String literals
