@@ -11,7 +11,7 @@
 
 this = r"This is a \'quoted\' \t\t string  \?  hello \0 \b \\ this  ";
 that = `Alternate \\ wysiwyg string`c;
-those = "This is a \xAF \uAFaf \U0009abab double-\amp;quoted\tstring\34"c;
+those = "This is a \xAF \uAFaf \U0009abab double-\amp;quot\heartsed\tstring\34"c;
 hstring = x"af d3 3b"c;
 dstring = q"<Hello thereH>";
 tstring = q{ token this_is_a_var "a string" 3 2.35 throw }
@@ -19,7 +19,9 @@ tstring = q{ token this_is_a_var "a string" 3 2.35 throw }
 0x00 0x0f 0xf 0x_ 0XDD 0xffFF_fddf;
 0b_ 0b01011010100111;
 'c'
-'\t'
+'\amp'
+q{This is a _______NOT token const x="This was a triumph"; lit=string!};
+
 
 import std.stdio, std.string;  // References to  commonly used I/O routines.
 void main(char[][] args)   // 'void' here means return 0 by default.

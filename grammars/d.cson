@@ -195,7 +195,15 @@
         { 'include': '#delimited-string-braces' },
         { 'include': '#delimited-string-arbitrary' },
       ]
-    }
+    },
+    'token-string': {
+      'begin': 'q\\{',
+      'end': '\\}',
+      'name': 'string.token.d',
+      'patterns': [
+        { 'include': '#tokens' }
+      ]
+    },
     'delimited-string-arbitrary': {
       # Tricky one, as we can't match the arbitrary delimiter between a 'begin'
       # or 'end', so we have to hack this one:
@@ -267,12 +275,12 @@
         { 'include': '#end-of-line' },
         { 'include': '#escape-sequence' }
       ]
-    }
+    },
     'escape-sequence': {
       'patterns': [
         {
-          # I really need to expand this
-          'match': '(\\\\(?:quot|amp|lt|gt|tilde))',
+          # named entities
+          'match': '(\\\\(?:quot|amp|lt|gt|OElig|oelig|Scaron|scaron|Yuml|circ|tilde|ensp|emsp|thinsp|zwnj|zwj|lrm|rlm|ndash|mdash|lsquo|rsquo|sbquo|ldquo|rdquo|bdquo|dagger|Dagger|permil|lsaquo|rsaquo|euro|nbsp|iexcl|cent|pound|curren|yen|brvbar|sect|uml|copy|ordf|laquo|not|shy|reg|macr|deg|plusmn|sup2|sup3|acute|micro|para|middot|cedil|sup1|ordm|raquo|frac14|frac12|frac34|iquest|Agrave|Aacute|Acirc|Atilde|Auml|Aring|Aelig|Ccedil|egrave|eacute|ecirc|iuml|eth|ntilde|ograve|oacute|ocirc|otilde|ouml|divide|oslash|ugrave|uacute|ucirc|uuml|yacute|thorn|yuml|fnof|Alpha|Beta|Gamma|Delta|Epsilon|Zeta|Eta|Theta|Iota|Kappa|Lambda|Mu|Nu|Xi|Omicron|Pi|Rho|Sigma|Tau|Upsilon|Phi|Chi|Psi|Omega|alpha|beta|gamma|delta|epsilon|zeta|eta|theta|iota|kappa|lambda|mu|nu|xi|omicron|pi|rho|sigmaf|sigma|tau|upsilon|phi|chi|psi|omega|thetasym|upsih|piv|bull|hellip|prime|Prime|oline|frasl|weierp|image|real|trade|alefsym|larr|uarr|rarr|darr|harr|crarr|lArr|uArr|rArr|dArr|hArr|forall|part|exist|empty|nabla|isin|notin|ni|prod|sum|minux|lowast|radic|prop|infin|ang|and|or|cap|cup|int|there4|sim|cong|asymp|ne|equiv|le|ge|sub|sup|nsub|sube|supe|oplus|otimes|perp|sdot|lceil|rceil|lfloor|rfloor|loz|spades|clubs|hearts|diams|lang|rang))',
           'name': 'constant.character.escape-sequence.entity.d'
         },
         {
@@ -311,21 +319,21 @@
         'match': '[\\w\\s]',
         'name': 'string.character.d'
       ]
-    }
+    },
     'end-of-line': {
       'patterns': [
         'match': '\\n',
         'name': 'string.character.end-of-line.d'
       ]
-    }
+    },
     #
     # Identifiers
     #
     'identifier': {
       'patterns': [
         {
-          'match': '\\b[_\\w][_\\d\\w]*\\b'
-          'name': 'meta.name.identifier.d'
+          'match': '[_\\w][_\\d\\w]*',
+          'name': 'variable.d'
         }
       ]
     },
@@ -366,6 +374,29 @@
             { 'include': '$self' }
           ]
         }
+      ]
+    },
+    #
+    # Lexical Tokens, keywords and special tokens
+    #
+    'tokens': {
+      'patterns': [
+        { 'include': '#string-literal' },
+        { 'include': '#character-literal' },
+        { 'include': '#integer-literal' },
+        { 'include': '#float-literal' },
+        { 'include': '#keyword' },
+        {
+          'match': '/|/=|\\.|\\.\\.|\\.\\.\\.|&|&=|&&|\\||\\|=|\\|\\||-|-=|--|\\+|\\+=|\\+\\+|<|<=|<<|<>|>|>=|>>=|>>|>>>|\\!|\\!=|\\!<>|\\!<>=|\\!<|\\!<=|\\!>|\\!>=|\\(|\\)|\\[|\\]|\\{|\\}|\\?|,|;|:|$|=|==|\\*|\\*=|%|%=|\\^|\\^=|\\^\\^|\\^\\^=|~|~=|@|=>|#',
+          'name': 'meta.lexical.token.symbolic.d'
+        },
+        { 'include': '#identifier' }
+      ]
+    },
+    'keyword': {
+      'patterns': [
+        'match': 'abstract|alias|align|asm|assert|auto|body|bool|break|byte|case|cast|catch|cdouble|cent|cfloat|char|class|const|continue|creal|dchar|debug|default|delegate|delete|deprecated|do|double|else|enum|export|extern|false|final|finally|float|for|foreach|foreach_reverse|function|goto|idouble|if|ifloat|immutable|import|in|inout|int|interface|invariant|ireal|is|lazy|long|macro|mixin|module|new|nothrow|null|out|override|package|pragma|private|protected|public|pure|real|ref|return|scope|shared|short|static|struct|super|switch|synchronized|template|this|throw|true|try|typedef|typeid|typeof|ubyte|ucent|uint|ulong|union|unittest|ushort|version|void|volatile|wchar|while|with|__FILE__|__MODULE__|__LINE__|__FUNCTION__|__PRETTY_FUNCTION__|__gshared|__traits|__vector|__parameters',
+        'name': 'keyword.token.d'
       ]
     }
   } # End of repository
