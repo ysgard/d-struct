@@ -24,7 +24,7 @@ q{This is a _______NOT token const x="This was a triumph"; lit=string!};
 123_456.567_8
 1_2_3_4_5_6_._5_6_7_8
 1_2_3_4_5_6_._5e-6
--x1.FFFFFFFFFFFp1023
+-0x1.FFFFFFFFFFFp1023
 0x1p-52
 1.175494351e-38F
 6.3i
