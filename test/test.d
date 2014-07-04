@@ -8,6 +8,7 @@
    or to get generated documentation:
      dmd hello.d -D
   */
+# line This is a line!
 
 this = r"This is a \'quoted\' \t\t string  \?  hello \0 \b \\ this  ";
 that = `Alternate \\ wysiwyg string`c;
@@ -30,13 +31,14 @@ q{This is a _______NOT token const x="This was a triumph"; lit=string!};
 6.3i
 6.3fi
 6.3Li
+__VERSION__
 0
 0.234
 0.0
 3.
 .5
 .5f
-5f
+.5f
 
 
 
