@@ -88,12 +88,116 @@
       'include': '#special-token-sequence'
     },
     {
+      'include': '#type'
+    }
+    {
       'include': '#identifier'
     }
 
   ],
 
   'repository': {
+    #
+    # GENERAL GRAMMAR
+    #
+    'type': {
+      'patterns': [
+        { 'include': '#type-ctor' },
+        { 'include': '#basic-type' },
+
+      ]
+    },
+    'type-ctor': {
+      'patterns': [
+        'match': '(const|immutable|inout|shared)+',
+        'name': 'storage.type.modifier.d'
+      ]
+    },
+    'basic-type': {
+      'patterns': [
+        { 'include': '#basic-type-x' },
+        { 'include': '#typeof' },
+        { 'include': '#type-ctor-type' },
+        { 'include': '#identifier' }
+      ]
+    },
+    'basic-type-x': {
+      'patterns': [
+        'match': 'bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void',
+        'name': 'storage.type.basic-type-x.d'
+      ]
+    },
+    'typeof': {
+      'begin': 'typeof\\s+\\(',
+      'end': '\\)',
+      'name': 'storage.type.typeof.d',
+      'patterns': [
+        {
+            'match': 'return',
+            'name': 'keyword.control.return.d'
+        },
+        { 'include': '#expression' }
+      ],
+    },
+    'type-ctor-type': {
+      'begin': '(const|immutable|inout|shared)\\s+\\(',
+      'end': '\\)',
+      'name': 'storage.type.ctor-type.d',
+      'patterns': [
+        { 'include': '#type' },
+      ]
+    },
+    'storage-class': {
+      'patterns': [
+        { 'include': '#linkage-attribute' },
+        { 'include': '#align-attribute' },
+        {
+          'match': 'deprecated|enum|static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref',
+          'name': 'storage.class.d'
+        },
+        { 'include': '#property' },
+      ]
+    }
+    'linkage-attribute': {
+      'patterns': [
+        'match': 'C|C\\+\\+|D|Windows|Pascal|System',
+        'name': 'storage.modifier.linkage-attribute.d'
+      ]
+    },
+    'align-attribute': {
+      'patterns': [
+        {
+          'begin': 'align\\(',
+          'end': '\\)',
+          'name': 'storage.modifier.align-attribute.d',
+          'patterns': [
+            { 'include': '#integer-literal' }
+          ]
+        },
+        {
+          'match': 'align[^\\(]',
+          'name': 'storage.modifier.align-attribute.d',
+        }
+      ]
+    },
+    'property': {
+      'patterns': [
+        {
+          'match': '@(property|safe|trusted|system|disable|nogc)',
+          'name': 'entity.name.tag.property.d',
+        },
+        {
+          'match': '@([_\\w][_\\d\\w]*)',
+          'name': 'entity.name.tag.user-defined-property.d',
+        },
+        {
+          'begin': ''
+        }
+      ]
+    }
+    #
+    # LEXICAL TOKENS
+    #
     #
     # Integer literals
     #
@@ -351,7 +455,7 @@
     'identifier': {
       'patterns': [
         {
-          'match': '[_\\w][_\\d\\w]*',
+          'match': '\\.?[_\\w][_\\d\\w]*',
           'name': 'variable.d'
         }
       ]
