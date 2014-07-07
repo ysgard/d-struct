@@ -66,32 +66,15 @@
   'scopeName': 'source.d',
 
   'patterns': [
+
     {
-      'include': '#comment'
-    },
-    {
-      'include': '#string-literal'
-    },
-    {
-      'include': '#character-literal'
-    },
-    {
-      'include': '#float-literal'
-    },
-    {
-      'include': '#integer-literal'
-    },
-    {
-      'include': '#special-tokens'
-    },
-    {
-      'include': '#special-token-sequence'
+      'include': '#pragma'
     },
     {
       'include': '#type'
-    }
+    },
     {
-      'include': '#identifier'
+      'include': '#lexical',
     }
 
   ],
@@ -118,7 +101,6 @@
         { 'include': '#basic-type-x' },
         { 'include': '#typeof' },
         { 'include': '#type-ctor-type' },
-        { 'include': '#identifier' }
       ]
     },
     'basic-type-x': {
@@ -191,13 +173,50 @@
           'name': 'entity.name.tag.user-defined-property.d',
         },
         {
-          'begin': ''
+          'begin': '@([_\\w][_\\d\\w]*)\\(',
+          'end': '\\)',
+          'name': 'entity.name.tag.user-defined-property.d',
+          'patterns': [
+
+          ]
+        }
+      ]
+    },
+    'pragma': {
+      'patterns': [
+        {
+          'match': 'pragma\\s?\\(\\s*[_\\w][_\\d\\w]*\\s*\\)',
+          'name': 'meta.preprocessor.d'
+        },
+        {
+          'begin': 'pragma\\s?\\(\\s*[_\\w][_\\d\\w]*\\s*,',
+          'end': '\\)',
+          'name': 'meta.preprocessor.d'
+          'patterns': [
+
+          ]
         }
       ]
     }
+
+
+
+
     #
     # LEXICAL TOKENS
     #
+    'lexical': {
+      'patterns': [
+        { 'include': '#comment' },
+        { 'include': '#string-literal' },
+        { 'include': '#character-literal' },
+        { 'include': '#float-literal' },
+        { 'include': '#integer-literal' },
+        { 'include': '#special-tokens' },
+        { 'include': '#special-token-sequence' },
+        { 'include': '#identifier' },
+      ]
+    }
     #
     # Integer literals
     #
