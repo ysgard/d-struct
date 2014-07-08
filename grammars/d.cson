@@ -66,16 +66,17 @@
   'scopeName': 'source.d',
 
   'patterns': [
-
-    {
-      'include': '#pragma'
-    },
-    {
-      'include': '#type'
-    },
-    {
-      'include': '#lexical',
-    }
+    { 'include': '#comment' },
+    { 'include': '#module-declaration' },
+    { 'include': '#import-declaration' },
+    { 'include': '#condition' },
+    { 'include': '#version-debug-specification' },
+    { 'include': '#is-expression' },
+    { 'include': '#attribute' },
+    { 'include': '#asm-statement' },
+    { 'include': '#mixin-declaration' },
+    { 'include': '#type' },
+    { 'include': '#expression' },
 
   ],
 
@@ -83,11 +84,15 @@
     #
     # GENERAL GRAMMAR
     #
+    #
+    # Basic Types
+    #
     'type': {
       'patterns': [
         { 'include': '#type-ctor' },
         { 'include': '#basic-type' },
-
+        { 'include': '#defined-type' },
+        { 'include': '#basic-type-2' },
       ]
     },
     'type-ctor': {
@@ -109,6 +114,13 @@
         'name': 'storage.type.basic-type-x.d'
       ]
     },
+    # Defined in object.di
+    'defined-type': {
+      'patterns': [
+        'match': 'wstring|dstring|string|size_t|ptrdiff_t',
+        'name': 'storage.type.defined.d'
+      ]
+    }
     'typeof': {
       'begin': 'typeof\\s+\\(',
       'end': '\\)',
@@ -129,21 +141,103 @@
         { 'include': '#type' },
       ]
     },
+    #
+    # IsExpression and Type specializations
+    # (MISSING TemplateTypeParameters)
+    'is-expression': {
+      'patterns': [
+        {
+          'begin': 'is\\s*\\(',
+          'beginCaptures': {
+            '0': { 'name': 'keyword.operator.is.begin.d' },
+          },
+          'end': '\\)',
+          'endCaptures': {
+            '0': { 'name': 'keyword.operator.is.end.d' },
+          },
+          'patterns': [
+            {
+              'match': ':|==|,',
+              'name': 'keyword.operator.is-expression.d'
+            },
+            { 'include': '#type' },
+            { 'include': '#type-specialization' },
+            { 'include': '#identifier' },
+
+          ]
+        }
+      ]
+    },
+    'type-specialization': {
+      'patterns': [
+        {
+          'match': 'struct|union|class|interface|enum|function|delegate|super|const|immutable|inout|shared|return|__parameters',
+          'name': 'keyword.other.type-specialization.d',
+        },
+        { 'include': '#type' },
+      ]
+    },
+
+    #
+    # Storage Classes
+    #
     'storage-class': {
+
+    },
+
+    #
+    # Attributes
+    #
+    'attribute': {
       'patterns': [
         { 'include': '#linkage-attribute' },
         { 'include': '#align-attribute' },
+        { 'include': '#deprecated-attribute' },
+        { 'include': '#protection-attribute' },
+        { 'include': '#pragma' },
         {
-          'match': 'deprecated|enum|static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref',
-          'name': 'storage.class.d'
+          'match': 'static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref',
+          'name': 'entity.other.attribute-name.d'
         },
         { 'include': '#property' },
       ]
     }
+
+
     'linkage-attribute': {
       'patterns': [
+        {
+          'begin': 'extern\\s*\\(\\s*C\\+\\+,',
+          'beginCaptures': {
+            '0': { 'name': 'keyword.other.extern.cplusplus.begin.d' },
+          },
+          'end': '\\)',
+          'endCaptures': {
+            '0': { 'name': 'keyword.other.extern.cplusplus.end.d' },
+          },
+          'patterns': [
+            { 'include': '#identifier-list' },
+          ]
+        },
+        {
+          'begin': 'extern\\s*\\(',
+          'beginCaptures': {
+            '0': { 'name': 'keyword.other.extern.begin.d' },
+          },
+          'end': '\\)',
+          'endCaptures': {
+            '0': { 'name': 'keyword.other.extern.end.d' },
+          },
+          'patterns': [
+            { 'include': '#linkage-type' },
+          ]
+        }
+      ]
+    },
+    'linkage-type': {
+      'patterns': [
         'match': 'C|C\\+\\+|D|Windows|Pascal|System',
-        'name': 'storage.modifier.linkage-attribute.d'
+        'name': 'storage.modifier.linkage-type.d'
       ]
     },
     'align-attribute': {
@@ -157,11 +251,47 @@
           ]
         },
         {
-          'match': 'align[^\\(]',
+          'match': 'align\\s*[^\\(]',
           'name': 'storage.modifier.align-attribute.d',
         }
       ]
     },
+    #
+    # Deprecated
+    #
+    'deprecated-attribute': {
+      'patterns': [
+        {
+          'begin': 'deprecated\\s*\\(',
+          'beginCaptures': {
+            '0': { 'name': 'keyword.other.deprecated.begin.d' },
+          },
+          'end': '\\)',
+          'endCaptures': {
+            '0': { 'name': 'keyword.other.deprecated.end.d' },
+          },
+          'patterns': [
+            { 'include': '#string-literal' },
+          ]
+        },
+        {
+          'match': 'deprecated\\s*[^\\(]',
+          'name': 'keyword.other.deprecated.plain.d'
+        }
+      ]
+    },
+    #
+    # Protections
+    #
+    'protections-attribute': {
+      'patterns': [
+        'match': 'private|package|protected|public|export',
+        'name': 'keyword.other.protections.d'
+      ]
+    },
+    #
+    # Properties
+    #
     'property': {
       'patterns': [
         {
@@ -182,24 +312,328 @@
         }
       ]
     },
+    #
+    # Condition
+    #
+    'condition': {
+      'patterns': [
+        { 'include': '#version-condition' },
+        { 'include': '#debug-condition' },
+        { 'include': '#static-if-assert' },
+      ]
+    },
+    'version-condition': {
+      'patterns': [
+        {
+          'match': 'version\\s*\\(\\s*unittest\\s*\\)',
+          'name': 'keyword.other.version.unittest.d'
+        },
+        {
+          'match': 'version\\s*\\(\\s*assert\\s*\\)',
+          'name': 'keyword.other.version.assert.d'
+        },
+        {
+          'begin': 'version\\s*\\(',
+          'beginCaptures': {
+            '0': { 'name': 'keyword.other.version.identifier.begin.d' },
+          },
+          'end': '\\)',
+          'endCaptures': {
+            '0': { 'name': 'keyword.other.version.identifer.end.d'}
+          }
+          'patterns': [
+            { 'include': '#integer-literal' },
+            { 'include': '#identifier' }
+          ]
+        }
+      ]
+    },
+    'debug-condition': {
+      'patterns': [
+        {
+          'begin': 'debug\\s*\\(',
+          'beginCaptures': {
+            '0': { 'name': 'keyword.other.debug.identifier.begin.d' }
+          },
+          'end': '\\)',
+          'endCaptures': {
+            '0': { 'name': 'keyword.other.debug.identifier.end.d' }
+          },
+          'patterns': [
+            { 'include': '#integer-literal' },
+            { 'include': '#identifier' },
+          ],
+        },
+        {
+          'match': 'debug\\s*[^\\(\\s)]',
+          'name': 'keyword.other.debug.plain.d'
+        }
+      ]
+    },
+    'version-debug-specification': {
+      'patterns': [
+        'match': '(version|debug)\\s*=',
+        'name': 'keyword.other.version-debug-specification.d'
+      ]
+    },
+    'static-if-assert': {
+      'begin': '(static\\s*(assert|if)\\s*\\()',
+      'beginCaptures': {
+        '0': { 'name': 'keyword.other.if-assert.static.begin.d' },
+      },
+      'end': '\\)',
+      'endCaptures': {
+        '0': { 'name': 'keyword.other.if-assert.static.end.d' },
+      },
+      'patterns': [
+        { 'include' : '#expression' }
+      ],
+    },
+    #
+    # Mixins
+    #
+    'mixin-declaration': {
+      'begin': 'mixin\\s*\\(',
+      'end': '\\)',
+      'beginCaptures': {
+        '0': { 'name': 'keyword.mixin.begin.d' }
+      },
+      'endCaptures': {
+        '0': { 'name': 'keyword.mixin.end.d' }
+      },
+      'patterns': [
+        { 'include': '#expression' }
+      ]
+    },
+
+    #
+    # Import and Module
+    #
+    'module-declaration': {
+      'patterns': [
+        'match': 'module\\s+',
+        'name': 'keyword.package.module.d'
+      ]
+    },
+    'import-declaration': {
+      'patterns': [
+        {
+          'match': '(static\\s+)?import\\s+',
+          'name': 'keyword.package.import.d'
+        }
+      ]
+    },
+    #
+    # Preprocessor and other directives
+    #
     'pragma': {
       'patterns': [
         {
           'match': 'pragma\\s?\\(\\s*[_\\w][_\\d\\w]*\\s*\\)',
-          'name': 'meta.preprocessor.d'
+          'name': 'gfm.markup.header.preprocessor.pragma.d'
         },
         {
           'begin': 'pragma\\s?\\(\\s*[_\\w][_\\d\\w]*\\s*,',
           'end': '\\)',
-          'name': 'meta.preprocessor.d'
+          'name': 'gfm.markup.header.preprocessor.pragma.arguments.d'
           'patterns': [
-
+            { 'include': '#expression' },
           ]
+        },
+        {
+          'match': '^#!.+',
+          'name': 'gfm.markup.header.preprocessor.script-tag.d'
         }
       ]
+    },
+    #
+    # Expressions
+    #
+    # We cheat a bit here, since highlighting expressions is overkill, and in
+    # any case we want lexical entities like strings and numbers to be
+    # clearly visible.  So we group expressions into a meta class for the
+    # purposes of other entities.  Expression entities themselves just highlight
+    # lexical elements as well as the base expression operators, and a few
+    # others.
+    #
+    'expression': {
+      'patterns': [
+          { 'include': '#operator' },
+          {
+            'match': ',',
+            'name': 'keyword.operator.comma.d'
+          }
+          { 'include': '#lexical' },
+      ]
+    },
+    'operator': {
+      'patterns': [
+        {
+          # assign
+          'match': '=|\\+=|-=|\\*=|/=|%=|&=|\\|=|\\^=|~=|<<=|>>=|>>>=|^^=',
+          'name': 'keyword.operator.assign.d'
+        },
+        {
+          # ternary
+          'match': '\\?|:',
+          'name': 'keyword.operator.ternary.d'
+        },
+        {
+          # logical
+          'match': '!<>=|!<=|!>=|<>=|!<>|<=|>=|<>|!>|!<|==|!=|&&|\\|\\||<|>',
+          'name': 'keyword.operator.logical.d'
+        },
+        {
+          # bitwise
+          'match': '\\||\\^|&|<<|>>|>>>',
+          'name': 'keyword.operator.bitwise.d'
+        },
+        {
+          # arithmetic
+          'match': '\\+|-|\\*|/|%',
+          'name': 'keyword.operator.arithmetic.d'
+        },
+        {
+          # unary
+          'match': '[=~]\s*(&|\\+\\+|\\--|\\*|-|\\+|!)',
+          'name': 'keyword.operator.unary.d'
+        },
+        {
+          # misc
+          'match': '~|(\\s+!in\\s+)|(\\s+in\\s+)',
+          'name': 'keyword.operator.misc.d'
+        },
+        {
+          # primary expressions
+          'match': 'this|super|null|true|false|$',
+          'name': 'constant.language.primary.d'
+        }
+
+      ]
+    },
+
+    'assign-operator': {
+      'patterns': [
+        {
+          'match': '=|\\+=|-=|\\*=|/=|%=|&=|\\|=|\\^=|~=|<<=|>>=|>>>=|^^=',
+          'name': 'keyword.operator.assign.d'
+        },
+        { 'include': '#expression' },
+      ]
+    },
+    'ternary-operator': {
+      'patterns:': [
+        {
+          'match': '(\\?|:)',
+          'name': 'keyword.operator.ternary.d'
+        },
+        {
+          'include': '#expression',
+        }
+      ]
+    },
+    #
+    # Assembly (Iasm)
+    #
+    'asm-statement': {
+      'patterns': [
+        'begin': 'asm\\s*{',
+        'beginCaptures': {
+          '0': { 'name': 'keyword.control.asm.begin.d' },
+        },
+        'end': '}',
+        'endCaptures': {
+          '0': { 'name': 'keyword.control.asm.end.d' },
+        },
+        'patterns': [
+          { '#include': '#asm-instruction' }
+        ]
+      ]
+    },
+    'asm-instruction': {
+      'patterns': [
+        {
+          'match': 'align|even|naked|db|ds|di|dl|df|dd|de|:',
+          'name': 'keyword.other.asm-instruction.d',
+        },
+        { 'include': '#integer-expression' }
+        { 'include': '#operands' }
+      ]
+    },
+    'operands': {
+      'patterns': [
+        {
+          'match': ',',
+          'name': 'keyword.operator.comma.assembly.d'
+        }
+        { 'include': 'asm-exp' },
+      ]
+    },
+    'asm-exp': {
+      'patterns': [
+        {
+          'match': '\\?|:',
+          'name': 'keyword.operator.ternary.assembly.d',
+        },
+        {
+          'match': '\\]|\\[',
+          'name': 'keyword.operator.bracket.assembly.d',
+        },
+        {
+          'match': '>>>|\\|\\||&&|==|!=|<=|>=|<<|>>|\\||\\^|&|<|>|\\+|-|\\*|/|%',
+          'name': 'keyword.operator.assembly.d'
+        },
+        { 'include': '#asm-una-exp' },
+      ]
     }
-
-
+    'integer-expression': {
+      'patterns': [
+        { 'include': '#integer-literal' },
+        { 'include': '#identifier' },
+      ]
+    },
+    'asm-una-exp': {
+      'patterns': [
+        { 'include': '#asm-type-prefix' },
+        {
+          'match': 'offsetof|seg|\\+|-|!|~',
+          'name': 'entity.name.tag.assembly.asm-una-exp'
+        },
+        { 'include': '#asm-primary-expression' },
+        { 'include': '$base' },
+      ]
+    },
+    'asm-primary-expression': {
+      'patterns': [
+        { 'include': '#integer-literal' },
+        { 'include': '#float-literal' },
+        {
+          'match': '__LOCAL_SIZE',
+          'name': 'entity.name.tag.assembly.primary-expression.d'
+        },
+        { 'include': '#register' },
+        { 'include': '#register-64' },
+        { 'include': '#identifier' }
+      ]
+    },
+    'asm-type-prefix': {
+      'patterns': [
+        'match': '(near\\s+ptr)|(far\\s+ptr)|(byte\\s+ptr)|(short\\s+ptr)|(int\\s+ptr)|(word\\s+ptr)|(dword\\s+ptr)|(qword\\s+ptr)|(float\\s+ptr)|(double\\s+ptr)|(real\\s+ptr)',
+        'name': 'entity.name.tag.assembly.type-prefix.d',
+      ]
+    },
+    'register': {
+      'patterns': [
+        'match': 'XMM0|XMM1|XMM2|XMM3|XMM4|XMM5|XMM6|XMM7|MM0|MM1|MM2|MM3|MM4|MM5|MM6|MM7|ST\\(0\\)|ST\\(1\\)|ST\\(2\\)|ST\\(3\\)|ST\\(4\\)|ST\\(5\\)|ST\\(6\\)|ST\\(7\\)|ST|TR1|TR2|TR3|TR4|TR5|TR6|TR7|DR0|DR1|DR2|DR3|DR4|DR5|DR6|DR7|CR0|CR2|CR3|CR4|EAX|EBX|ECX|EDX|EBP|ESP|EDI|ESI|AL|AH|AX|BL|BH|BX|CL|CH|CX|DL|DH|DX|BP|SP|DI|SI|ES|CS|SS|DS|GS|FS',
+        'name': 'entity.name.tag.assembly.register.d',
+      ]
+    },
+    'register-64': {
+      'patterns': [
+        'match': 'RAX|RBX|RCX|RDX|BPL|RBP|SPL|RSP|DIL|RDI|SIL|RSI|R8B|R8W|R8D|R8|R9B|R9W|R9D|R9|R10B|R10W|R10D|R10|R11B|R11W|R11D|R11|R12B|R12W|R12D|R12|R13B|R13W|R13D|R13|R14B|R14W|R14D|R14|R15B|R15W|R15D|R15|XMM8|XMM9|XMM10|XMM11|XMM12|XMM13|XMM14|XMM15|YMM0|YMM1|YMM2|YMM3|YMM4|YMM5|YMM6|YMM7|YMM8|YMM9|YMM10|YMM11|YMM12|YMM13|YMM14|YMM15',
+        'name': 'entity.name.tag.assembly.register-64.d'
+      ]
+    },
 
 
     #
@@ -207,7 +641,6 @@
     #
     'lexical': {
       'patterns': [
-        { 'include': '#comment' },
         { 'include': '#string-literal' },
         { 'include': '#character-literal' },
         { 'include': '#float-literal' },
@@ -216,7 +649,7 @@
         { 'include': '#special-token-sequence' },
         { 'include': '#identifier' },
       ]
-    }
+    },
     #
     # Integer literals
     #
@@ -471,12 +904,21 @@
     #
     # Identifiers
     #
+    'identifier-list': {
+      'patterns': [
+        {
+          'match': ',',
+          'name': 'keyword.other.comma.d'
+        },
+        { 'include': '#identifier' }
+      ]
+    },
     'identifier': {
       'patterns': [
         {
-          'match': '\\.?[_\\w][_\\d\\w]*',
-          'name': 'variable.d'
-        }
+          'match': '(\\.?[_\\w][_\\d\\w]*)+',
+          'name': 'invalid.d'
+        },
       ]
     },
     #

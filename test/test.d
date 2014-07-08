@@ -9,7 +9,19 @@
      dmd hello.d -D
   */
 # line This is a line!
-
+pragma ( hello, an expression );
+asm {
+  align 23;
+  df kdjfkld'
+  AL CR2;
+};
+import string
+module something;
+version ( hello );
+version=3;
+debug (something);
+debug;
+mixin(This is a mixin, a = b string whatever, 3.234 "hello" )
 this = r"This is a \'quoted\' \t\t string  \?  hello \0 \b \\ this  ";
 that = `Alternate \\ wysiwyg string`c;
 those = "This is a \xAF \uAFaf \U0009abab double-\amp;quot\heartsed\tstring\34"c;
@@ -19,8 +31,10 @@ tstring = q{ token this_is_a_var "a string" 3 2.35 throw }
 0 0 1 23 434_4343 00; 0Lu 343Lu 0b01111Lu
 0x00 0x0f 0xf 0x_ 0XDD 0xffFF_fddf;
 0b_ 0b01011010100111;
+a+c, b+e, d / d, "should, not, be " ' '
 'c'
 '\amp'
+is( class this, class that, int, whatever, )
 q{This is a _______NOT token const x="This was a triumph"; lit=string!};
 123_456.567_8
 1_2_3_4_5_6_._5_6_7_8
@@ -39,9 +53,11 @@ __VERSION__
 .5
 .5f
 .5f
-
-
-
+hello.this.is a . big stuff, followed by another is()
+extern (D);
+final int x(5);
+this = hello ? whatever : dkjfkd;
+wstring char[]
 import std.stdio, std.string;  // References to  commonly used I/O routines.
 void main(char[][] args)   // 'void' here means return 0 by default.
 {
