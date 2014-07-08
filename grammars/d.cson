@@ -75,6 +75,7 @@
     { 'include': '#attribute' },
     { 'include': '#asm-statement' },
     { 'include': '#mixin-declaration' },
+    { 'include': '#traits-expression' },
     { 'include': '#type' },
     { 'include': '#expression' },
 
@@ -182,9 +183,41 @@
     # Storage Classes
     #
     'storage-class': {
-
+      'patterns': [
+        {
+        }
+      ]
     },
-
+    #
+    # Traits
+    #
+    'traits-expression': {
+      'patterns': [
+        'begin': '__traits\\s*\\(',
+        'beginCaptures': {
+          '0': { 'name': 'keyword.other.traits.begin.d' }
+        },
+        'end': '\\)',
+        'endCaptures': {
+          '0': { 'name': 'keyword.other.traits.end.d' }
+        },
+        'patterns': [
+          { 'include': '#traits-keyword' },
+          { 'include': '#traits-argument' }
+        ]
+      ]
+    },
+    'traits-keyword': {
+      'patterns': [
+        'match': 'isAbstractClass|isArithmetic|isAssociativeArray|isFinalClass|isPOD|isNested|isFloating|isIntegral|isScalar|isStaticArray|isUnsigned|isVirtualFunction|isVirtualMethod|isAbstractFunction|isFinalFunction|isStaticFunction|isOverrideFunction|isRef|isOut|isLazy|hasMember|identifier|getAliasThis|getAttributes|getMember|getOverloads|getProtection|getVirtualFunctions|getVirtualMethods|getUnitTests|parent|classInstanceSize|getVirtualIndex|allMembers|derivedMembers|isSame|compiles',
+        'name': 'keyword.other.traits.d'
+      ]
+    },
+    'traits-argument': {
+      'patterns': [
+        { 'include': '#expression' }
+      ]
+    },
     #
     # Attributes
     #
@@ -201,9 +234,7 @@
         },
         { 'include': '#property' },
       ]
-    }
-
-
+    },
     'linkage-attribute': {
       'patterns': [
         {

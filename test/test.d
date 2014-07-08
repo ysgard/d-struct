@@ -11,9 +11,7 @@
 # line This is a line!
 pragma ( hello, an expression );
 asm {
-  align 23;
-  df kdjfkld'
-  AL CR2;
+  naked 3 + 43 __LOCAL_SIZE RAX XMM2 hello , no EAX near ptr
 };
 import string
 module something;
@@ -22,6 +20,7 @@ version=3;
 debug (something);
 debug;
 mixin(This is a mixin, a = b string whatever, 3.234 "hello" )
+__traits( isVirtualMethod, a=a+b, a=3.42 );
 this = r"This is a \'quoted\' \t\t string  \?  hello \0 \b \\ this  ";
 that = `Alternate \\ wysiwyg string`c;
 those = "This is a \xAF \uAFaf \U0009abab double-\amp;quot\heartsed\tstring\34"c;
