@@ -75,6 +75,7 @@
     { 'include': '#attribute' },
     { 'include': '#asm-statement' },
     { 'include': '#mixin-declaration' },
+    { 'include': '#import-expression' },
     { 'include': '#traits-expression' },
     { 'include': '#special-keyword' },
     { 'include': '#type' },
@@ -141,6 +142,22 @@
       'name': 'storage.type.ctor-type.d',
       'patterns': [
         { 'include': '#type' },
+      ]
+    },
+    #
+    # imports
+    #
+    'import-expression': {
+      'begin': 'import\\s*\\(',
+      'beginCaptures': {
+        '0': { 'name': 'keyword.import.begin.d' }
+      },
+      'end': '\\)',
+      'endCaptures': {
+        '0': { 'name': 'keyword.import.end.d' }
+      },
+      'patterns': [
+        { 'include': '#expression' }
       ]
     },
     #

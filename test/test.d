@@ -8,6 +8,8 @@
    or to get generated documentation:
      dmd hello.d -D
   */
+import this,
+import( a=b );
 # line This is a line!
 pragma ( hello, an expression );
 __FILE__
