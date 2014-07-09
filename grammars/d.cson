@@ -119,6 +119,40 @@
         'name': 'storage.type.basic-type-x.d'
       ]
     },
+    'basic-type-2': {
+      'patterns': [
+        {
+          'match': '\\*',
+          'name': 'storage.type.pointer.d'
+        },
+        {
+          'match': '\\[\\s*\\]',
+          'name': 'storage.type.array.empty.d'
+        },
+        {
+          'begin': '\\[',
+          'beginCaptures': { '0': { 'name': 'storage.type.array.expression.begin.d' } },
+          'end': '\\]',
+          'endCaptures': { '0': { 'name': 'storage.type.array.expression.end.d' } },
+          'patterns': [
+            {
+              'match': '\\.\\.|$',
+              'name': 'keyword.operator.slice.d'
+            },
+            { 'include': '#type' },
+            { 'include': '#expression' }
+          ]
+        },
+        { 'include': '#delegate-basic-type-2' },
+        { 'include': '#function-basic-type-2' }
+      ]
+    }
+    'delegate-basic-type-2': {
+
+    },
+    'function-basic-type-2': {
+
+    },
     # Defined in object.di
     'defined-type': {
       'patterns': [
@@ -147,36 +181,31 @@
       ]
     },
     #
-    # assert
+    #
+    #
+    #
+    # Assert
     #
     'assert-expression': {
       'patterns': [
         'begin': 'assert\\s*\\(',
-        'beginCaptures': {
-          '0': { 'name': 'keyword.assert.begin.d' }
-        },
+        'beginCaptures': { '0': { 'name': 'keyword.assert.begin.d' } },
         'end': '\\)',
-        'endCaptures': {
-          '0': { 'name': 'keyword.assert.end.d' }
-        },
+        'endCaptures': { '0': { 'name': 'keyword.assert.end.d' } },
         'patterns': [
           { 'include': '#expression' }
         ]
       ]
     },
     #
-    # typeid
+    # Typeid
     #
     'typeid-expression': {
       'patterns': [
         'begin': 'typeid\\s*\\(',
-        'beginCaptures': {
-          '0': { 'name': 'keyword.typeid.begin.d' }
-        },
+        'beginCaptures': { '0': { 'name': 'keyword.typeid.begin.d' } },
         'end': '\\)',
-        'endCaptures': {
-          '0': { 'name': 'keyword.typeid.end.d' }
-        },
+        'endCaptures': { '0': { 'name': 'keyword.typeid.end.d' } },
         'patterns': [
           { 'include': '#type' },
           { 'include': '#expression' }
@@ -184,17 +213,13 @@
       ]
     },
     #
-    # imports
+    # Imports
     #
     'import-expression': {
       'begin': 'import\\s*\\(',
-      'beginCaptures': {
-        '0': { 'name': 'keyword.import.begin.d' }
-      },
+      'beginCaptures': { '0': { 'name': 'keyword.import.begin.d' } },
       'end': '\\)',
-      'endCaptures': {
-        '0': { 'name': 'keyword.import.end.d' }
-      },
+      'endCaptures': { '0': { 'name': 'keyword.import.end.d' } },
       'patterns': [
         { 'include': '#expression' }
       ]
@@ -206,13 +231,9 @@
       'patterns': [
         {
           'begin': 'is\\s*\\(',
-          'beginCaptures': {
-            '0': { 'name': 'keyword.operator.is.begin.d' },
-          },
+          'beginCaptures': { '0': { 'name': 'keyword.operator.is.begin.d' } },
           'end': '\\)',
-          'endCaptures': {
-            '0': { 'name': 'keyword.operator.is.end.d' },
-          },
+          'endCaptures': { '0': { 'name': 'keyword.operator.is.end.d' } },
           'patterns': [
             {
               'match': ':|==|,',
@@ -256,13 +277,9 @@
     'traits-expression': {
       'patterns': [
         'begin': '__traits\\s*\\(',
-        'beginCaptures': {
-          '0': { 'name': 'keyword.other.traits.begin.d' }
-        },
+        'beginCaptures': { '0': { 'name': 'keyword.other.traits.begin.d' } },
         'end': '\\)',
-        'endCaptures': {
-          '0': { 'name': 'keyword.other.traits.end.d' }
-        },
+        'endCaptures': { '0': { 'name': 'keyword.other.traits.end.d' } },
         'patterns': [
           { 'include': '#traits-keyword' },
           { 'include': '#traits-argument' }
@@ -290,6 +307,51 @@
       ]
     }
     #
+    # Parameters
+    #
+    'parameters': {
+      'patterns': [
+        {
+          'match': '\\(\\s*\\.\\.\\.\\s*\\)',
+          'name': 'support.type.tuple-parameter.d'
+        },
+        {
+          'begin': '\\(',
+          'beginCaptures': { '0': { 'name': 'support.type.parameters.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'support.type.parameters.end.d' } },
+          'patterns': [
+              {
+                'match': ',',
+                'name': 'keyword.operator.comma.d'
+              },
+              { 'include': '#parameter' }
+          ]
+        }
+      ]
+    },
+    'parameter': {
+      'patterns': [
+        { 'include': '#in-out' },
+        { 'include': '#basic-type' },
+        { 'include': '#type' },
+        {
+          'match': '\\.\\.\\.',
+          'name': 'support.type.tuple.d'
+        },
+        { 'include': '#declarator' }
+      ]
+    },
+    'in-out': {
+      'patterns': [
+        {
+          'match': 'auto|final|in|out|lazy|ref|scope',
+          'name': 'storage.type.modifier.inout.d'
+        },
+        { 'include': '#type-ctor' }
+      ]
+    }
+    #
     # Attributes
     #
     'attribute': {
@@ -310,26 +372,18 @@
       'patterns': [
         {
           'begin': 'extern\\s*\\(\\s*C\\+\\+,',
-          'beginCaptures': {
-            '0': { 'name': 'keyword.other.extern.cplusplus.begin.d' },
-          },
+          'beginCaptures': { '0': { 'name': 'keyword.other.extern.cplusplus.begin.d' } },
           'end': '\\)',
-          'endCaptures': {
-            '0': { 'name': 'keyword.other.extern.cplusplus.end.d' },
-          },
+          'endCaptures': { '0': { 'name': 'keyword.other.extern.cplusplus.end.d' } },
           'patterns': [
             { 'include': '#identifier-list' },
           ]
         },
         {
           'begin': 'extern\\s*\\(',
-          'beginCaptures': {
-            '0': { 'name': 'keyword.other.extern.begin.d' },
-          },
+          'beginCaptures': { '0': { 'name': 'keyword.other.extern.begin.d' } },
           'end': '\\)',
-          'endCaptures': {
-            '0': { 'name': 'keyword.other.extern.end.d' },
-          },
+          'endCaptures': { '0': { 'name': 'keyword.other.extern.end.d' } },
           'patterns': [
             { 'include': '#linkage-type' },
           ]
@@ -365,13 +419,9 @@
       'patterns': [
         {
           'begin': 'deprecated\\s*\\(',
-          'beginCaptures': {
-            '0': { 'name': 'keyword.other.deprecated.begin.d' },
-          },
+          'beginCaptures': { '0': { 'name': 'keyword.other.deprecated.begin.d' } },
           'end': '\\)',
-          'endCaptures': {
-            '0': { 'name': 'keyword.other.deprecated.end.d' },
-          },
+          'endCaptures': { '0': { 'name': 'keyword.other.deprecated.end.d' } },
           'patterns': [
             { 'include': '#string-literal' },
           ]
@@ -409,7 +459,7 @@
           'end': '\\)',
           'name': 'entity.name.tag.user-defined-property.d',
           'patterns': [
-
+            { 'include': '#expression' }
           ]
         }
       ]
@@ -454,13 +504,9 @@
       'patterns': [
         {
           'begin': 'debug\\s*\\(',
-          'beginCaptures': {
-            '0': { 'name': 'keyword.other.debug.identifier.begin.d' }
-          },
+          'beginCaptures': { '0': { 'name': 'keyword.other.debug.identifier.begin.d' } },
           'end': '\\)',
-          'endCaptures': {
-            '0': { 'name': 'keyword.other.debug.identifier.end.d' }
-          },
+          'endCaptures': { '0': { 'name': 'keyword.other.debug.identifier.end.d' } },
           'patterns': [
             { 'include': '#integer-literal' },
             { 'include': '#identifier' },
@@ -480,13 +526,9 @@
     },
     'static-if-assert': {
       'begin': '(static\\s*(assert|if)\\s*\\()',
-      'beginCaptures': {
-        '0': { 'name': 'keyword.other.if-assert.static.begin.d' },
-      },
+      'beginCaptures': { '0': { 'name': 'keyword.other.if-assert.static.begin.d' } },
       'end': '\\)',
-      'endCaptures': {
-        '0': { 'name': 'keyword.other.if-assert.static.end.d' },
-      },
+      'endCaptures': { '0': { 'name': 'keyword.other.if-assert.static.end.d' } },
       'patterns': [
         { 'include' : '#expression' }
       ],
@@ -497,12 +539,8 @@
     'mixin-expression': {
       'begin': 'mixin\\s*\\(',
       'end': '\\)',
-      'beginCaptures': {
-        '0': { 'name': 'keyword.mixin.begin.d' }
-      },
-      'endCaptures': {
-        '0': { 'name': 'keyword.mixin.end.d' }
-      },
+      'beginCaptures': { '0': { 'name': 'keyword.mixin.begin.d' } },
+      'endCaptures': { '0': { 'name': 'keyword.mixin.end.d' } },
       'patterns': [
         { 'include': '#expression' }
       ]
@@ -613,7 +651,6 @@
 
       ]
     },
-
     'assign-operator': {
       'patterns': [
         {
@@ -635,18 +672,249 @@
       ]
     },
     #
+    # Template
+    #
+    'template-declaration': {
+      'patterns': [
+
+      ]
+    },
+    'template-parameters': {
+      'patterns': [
+
+      ]
+    },
+    'template-parameter': {
+      'patterns': [
+
+      ]
+    },
+    'constraint': {
+      'patterns': [
+
+      ]
+    },
+    'template-instance': {
+      'patterns': [
+
+      ]
+    },
+    'template-arguments': {
+      'patterns': [
+
+      ]
+    },
+    'template-argument': {
+      'patterns': [
+
+      ]
+    },
+    'symbol': {
+      'patterns': [
+
+      ]
+    },
+    'symbol-tail': {
+      'patterns': [
+
+      ]
+    },
+    'template-single-argument': {
+      'patterns': [
+
+      ]
+    },
+    'template-type-parameter': {
+      'patterns': [
+
+      ]
+    },
+    'template-type-parameter-specialization': {
+      'patterns': [
+
+      ]
+    },
+    'template-type-parameter-default': {
+      'patterns': [
+
+      ]
+    },
+    'template-this-parameter': {
+      'patterns': [
+
+      ]
+    },
+    'template-value-parameter': {
+      'patterns': [
+
+      ]
+    },
+    'template-value-parameter-specialization': {
+      'patterns': [
+
+      ]
+    },
+    'template-value-parameter-default': {
+      'patterns': [
+
+      ]
+    },
+    'template-alias-parameter': {
+      'patterns': [
+
+      ]
+    },
+    'template-alias-parameter-specialization': {
+      'patterns': [
+
+      ]
+    },
+    'template-alias-parameter-default': {
+      'patterns': [
+
+      ]
+    },
+    'template-tuple-parameter': {
+      'patterns': [
+        { 'include': '#identifier' },
+        {
+          'match': '\\.\\.\\.',
+          'name': 'support.type.tuple.d'
+        }
+      ]
+    },
+
+
+    #
+    # Declarations
+    #
+    'declaration': {
+      'patterns': [
+        { 'include': '#alias-declaration' },
+        { 'include': '#aggregate-declaration' },
+        { 'include': '#enum-declaration' },
+        { 'include': '#import-declaration' },
+        { 'include': '#decl' }
+      ]
+    },
+    'alias-declaration': {
+      'patterns': [
+        {
+          'match': 'alias',
+          'name': 'keyword.alias.d'
+        },
+        { 'include': '#storage-class' },
+        { 'include': '#basic-type' },
+        { 'include': '#declarator' },
+        { 'include': '#alias-declaration-x' }
+      ]
+    },
+    #
+    # Initializers
+    #
+    'initializer': {
+      'patterns': [
+        { 'include': '#void-initializer' },
+        { 'include': '#non-void-initializer' }
+      ]
+    },
+    'void-initializer': {
+      'patterns': [
+        'match': 'void',
+        'name': 'support.type.void.d'
+      ]
+    },
+    'non-void-initializer': {
+      'patterns': [
+        { 'include': '#exp-initializer' },
+        { 'include': '#array-initializer' },
+        { 'include': '#struct-initializer' }
+      ]
+    },
+    'exp-initializer': {
+      'patterns': [
+        { 'include': '#expression' }
+      ]
+    },
+    'array-initializer': {
+      'patterns': [
+        'begin': '\\[',
+        'beginCaptures': { '0': { 'name': 'support.type.array.initializer.begin.d' } },
+        'end': '\\]',
+        'endCaptures': {'0': { 'name': 'support.type.array.initializer.end.d' } },
+        'patterns': [
+          {
+            'match': ',',
+            'name': 'keyword.operator.comma.d'
+          },
+          { 'include': '#array-member-initialization' },
+        ]
+      ]
+    },
+    'array-member-initializations': {
+      'patterns': [
+        {
+          'match': ',',
+          'name': 'keyword.operator.comma.d'
+        },
+        { 'include': '#array-member-initialization' },
+      ]
+    },
+    'array-member-initialization': {
+      'patterns': [
+        { 'include': '#non-void-initializer' },
+        { 'include': '#expression' },
+        {
+          'match': ':',
+          'name': 'support.type.tag.d'
+        }
+      ]
+    },
+    'struct-initializer': {
+      'patterns': [
+        'begin': '\\{',
+        'beginCaptures': { '0': { 'name': 'support.type.struct.initializer.begin.d' } },
+        'end': '\\}',
+        'endCaptures': { '0': { 'name': 'support.type.struct.initializer.end.d' } },
+        'patterns': [
+          { 'include': '#struct-member-initializers' }
+        ]
+      ]
+    }
+    'struct-member-initializers': {
+      'patterns': [
+        {
+          'match': ',',
+          'name': 'keyword.operator.comma.d'
+        },
+        { 'include': '#struct-member-initializer' },
+      ]
+    },
+    'struct-member-initializer': {
+      'patterns': [
+        { 'include': '#non-void-initializer' },
+        { 'include': '#identifier' },
+        {
+          'match': ':',
+          'name': 'support.type.tag.d'
+        },
+      ]
+    },
+    'default-initializer-expression': {
+      'patterns': [
+        { 'include': '#expression' },
+        { 'include': '#special-keyword' }
+      ]
+    },
+    #
     # Assembly (Iasm)
     #
     'asm-statement': {
       'patterns': [
         'begin': 'asm\\s*\\{',
         'end': '\\}',
-        'beginCaptures': {
-          '0': { 'name': 'keyword.control.asm.begin.d' },
-        },
-        'endCaptures': {
-          '0': { 'name': 'keyword.control.asm.end.d' },
-        },
+        'beginCaptures': { '0': { 'name': 'keyword.control.asm.begin.d' } },
+        'endCaptures': { '0': { 'name': 'keyword.control.asm.end.d' } },
         'patterns': [
           { 'include': '#asm-instruction' },
         ],
