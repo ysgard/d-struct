@@ -69,12 +69,13 @@
     { 'include': '#comment' },
     { 'include': '#module-declaration' },
     { 'include': '#import-declaration' },
+    { 'include': '#storage-class' },
     { 'include': '#condition' },
     { 'include': '#version-debug-specification' },
     { 'include': '#is-expression' },
     { 'include': '#attribute' },
     { 'include': '#asm-statement' },
-    { 'include': '#mixin-declaration' },
+    { 'include': '#mixin-expression' },
     { 'include': '#import-expression' },
     { 'include': '#traits-expression' },
     { 'include': '#special-keyword' },
@@ -203,7 +204,12 @@
     'storage-class': {
       'patterns': [
         {
-        }
+          'match': 'deprecated|enum|static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref',
+          'name': 'storage.class.d'
+        },
+        { 'include': '#linkage-attribute' },
+        { 'include': '#align-attribute' },
+        { 'include': '#property' },
       ]
     },
     #
@@ -450,7 +456,7 @@
     #
     # Mixins
     #
-    'mixin-declaration': {
+    'mixin-expression': {
       'begin': 'mixin\\s*\\(',
       'end': '\\)',
       'beginCaptures': {

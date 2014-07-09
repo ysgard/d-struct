@@ -16,7 +16,11 @@ __FILE__
 asm {
   naked 3 + 43 __LOCAL_SIZE RAX XMM2 hello , no EAX near ptr
 };
+deprecated char[]
 import string
+int
+char
+deprecated char
 module something;
 version ( hello );
 version=3;
