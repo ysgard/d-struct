@@ -76,6 +76,7 @@
     { 'include': '#asm-statement' },
     { 'include': '#mixin-declaration' },
     { 'include': '#traits-expression' },
+    { 'include': '#special-keyword' },
     { 'include': '#type' },
     { 'include': '#expression' },
 
@@ -218,6 +219,15 @@
         { 'include': '#expression' }
       ]
     },
+    #
+    # Special Keywords
+    #
+    'special-keyword': {
+      'patterns': [
+        'match': '__FILE__|__MODULE__|__LINE__|__FUNCTION__|__PRETTY_FUNCTION__',
+        'name': 'keyword.other.special.d'
+      ]
+    }
     #
     # Attributes
     #

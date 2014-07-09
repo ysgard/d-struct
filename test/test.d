@@ -10,6 +10,7 @@
   */
 # line This is a line!
 pragma ( hello, an expression );
+__FILE__
 asm {
   naked 3 + 43 __LOCAL_SIZE RAX XMM2 hello , no EAX near ptr
 };
