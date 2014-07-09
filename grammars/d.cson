@@ -471,7 +471,7 @@
       'patterns': [
         { 'include': '#version-condition' },
         { 'include': '#debug-condition' },
-        { 'include': '#static-if-assert' },
+        { 'include': '#static-if-condition' },
       ]
     },
     'version-condition': {
@@ -518,20 +518,39 @@
         }
       ]
     },
-    'version-debug-specification': {
+    'version-specification': {
       'patterns': [
-        'match': '(version|debug)\\s*=',
-        'name': 'keyword.other.version-debug-specification.d'
+        'match': 'version\\s*=',
+        'name': 'keyword.other.version-specification.d'
       ]
     },
-    'static-if-assert': {
-      'begin': '(static\\s*(assert|if)\\s*\\()',
-      'beginCaptures': { '0': { 'name': 'keyword.other.if-assert.static.begin.d' } },
-      'end': '\\)',
-      'endCaptures': { '0': { 'name': 'keyword.other.if-assert.static.end.d' } },
+    'debug-specification': {
       'patterns': [
-        { 'include' : '#expression' }
-      ],
+        'match': 'debug\\s*=',
+        'name': 'keyword.other.debug-specification.d'
+      ]
+    },
+    'static-if-condition': {
+      'patterns': [
+        'begin': 'static\\s*if\\s*\\(',
+        'beginCaptures': { '0': { 'name': 'keyword.other.static-if.begin.d' } },
+        'end': '\\)',
+        'endCaptures': { '0': { 'name': 'keyword.other.static-if.end.d' } },
+        'patterns': [
+          { 'include' : '#expression' }
+        ],
+      ]
+    }
+    'static-assert': {
+      'patterns': [
+        'begin': 'static\\s*assert\\s*\\(',
+        'beginCaptures': { '0': { 'name': 'keyword.other.static-assert.begin.d' } },
+        'end': '\\)',
+        'endCaptures': { '0': { 'name': 'keyword.other.static-assert.end.d' } },
+        'patterns': [
+          { 'include' : '#expression' }
+        ],
+      ]
     },
     #
     # Mixins
