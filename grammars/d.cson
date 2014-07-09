@@ -467,6 +467,31 @@
     #
     # Condition
     #
+    'conditional-declaration': {
+      'patterns': [
+        { 'include': '#condition' },
+        { 'include': '#declaration-block' },
+        {
+          'match': 'else',
+          'name': 'keyword.control.else.d'
+        },
+        {
+          'match': ':',
+          'name': 'support.class.tag.d'
+        },
+        { 'include': '#decl-defs' },
+      ]
+    },
+    'conditional-statement': {
+      'patterns': [
+        { 'include': '#condition' },
+        { 'include': '#no-scope-non-empty-statement' },
+        {
+          'match': 'else',
+          'name': 'keyword.control.else.d'
+        },
+      ]
+    },
     'condition': {
       'patterns': [
         { 'include': '#version-condition' },
