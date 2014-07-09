@@ -12,6 +12,22 @@ import this,
 import( a=b );
 # line This is a line!
 pragma ( hello, an expression );
+auto x = [
+  "french vanilla" : 8.75,
+  "java": 7.99,
+  "french roast": 7.49
+];
+double[] keys = somefunc.some;
+assert(keys == [ -1.5, 0.5, -0.5 ]);
+args = args[1 .. $ -1 ];
+alias T elementtype;
+template Select(bool, cond, T1, T2) {
+  static if(cond) {
+    alias T1 Type;
+  } else {
+    alias T2 Type;
+  }
+}
 __FILE__
 asm {
   naked 3 + 43 __LOCAL_SIZE RAX XMM2 hello , no EAX near ptr

@@ -536,23 +536,89 @@
     #
     # Mixins
     #
-    'mixin-expression': {
-      'begin': 'mixin\\s*\\(',
-      'end': '\\)',
-      'beginCaptures': { '0': { 'name': 'keyword.mixin.begin.d' } },
-      'endCaptures': { '0': { 'name': 'keyword.mixin.end.d' } },
+    'mixin-declaration': {
       'patterns': [
-        { 'include': '#expression' }
+        'begin': 'mixin\\s*\\(',
+        'end': '\\)',
+        'beginCaptures': { '0': { 'name': 'keyword.mixin.begin.d' } },
+        'endCaptures': { '0': { 'name': 'keyword.mixin.end.d' } },
+        'patterns': [
+          { 'include': '#expression' }
+        ]
       ]
     },
-
+    #
+    # Static assert
+    #
+    'static-assert': {
+      'patterns': [
+        'begin': 'static\\s+assert\\s*\\(',
+        'end': '\\)',
+        'beginCaptures': { '0': { 'name': 'keyword.static-assert.begin.d' } },
+        'endCaptures': { '0': { 'name': 'keyword.static-assert.end.d' } },
+        'patterns': [
+          {
+            'match': ',',
+            'name': 'keyword.operator.comma.d'
+          },
+          { 'include': '#expression' }
+        ]
+      ]
+    },
     #
     # Import and Module
     #
+    'module': {
+      'packages': [
+        { 'import': '#module-declaration' },
+        { 'import': '#decl-defs' }
+      ]
+    },
+    'decl-defs': {
+      'packages': [
+        { 'include': '#decl-def' }
+      ]
+    },
+    'decl-def': {
+      'packages': [
+        { 'include': '#attribute-specifier' },
+        { 'include': '#declaration' },
+        { 'include': '#constructor' },
+        { 'include': '#destructor' },
+        { 'include': '#postblit' },
+        { 'include': '#allocator' },
+        { 'include': '#deallocator' },
+        { 'include': '#invariant' },
+        { 'include': '#unit-test' },
+        { 'include': '#alias-this' },
+        { 'include': '#static-constructor' },
+        { 'include': '#static-destructor' },
+        { 'include': '#conditional-declaration' },
+        { 'include': '#debug-specification' },
+        { 'include': '#version-specification' },
+        { 'include': '#static-assert' },
+        { 'include': '#template-declaration' },
+        { 'include': '#template-mixin-declaration' },
+        { 'include': '#template-mixin' },
+        { 'include': '#mixin-declaration' },
+        { 'include': '#shared-static-constructor' },
+        { 'include': '#shared-static-destructor' },
+        {
+          'match': ';',
+          'name': 'meta.semicolon.d'
+        },
+      ]
+    },
+
+
     'module-declaration': {
       'patterns': [
-        'match': 'module\\s+',
-        'name': 'keyword.package.module.d'
+        'begin': 'module\\s+',
+        'beginCaptures': { '0': { 'name': 'keyword.package.module.d' } },
+        'end': ';',
+        'patterns': [
+          { 'include': '#identifier' }
+        ]
       ]
     },
     'import-declaration': {
@@ -606,6 +672,21 @@
           { 'include': '#lexical' },
       ]
     },
+    'conditional-expression': {
+      'patterns': [
+        {
+          # ternary
+          'match': '\\?|:',
+          'name': 'keyword.operator.ternary.d'
+        },
+        {
+          # logical
+          'match': '!<>=|!<=|!>=|<>=|!<>|<=|>=|<>|!>|!<|==|!=|&&|\\|\\||<|>',
+          'name': 'keyword.operator.logical.d'
+        },
+        { 'include': '#lexical' }
+      ]
+    }
     'operator': {
       'patterns': [
         {
@@ -676,102 +757,222 @@
     #
     'template-declaration': {
       'patterns': [
-
+        {
+          'match': 'template',
+          'name': 'support.class.template.d',
+        },
+        { 'include': '#identifier' },
+        { 'include': '#template-parameters' },
+        { 'include': '#constraint' },
+        {
+          'begin': '\\{',
+          'beginCaptures': { '0': { 'name': 'support.class.template.decldefs.begin.d' } },
+          'end': '\\}',
+          'endCaptures': { '0': { 'name': 'support.class.template.decldefs.end.d' } },
+          'patterns': [
+              { 'include': '#decl-defs' }
+          ]
+        }
       ]
     },
     'template-parameters': {
       'patterns': [
-
+        'begin': '\\(',
+        'beginCaptures': { '0': { 'name': 'support.class.template.parameters.begin.d' } },
+        'end': '\\)',
+        'endCaptures': { '0': { 'name': 'support.class.template.parameters.end.d' } },
+        'patterns': [
+          { 'include': '#template-parameter-list' }
+        ]
       ]
     },
+    'template-parameter-list': {
+      'patterns': [
+        {
+          'match': ',',
+          'name': 'keyword.operator.comma.d'
+        },
+        { 'include': '#template-parameter' }
+      ]
+    }
     'template-parameter': {
       'patterns': [
-
+        { 'include': '#template-type-parameter' },
+        { 'include': '#template-value-parameter' },
+        { 'include': '#template-alias-parameter' },
+        { 'include': '#template-tuple-parameter' },
+        { 'include': '#template-this-parameter' },
       ]
     },
     'constraint': {
       'patterns': [
-
+        'begin': 'if\\s+\\(',
+        'beginCaptures': { '0': { 'name': 'support.class.template.constraint.begin.d' } },
+        'end': '\\)',
+        'endCaptures': { '0': { 'name': 'support.class.template.constraint.end.d' } },
+        'patterns': [
+          { 'include': '#expression' }
+        ]
       ]
     },
     'template-instance': {
       'patterns': [
-
+        { 'include': '#template-arguments' },
+        { 'include': '#identifier' }
       ]
     },
     'template-arguments': {
       'patterns': [
-
+        {
+          'begin': '!\\s+\\(',
+          'beginCaptures': { '0': { 'name': 'support.class.template.arguments.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'support.class.template.arguments.end.d' } },
+          'patterns': [
+            { 'include': '#template-argument-list' }
+          ]
+        },
+        {
+          'match': '!',
+          'name': 'support.class.template.argument.d'
+        },
+        { 'include': '#template-single-argument' }
+      ]
+    }
+    'template-argument-list': {
+      'patterns': [
+        {
+          'match': ',',
+          'name': 'keyword.operator.comma.d'
+        },
+        { 'include': '#template-argument' }
       ]
     },
     'template-argument': {
       'patterns': [
-
+        { 'include': '#type' },
+        { 'include': '#expression' },
+        { 'include': '#symbol' }
       ]
     },
     'symbol': {
       'patterns': [
-
+        { 'include': '#symbol-tail' }
       ]
     },
     'symbol-tail': {
       'patterns': [
-
+        { 'include': '#template-instance' },
+        { 'include': '#identifier' },
       ]
     },
     'template-single-argument': {
       'patterns': [
-
+        {
+          'match': 'true|false|null|this',
+          'name': 'constant.language.template-single-argument.d'
+        },
+        { 'include': '#special-keyword' },
+        { 'include': '#basic-type-x' },
+        { 'include': '#string-literal' },
+        { 'include': '#character-literal' },
+        { 'include': '#integer-literal' },
+        { 'include': '#float-literal' },
+        { 'include': '#identifier' }
       ]
     },
     'template-type-parameter': {
       'patterns': [
-
+        { 'include': '#identifier' },
+        { 'include': '#template-type-parameter-specialization' },
+        { 'include': '#template-type-parameter-default' },
       ]
     },
     'template-type-parameter-specialization': {
       'patterns': [
-
+        {
+          'match': ':',
+          'name': 'support.class.tag.d'
+        },
+        { 'include': '#type' }
       ]
     },
     'template-type-parameter-default': {
       'patterns': [
-
+        {
+          'match': '=',
+          'name': 'support.class.template.operator.equal.d'
+        },
+        { 'include': '#type' }
       ]
     },
     'template-this-parameter': {
       'patterns': [
-
+        {
+          'match': 'this',
+          'name': 'support.class.keyword.this.d'
+        },
+        { 'include': '#template-type-parameter' }
       ]
     },
     'template-value-parameter': {
       'patterns': [
-
+        { 'include': '#basic-type' },
+        { 'include': '#declarator' },
+        { 'include': '#template-value-parameter-specialization' },
+        { 'include': '#template-value-parameter-default' },
       ]
     },
     'template-value-parameter-specialization': {
       'patterns': [
-
+        {
+          'match': ':',
+          'name': 'support.class.tag.d'
+        },
+        { 'include': '#conditional-expression' }
       ]
     },
     'template-value-parameter-default': {
       'patterns': [
-
+        {
+          'match': '=',
+          'name': 'support.class.template.operator.equal.d'
+        },
+        { 'include': '#expression' },
+        { 'include': '#special-keyword' }
       ]
     },
     'template-alias-parameter': {
       'patterns': [
-
+        {
+          'match': 'alias',
+          'name': 'support.class.template.alias.d'
+        },
+        { 'include': '#identifier' },
+        { 'include': '#template-alias-parameter-specialization' },
+        { 'include': '#template-alias-parameter-default' },
+        { 'include': '#basic-type' },
+        { 'include': '#declarator' },
       ]
     },
     'template-alias-parameter-specialization': {
       'patterns': [
-
+        {
+          'match': ':',
+          'name': 'support.class.tag.d'
+        },
+        { 'include': '#type' },
+        { 'include': '#conditional-expression' }
       ]
     },
     'template-alias-parameter-default': {
       'patterns': [
-
+        {
+          'match': '=',
+          'name': 'support.class.template.operator.equal.d'
+        },
+        { 'include': '#type' },
+        { 'include': '#conditional-expression' }
       ]
     },
     'template-tuple-parameter': {
@@ -783,6 +984,53 @@
         }
       ]
     },
+    'template-mixin-declaration': {
+      'patterns': [
+        'begin': 'mixin\\s+template\\s+',
+        'beginCaptures': { '0': { 'name': 'support.class.template.mixin.template.begin.d' } },
+        'end': '\\{(.*)\\}',
+        'endCaptures': {
+          '0': {
+            'name': 'support.class.template.mixin.template.end.d',
+            'patterns': [
+              { 'include': '#decl-defs' }
+            ]
+          },
+        },
+        'patterns': [
+          { 'include': '#identifier' },
+          { 'include': '#template-parameters' },
+          { 'include': '#constraint' }
+        ]
+      ]
+    },
+    'template-mixin': {
+      'patterns': [
+        'begin': 'mixin\\s+',
+        'beginCaptures': { '0': { 'name': 'support.class.template.mixin.begin.d' } },
+        'end': ';',
+        'endCaptures': { '0': { 'name': 'support.class.template.mixin.end.d' } },
+        'patterns': [
+          { 'include': '#mixin-template-name' },
+          { 'include': '#template-arguments' },
+          { 'include': '#identifier' }
+        ]
+      ]
+    },
+    'mixin-template-name': {
+      'patterns': [
+        { 'include': '#qualified-identifier-list' },
+        { 'include': '#typeof' },
+      ]
+    },
+    'qualified-identifier-list': {
+      'patterns': [
+        { 'include': '#identifier' },
+        { 'include': '#template-instance' },
+      ]
+    },
+
+
 
 
     #
@@ -1003,11 +1251,17 @@
         'name': 'storage.type.assembly.register-64.d'
       ]
     },
+    #
+    # Miscellaneous
+    #
 
 
+
+    ###########################################################################
     #
     # LEXICAL TOKENS
     #
+    ###########################################################################
     'lexical': {
       'patterns': [
         { 'include': '#string-literal' },
