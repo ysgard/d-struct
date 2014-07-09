@@ -19,6 +19,7 @@ asm {
 deprecated char[]
 import string
 int
+assert ( x = 3 );
 char
 deprecated char
 module something;

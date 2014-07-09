@@ -77,11 +77,12 @@
     { 'include': '#asm-statement' },
     { 'include': '#mixin-expression' },
     { 'include': '#import-expression' },
+    { 'include': '#assert-expression' },
+    { 'include': '#typeid-expression' },
     { 'include': '#traits-expression' },
     { 'include': '#special-keyword' },
     { 'include': '#type' },
     { 'include': '#expression' },
-
   ],
 
   'repository': {
@@ -143,6 +144,43 @@
       'name': 'storage.type.ctor-type.d',
       'patterns': [
         { 'include': '#type' },
+      ]
+    },
+    #
+    # assert
+    #
+    'assert-expression': {
+      'patterns': [
+        'begin': 'assert\\s*\\(',
+        'beginCaptures': {
+          '0': { 'name': 'keyword.assert.begin.d' }
+        },
+        'end': '\\)',
+        'endCaptures': {
+          '0': { 'name': 'keyword.assert.end.d' }
+        },
+        'patterns': [
+          { 'include': '#expression' }
+        ]
+      ]
+    },
+    #
+    # typeid
+    #
+    'typeid-expression': {
+      'patterns': [
+        'begin': 'typeid\\s*\\(',
+        'beginCaptures': {
+          '0': { 'name': 'keyword.typeid.begin.d' }
+        },
+        'end': '\\)',
+        'endCaptures': {
+          '0': { 'name': 'keyword.typeid.end.d' }
+        },
+        'patterns': [
+          { 'include': '#type' },
+          { 'include': '#expression' }
+        ]
       ]
     },
     #
