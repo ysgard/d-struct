@@ -578,20 +578,6 @@
       ]
     },
     #
-    # Mixins
-    #
-    'mixin-declaration': {
-      'patterns': [
-        'begin': 'mixin\\s*\\(',
-        'end': '\\)',
-        'beginCaptures': { '0': { 'name': 'keyword.mixin.begin.d' } },
-        'endCaptures': { '0': { 'name': 'keyword.mixin.end.d' } },
-        'patterns': [
-          { 'include': '#expression' }
-        ]
-      ]
-    },
-    #
     # Static assert
     #
     'static-assert': {
@@ -665,14 +651,7 @@
         ]
       ]
     },
-    'import-declaration': {
-      'patterns': [
-        {
-          'match': '(static\\s+)?import\\s+',
-          'name': 'keyword.package.import.d'
-        }
-      ]
-    },
+
     #
     # Preprocessor and other directives
     #
@@ -1296,10 +1275,95 @@
       ]
     },
     #
-    # Miscellaneous
+    # Import Declarations
     #
-
-
+    'import-declaration': {
+      'patterns': [
+        {
+          'match': '(static\\s+)?import\\s+',
+          'name': 'keyword.package.import.d'
+        },
+        {
+          '#include': '#import-list'
+        }
+      ]
+    },
+    'import-list': {
+      'patterns': [
+        { 'include': '#import' },
+        { 'include': '#import-bindings' },
+        { 'include': '#comma' },
+      ]
+    },
+    'import': {
+      'patterns': [
+        { 'include': '#module-fully-qualified-name' },
+        { 'include': '#module-alias-identifier' },
+        { 'include': '#equal' }
+      ]
+    },
+    'import-bindings': {
+      'patterns': [
+        { 'include': '#import' },
+        { 'include': '#colon' },
+        { 'include': '#import-bind-list' }
+      ]
+    },
+    'import-bind-list': {
+      'patterns': [
+        { 'include': '#comma' },
+        { 'include': '#import' }
+      ]
+    },
+    'import-bind': {
+      'patterns': [
+        { 'include': '#identifier' },
+        {
+          'match': '=',
+          'name': 'keyword.operator.equal.d'
+        }
+      ]
+    },
+    'module-alias-identifier': {
+      'patterns': [
+        { 'include': '#identifier' }
+      ]
+    }
+    #
+    # Mixin Decl
+    #
+    'mixin-declaration': {
+      'patterns': [
+        'begin': 'mixin\\s*\\(',
+        'end': '\\)',
+        'beginCaptures': { '0': { 'name': 'keyword.mixin.begin.d' } },
+        'endCaptures': { '0': { 'name': 'keyword.mixin.end.d' } },
+        'patterns': [
+          { 'include': '#expression' }
+        ]
+      ]
+    },
+    #
+    # Misc
+    #
+    'comma': {
+      'patterns': [
+        'match': ',',
+        'name': 'keyword.operator.comma.d'
+      ]
+    },
+    'colon': {
+      'patterns': [
+        'match': ':',
+        'name': 'support.type.colon.d'
+      ]
+    },
+    'equal': {
+      'patterns': [
+        'match': '=',
+        'name': 'keyword.operator.equal.d'
+      ]
+    },
 
     ###########################################################################
     #
