@@ -467,190 +467,7 @@
     #
     # Condition
     #
-    'conditional-declaration': {
-      'patterns': [
-        { 'include': '#condition' },
-        { 'include': '#declaration-block' },
-        {
-          'match': 'else',
-          'name': 'keyword.control.else.d'
-        },
-        {
-          'match': ':',
-          'name': 'support.class.tag.d'
-        },
-        { 'include': '#decl-defs' },
-      ]
-    },
-    'conditional-statement': {
-      'patterns': [
-        { 'include': '#condition' },
-        { 'include': '#no-scope-non-empty-statement' },
-        {
-          'match': 'else',
-          'name': 'keyword.control.else.d'
-        },
-      ]
-    },
-    'condition': {
-      'patterns': [
-        { 'include': '#version-condition' },
-        { 'include': '#debug-condition' },
-        { 'include': '#static-if-condition' },
-      ]
-    },
-    'version-condition': {
-      'patterns': [
-        {
-          'match': 'version\\s*\\(\\s*unittest\\s*\\)',
-          'name': 'keyword.other.version.unittest.d'
-        },
-        {
-          'match': 'version\\s*\\(\\s*assert\\s*\\)',
-          'name': 'keyword.other.version.assert.d'
-        },
-        {
-          'begin': 'version\\s*\\(',
-          'beginCaptures': {
-            '0': { 'name': 'keyword.other.version.identifier.begin.d' },
-          },
-          'end': '\\)',
-          'endCaptures': {
-            '0': { 'name': 'keyword.other.version.identifer.end.d' }
-          }
-          'patterns': [
-            { 'include': '#integer-literal' },
-            { 'include': '#identifier' }
-          ]
-        }
-      ]
-    },
-    'debug-condition': {
-      'patterns': [
-        {
-          'begin': 'debug\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.other.debug.identifier.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.other.debug.identifier.end.d' } },
-          'patterns': [
-            { 'include': '#integer-literal' },
-            { 'include': '#identifier' },
-          ],
-        },
-        {
-          'match': 'debug\\s*[^\\(\\s)]',
-          'name': 'keyword.other.debug.plain.d'
-        }
-      ]
-    },
-    'version-specification': {
-      'patterns': [
-        'match': 'version\\s*=',
-        'name': 'keyword.other.version-specification.d'
-      ]
-    },
-    'debug-specification': {
-      'patterns': [
-        'match': 'debug\\s*=',
-        'name': 'keyword.other.debug-specification.d'
-      ]
-    },
-    'static-if-condition': {
-      'patterns': [
-        'begin': 'static\\s*if\\s*\\(',
-        'beginCaptures': { '0': { 'name': 'keyword.other.static-if.begin.d' } },
-        'end': '\\)',
-        'endCaptures': { '0': { 'name': 'keyword.other.static-if.end.d' } },
-        'patterns': [
-          { 'include' : '#expression' }
-        ],
-      ]
-    }
-    'static-assert': {
-      'patterns': [
-        'begin': 'static\\s*assert\\s*\\(',
-        'beginCaptures': { '0': { 'name': 'keyword.other.static-assert.begin.d' } },
-        'end': '\\)',
-        'endCaptures': { '0': { 'name': 'keyword.other.static-assert.end.d' } },
-        'patterns': [
-          { 'include' : '#expression' }
-        ],
-      ]
-    },
-    #
-    # Static assert
-    #
-    'static-assert': {
-      'patterns': [
-        'begin': 'static\\s+assert\\s*\\(',
-        'end': '\\)',
-        'beginCaptures': { '0': { 'name': 'keyword.static-assert.begin.d' } },
-        'endCaptures': { '0': { 'name': 'keyword.static-assert.end.d' } },
-        'patterns': [
-          {
-            'match': ',',
-            'name': 'keyword.operator.comma.d'
-          },
-          { 'include': '#expression' }
-        ]
-      ]
-    },
-    #
-    # Import and Module
-    #
-    'module': {
-      'packages': [
-        { 'import': '#module-declaration' },
-        { 'import': '#decl-defs' }
-      ]
-    },
-    'decl-defs': {
-      'packages': [
-        { 'include': '#decl-def' }
-      ]
-    },
-    'decl-def': {
-      'packages': [
-        { 'include': '#attribute-specifier' },
-        { 'include': '#declaration' },
-        { 'include': '#constructor' },
-        { 'include': '#destructor' },
-        { 'include': '#postblit' },
-        { 'include': '#allocator' },
-        { 'include': '#deallocator' },
-        { 'include': '#invariant' },
-        { 'include': '#unit-test' },
-        { 'include': '#alias-this' },
-        { 'include': '#static-constructor' },
-        { 'include': '#static-destructor' },
-        { 'include': '#conditional-declaration' },
-        { 'include': '#debug-specification' },
-        { 'include': '#version-specification' },
-        { 'include': '#static-assert' },
-        { 'include': '#template-declaration' },
-        { 'include': '#template-mixin-declaration' },
-        { 'include': '#template-mixin' },
-        { 'include': '#mixin-declaration' },
-        { 'include': '#shared-static-constructor' },
-        { 'include': '#shared-static-destructor' },
-        {
-          'match': ';',
-          'name': 'meta.semicolon.d'
-        },
-      ]
-    },
 
-
-    'module-declaration': {
-      'patterns': [
-        'begin': 'module\\s+',
-        'beginCaptures': { '0': { 'name': 'keyword.package.module.d' } },
-        'end': ';',
-        'patterns': [
-          { 'include': '#identifier' }
-        ]
-      ]
-    },
 
     #
     # Preprocessor and other directives
@@ -1274,9 +1091,192 @@
         'name': 'storage.type.assembly.register-64.d'
       ]
     },
-    #
+
+    #############
+    # Conditional
+    #############
+    'conditional-declaration': {
+      'patterns': [
+        { 'include': '#condition' },
+        { 'include': '#declaration-block' },
+        {
+          'match': 'else',
+          'name': 'keyword.control.else.d'
+        },
+        { 'include': '#colon' },
+        { 'include': '#decl-defs' },
+      ]
+    },
+    'conditional-statement': {
+      'patterns': [
+        { 'include': '#condition' },
+        { 'include': '#no-scope-non-empty-statement' },
+        {
+          'match': 'else',
+          'name': 'keyword.control.else.d'
+        },
+      ]
+    },
+    'condition': {
+      'patterns': [
+        { 'include': '#version-condition' },
+        { 'include': '#debug-condition' },
+        { 'include': '#static-if-condition' },
+      ]
+    },
+    'version-condition': {
+      'patterns': [
+        {
+          'match': 'version\\s*\\(\\s*unittest\\s*\\)',
+          'name': 'keyword.other.version.unittest.d'
+        },
+        {
+          'match': 'version\\s*\\(\\s*assert\\s*\\)',
+          'name': 'keyword.other.version.assert.d'
+        },
+        {
+          'begin': 'version\\s*\\(',
+          'beginCaptures': {
+            '0': { 'name': 'keyword.other.version.identifier.begin.d' },
+          },
+          'end': '\\)',
+          'endCaptures': {
+            '0': { 'name': 'keyword.other.version.identifer.end.d' }
+          }
+          'patterns': [
+            { 'include': '#integer-literal' },
+            { 'include': '#identifier' }
+          ]
+        }
+      ]
+    },
+    'debug-condition': {
+      'patterns': [
+        {
+          'begin': 'debug\\s*\\(',
+          'beginCaptures': { '0': { 'name': 'keyword.other.debug.identifier.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'keyword.other.debug.identifier.end.d' } },
+          'patterns': [
+            { 'include': '#integer-literal' },
+            { 'include': '#identifier' },
+          ],
+        },
+        {
+          'match': 'debug\\s*[^\\(\\s)]',
+          'name': 'keyword.other.debug.plain.d'
+        }
+      ]
+    },
+    'version-specification': {
+      'patterns': [
+        'match': 'version\\s*=',
+        'name': 'keyword.other.version-specification.d'
+      ]
+    },
+    'debug-specification': {
+      'patterns': [
+        'match': 'debug\\s*=',
+        'name': 'keyword.other.debug-specification.d'
+      ]
+    },
+    'static-if-condition': {
+      'patterns': [
+        'begin': 'static\\s*if\\s*\\(',
+        'beginCaptures': { '0': { 'name': 'keyword.other.static-if.begin.d' } },
+        'end': '\\)',
+        'endCaptures': { '0': { 'name': 'keyword.other.static-if.end.d' } },
+        'patterns': [
+          { 'include' : '#expression' }
+        ],
+      ]
+    }
+    'static-assert': {
+      'patterns': [
+        'begin': 'static\\s*assert\\s*\\(',
+        'beginCaptures': { '0': { 'name': 'keyword.other.static-assert.begin.d' } },
+        'end': '\\)',
+        'endCaptures': { '0': { 'name': 'keyword.other.static-assert.end.d' } },
+        'patterns': [
+          { 'include' : '#expression' }
+        ],
+      ]
+    },
+    ########
+    # Module
+    ########
+    'module': {
+      'packages': [
+        { 'import': '#module-declaration' },
+        { 'import': '#decl-defs' }
+      ]
+    },
+    'decl-defs': {
+      'packages': [
+        { 'include': '#decl-def' }
+      ]
+    },
+    'decl-def': {
+      'packages': [
+        { 'include': '#attribute-specifier' },
+        { 'include': '#declaration' },
+        { 'include': '#constructor' },
+        { 'include': '#destructor' },
+        { 'include': '#postblit' },
+        { 'include': '#allocator' },
+        { 'include': '#deallocator' },
+        { 'include': '#invariant' },
+        { 'include': '#unit-test' },
+        { 'include': '#alias-this' },
+        { 'include': '#static-constructor' },
+        { 'include': '#static-destructor' },
+        { 'include': '#conditional-declaration' },
+        { 'include': '#debug-specification' },
+        { 'include': '#version-specification' },
+        { 'include': '#static-assert' },
+        { 'include': '#template-declaration' },
+        { 'include': '#template-mixin-declaration' },
+        { 'include': '#template-mixin' },
+        { 'include': '#mixin-declaration' },
+        { 'include': '#shared-static-constructor' },
+        { 'include': '#shared-static-destructor' },
+        { 'include': '#semi-colon' },
+      ]
+    },
+    'module-declaration': {
+      'patterns': [
+        'begin': 'module\\s+',
+        'beginCaptures': { '0': { 'name': 'keyword.package.module.d' } },
+        'end': ';',
+        'patterns': [
+          { 'include': '#module-fully-qualified-name' }
+        ]
+      ]
+    },
+    'module-fully-qualified-name': {
+      'patterns': [
+        { 'include': '#module-name' },
+      ]
+    },
+    'module-name': {
+      'patterns': [
+        { 'include': '#identifier' }
+      ]
+    },
+    'packages': {
+      'patterns': [
+        { 'include': '#package-name' }
+      ]
+    },
+    'package-name': {
+      'patterns': [
+        { 'include': '#identifier' }
+      ]
+    },
+
+    #####################
     # Import Declarations
-    #
+    #####################
     'import-declaration': {
       'patterns': [
         {
@@ -1318,10 +1318,7 @@
     'import-bind': {
       'patterns': [
         { 'include': '#identifier' },
-        {
-          'match': '=',
-          'name': 'keyword.operator.equal.d'
-        }
+        { 'include': '#equal' }
       ]
     },
     'module-alias-identifier': {
@@ -1329,9 +1326,9 @@
         { 'include': '#identifier' }
       ]
     }
-    #
+    ############
     # Mixin Decl
-    #
+    ############
     'mixin-declaration': {
       'patterns': [
         'begin': 'mixin\\s*\\(',
@@ -1343,9 +1340,9 @@
         ]
       ]
     },
-    #
+    ######
     # Misc
-    #
+    ######
     'comma': {
       'patterns': [
         'match': ',',
@@ -1362,6 +1359,12 @@
       'patterns': [
         'match': '=',
         'name': 'keyword.operator.equal.d'
+      ]
+    },
+    'semi-colon' {
+      'patterns': [
+        'match': ';',
+        'name': 'meta.statement.semi-colon.d'
       ]
     },
 
