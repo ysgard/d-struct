@@ -29,6 +29,9 @@ template Select(bool, cond, T1, T2) {
   }
 }
 __FILE__
+struct {
+
+}
 asm {
   naked 3 + 43 __LOCAL_SIZE RAX XMM2 hello , no EAX near ptr
 };

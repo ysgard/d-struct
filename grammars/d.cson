@@ -351,22 +351,6 @@
         { 'include': '#type-ctor' }
       ]
     }
-    #
-    # Attributes
-    #
-
-    #
-    # Properties
-    #
-
-    #
-    # Condition
-    #
-
-
-    #
-    # Preprocessor and other directives
-    #
 
     #
     # Expressions
@@ -600,6 +584,29 @@
     #
     # Assembly (Iasm)
     #
+
+
+    ###########################################################################
+    # Type
+    ###########################################################################
+
+
+
+    ###########################################################################
+    # Expression
+    ###########################################################################
+
+    ###########################################################################
+    # Statement
+    ###########################################################################
+
+
+
+
+    ###########################################################################
+    # Iasm
+    ###########################################################################
+
     'asm-statement': {
       'patterns': [
         'begin': 'asm\\s*\\{',
@@ -694,31 +701,6 @@
         'name': 'storage.type.assembly.register-64.d'
       ]
     },
-
-    ###########################################################################
-    # Type
-    ###########################################################################
-
-
-
-    ###########################################################################
-    # Expression
-    ###########################################################################
-
-    ###########################################################################
-    # Statement
-    ###########################################################################
-
-
-
-
-    ###########################################################################
-    # Iasm
-    ###########################################################################
-
-
-
-
     ###########################################################################
     # Declaration
     ###########################################################################
@@ -735,51 +717,235 @@
     ###########################################################################
     # Aggregate
     ###########################################################################
-
-
-
-
+    'aggregate-declaration': {
+      'patterns': [
+        { 'include': '#class-declaration' },
+        { 'include': '#interface-declaration' },
+        { 'include': '#struct-declaration' },
+        { 'include': '#union-declaration' }
+      ]
+    },
+    'class-declaration': {
+      'patterns': [
+        {
+          'match': 'class',
+          'name': 'entity.name.class.d'
+        },
+        { 'include': '#identifier' },
+        { 'include': '#base-class-list' },
+        { 'include': '#aggregate-body' },
+        { 'include': '#class-template-declaration' }
+      ]
+    },
+    'class-template-declaration': {
+      'patterns': [
+        {
+          'match': 'class',
+          'name': 'entity.name.class.d'
+        },
+        { 'include': '#identifier' },
+        { 'include': '#template-parameters' },
+        { 'include': '#constraint' },
+        { 'include': '#base-class-list' },
+        { 'include': '#aggregate-body' }
+      ]
+    },
+    'interface-declaration': {
+      'patterns': [
+        {
+          'match': 'interface',
+          'name': 'entity.name.class.interface.d'
+        },
+        { 'include': '#identifier' },
+        { 'include': '#base-interface-list' },
+        { 'include': '#aggregate-body' },
+        { 'include': '#interface-template-declaration' },
+      ]
+    },
+    'interface-template-declaration': {
+      'patterns': [
+        {
+          'match': 'interface',
+          'name': 'entity.name.class.interface.d'
+        },
+        { 'include': '#identifier' },
+        { 'include': '#template-parameters' },
+        { 'include': '#constraint' },
+        { 'include': '#base-class-list' },
+        { 'include': '#aggregate-body' }
+      ]
+    },
+    'struct-declaration': {
+      'patterns': [
+        {
+          'match': 'struct',
+          'name': 'storage.type.struct.d'
+        },
+        { 'include': '#identifier' },
+        { 'include': '#aggregate-body' },
+        { 'include': '#struct-template-declaration' },
+        { 'include': '#anon-struct-declaration' }
+      ]
+    },
+    'struct-template-declaration': {
+      'patterns': [
+        {
+          'match': 'struct',
+          'name': 'storage.type.struct.d'
+        },
+        { 'include': '#identifier' },
+        { 'include': '#template-parameters' },
+        { 'include': '#constraint' },
+        { 'include': '#aggregate-body' },
+      ]
+    },
+    'anon-struct-declaration': {
+      'patterns': [
+        {
+          'match': 'struct',
+          'name': 'storage.type.struct.d'
+        },
+        { 'include': '#aggregate-body' }
+      ]
+    },
+    'union-declaration': {
+      'patterns': [
+        {
+          'match': 'union',
+          'name': 'storage.type.union.d'
+        },
+        { 'include': '#identifier' },
+        { 'include': '#aggregate-body' },
+        { 'include': '#union-template-declaration' },
+        { 'include': '#anon-union-declaration' }
+      ]
+    },
+    'union-template-declaration': {
+      'patterns': [
+        {
+          'match': 'union',
+          'name': 'storage.type.union.d'
+        },
+        { 'include': '#identifier' },
+        { 'include': '#template-parameters' },
+        { 'include': '#constraint' },
+        { 'include': '#aggregate-body' }
+      ]
+    },
+    'anon-union-declaration': {
+      'patterns': [
+        {
+          'match': 'union',
+          'name': 'storage.type.union.d'
+        },
+        { 'include': '#aggregate-body' }
+      ]
+    },
+    'aggregate-body': {
+      'patterns': [
+        'begin': '\\{',
+        'end': '\\}',
+        'patterns': [
+          { 'include': '#decl-defs' }
+        ]
+      ]
+    },
+    'base-class-list': {
+      'patterns': [
+        { 'include': '#colon' },
+        { 'include': '#super-class' },
+        { 'include': '#comma' },
+        { 'include': '#interfaces' }
+      ]
+    },
+    'base-interface-list': {
+      'patterns': [
+        { 'include': '#colon' },
+        { 'include': '#interfaces' }
+      ]
+    },
+    'super-class': {
+      'patterns': [
+        { 'include': '#identifier' },
+      ]
+    },
+    'interfaces': {
+      'patterns': [
+        { 'include': '#comma' },
+        { 'include': '#interface' }
+      ]
+    },
+    'interface': {
+      'patterns': [
+        { 'include': '#identifier' }
+      ]
+    },
+    'alias-this': {
+      'begin': 'alias\\s+',
+      'beginCaptures': { '0': { 'name': 'support.type.alias.d' } },
+      'end': 'this',
+      'endCaptures': { '0': { 'name': 'support.class.keyword.this.d' } },
+      'patterns': [
+        { 'include': '#identifier' }
+      ]
+    },
     ###########################################################################
     # Enum
     ###########################################################################
     'enum-declaration': {
       'patterns': [
-
+        {
+          'match': 'enum',
+          'name': 'storage.type.enum.d'
+        },
+        { 'include': '#enum-tag' },
+        { 'include': '#enum-body' },
+        { 'include': '#colon' },
+        { 'include': '#enum-base-type' }
       ]
     },
     'enum-tag': {
       'patterns': [
-
+        { 'include': '#identifier' },
       ]
     },
     'enum-base-type': {
       'patterns': [
-
+        { 'include': '#type' }
       ]
     },
     'enum-body': {
       'patterns': [
-
+        { 'include': '#empty-enum-body' },
+        { 'include': '#enum-members-body' }
       ]
     },
     'empty-enum-body': {
       'patterns': [
-
+        { 'include': '#semi-colon' }
       ]
     },
     'enum-members-body': {
       'patterns': [
-
+        'begin': '\\{',
+        'end': '\\}',
+        'patterns': [
+          { 'include': '#enum-members' }
+        ]
       ]
     },
     'enum-members': {
       'patterns': [
-
+        { 'include': '#enum-member' },
+        { 'include': '#comma' }
       ]
     },
     'enum-member': {
       'patterns': [
-
+        { 'include': '#type' },
+        { 'include': '#identifier' },
+        { 'include': '#equal' },
+        { 'include': '#expression '}
       ]
     },
 
