@@ -306,51 +306,8 @@
         'name': 'keyword.other.special.d'
       ]
     }
-    #
-    # Parameters
-    #
-    'parameters': {
-      'patterns': [
-        {
-          'match': '\\(\\s*\\.\\.\\.\\s*\\)',
-          'name': 'support.type.tuple-parameter.d'
-        },
-        {
-          'begin': '\\(',
-          'beginCaptures': { '0': { 'name': 'support.type.parameters.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'support.type.parameters.end.d' } },
-          'patterns': [
-              {
-                'match': ',',
-                'name': 'keyword.operator.comma.d'
-              },
-              { 'include': '#parameter' }
-          ]
-        }
-      ]
-    },
-    'parameter': {
-      'patterns': [
-        { 'include': '#in-out' },
-        { 'include': '#basic-type' },
-        { 'include': '#type' },
-        {
-          'match': '\\.\\.\\.',
-          'name': 'support.type.tuple.d'
-        },
-        { 'include': '#declarator' }
-      ]
-    },
-    'in-out': {
-      'patterns': [
-        {
-          'match': 'auto|final|in|out|lazy|ref|scope',
-          'name': 'storage.type.modifier.inout.d'
-        },
-        { 'include': '#type-ctor' }
-      ]
-    }
+
+
 
     #
     # Expressions
@@ -575,12 +532,7 @@
         },
       ]
     },
-    'default-initializer-expression': {
-      'patterns': [
-        { 'include': '#expression' },
-        { 'include': '#special-keyword' }
-      ]
-    },
+
     #
     # Assembly (Iasm)
     #
@@ -711,9 +663,167 @@
     ###########################################################################
     # Function
     ###########################################################################
+    'parameters': {
+      'patterns': [
+        {
+          'match': '\\(\\s*\\.\\.\\.\\s*\\)',
+          'name': 'support.type.tuple-parameter.d'
+        },
+        {
+          'begin': '\\(',
+          'beginCaptures': { '0': { 'name': 'support.type.parameters.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'support.type.parameters.end.d' } },
+          'patterns': [
+              {
+                'match': ',',
+                'name': 'keyword.operator.comma.d'
+              },
+              { 'include': '#parameter' }
+          ]
+        }
+      ]
+    },
+    'parameter': {
+      'patterns': [
+        { 'include': '#in-out' },
+        { 'include': '#basic-type' },
+        { 'include': '#type' },
+        {
+          'match': '\\.\\.\\.',
+          'name': 'support.type.tuple.d'
+        },
+        { 'include': '#declarator' }
+      ]
+    },
+    'in-out': {
+      'patterns': [
+        { 'include': '#in-out-x' }
+      ]
+    },
+    'in-out-x': {
+      'patterns': [
+        {
+          'match': 'auto|final|in|out|lazy|ref|scope',
+          'name': 'storage.type.modifier.inout.d'
+        },
+        { 'include': '#type-ctor' }
+      ]
+    }
+    'function-attributes': {
+      'patterns': [
 
+      ]
+    },
+    'function-attribute': {
+      'patterns': [
 
+      ]
+    },
+    'member-function-attributes': {
+      'patterns': [
 
+      ]
+    },
+    'member-function-attribute': {
+      'patterns': [
+
+      ]
+    },
+    'default-initializer-expression': {
+      'patterns': [
+        { 'include': '#expression' },
+        { 'include': '#special-keyword' }
+      ]
+    },
+    'function-body': {
+      'patterns': [
+
+      ]
+    },
+    'in-statement': {
+      'patterns': [
+
+      ]
+    },
+    'out-statement': {
+      'patterns': [
+
+      ]
+    },
+    'body-statement': {
+      'patterns': [
+
+      ]
+    },
+    'constructor': {
+      'patterns': [
+
+      ]
+    },
+    'constructor-template': {
+      'patterns': [
+
+      ]
+    },
+    'destructor': {
+      'patterns': [
+        {
+          'match': '~this\\s*\\(\\s*\\)',
+          'name': '#entity.name.class.destructor.d'
+        },
+        { 'include': '#member-function-attributes' },
+        { 'include': '#function-body' },
+      ]
+    },
+    'postblit': {
+      'patterns': [
+        {
+          'match': 'this\\s*\\(\\s*this\\s*\\)\\s',
+          'name': '#entity.name.class.postblit.d'
+        },
+        { 'include': '#member-function-attributes' },
+        { 'include': '#function-body'}
+      ]
+    },
+    'allocator': {
+      'patterns': [
+        {
+          'match': 'new',
+          'name': 'keyword.other.new.d'
+        },
+        { 'include': '#parameters' },
+        { 'include': '#function-body' }
+      ]
+    },
+    'deallocator': {
+      'patterns': [
+        {
+          'match': 'delete',
+          'name': 'keyword.other.delete.d'
+        },
+        { 'include': '#parameters' },
+        { 'include': '#function-body' }
+      ]
+    },
+    'invariant': {
+      'patterns': [
+        {
+          'match': 'invariant\\s*\\(\\s*\\)',
+          'name': 'entity.name.class.invariant.d'
+        },
+        { 'include': '#block-statement' }
+      ]
+    },
+    'unit-test': {
+      'patterns': [
+        {
+          'match': 'unittest',
+          'name': 'entity.name.function.unit-test.d'
+        },
+        { 'include': '#function-body' }
+      ]
+    },
     ###########################################################################
     # Aggregate
     ###########################################################################
