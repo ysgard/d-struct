@@ -67,22 +67,7 @@
 
   'patterns': [
     { 'include': '#comment' },
-    { 'include': '#module-declaration' },
-    { 'include': '#import-declaration' },
-    { 'include': '#storage-class' },
-    { 'include': '#condition' },
-    { 'include': '#version-debug-specification' },
-    { 'include': '#is-expression' },
-    { 'include': '#attribute' },
-    { 'include': '#asm-statement' },
-    { 'include': '#mixin-expression' },
-    { 'include': '#import-expression' },
-    { 'include': '#assert-expression' },
-    { 'include': '#typeid-expression' },
-    { 'include': '#traits-expression' },
-    { 'include': '#special-keyword' },
-    { 'include': '#type' },
-    { 'include': '#expression' },
+    { 'include': '#lexical' }
   ],
 
   'repository': {
@@ -260,17 +245,7 @@
     #
     # Storage Classes
     #
-    'storage-class': {
-      'patterns': [
-        {
-          'match': 'deprecated|enum|static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref',
-          'name': 'storage.class.d'
-        },
-        { 'include': '#linkage-attribute' },
-        { 'include': '#align-attribute' },
-        { 'include': '#property' },
-      ]
-    },
+
     #
     # Traits
     #
@@ -319,6 +294,11 @@
     # lexical elements as well as the base expression operators, and a few
     # others.
     #
+    'assign-expression': {
+      'patterns': [
+        { 'include': '#expression' }
+      ]
+    },
     'expression': {
       'patterns': [
           { 'include': '#operator' },
@@ -420,118 +400,7 @@
     #
     # Declarations
     #
-    'declaration': {
-      'patterns': [
-        { 'include': '#alias-declaration' },
-        { 'include': '#aggregate-declaration' },
-        { 'include': '#enum-declaration' },
-        { 'include': '#import-declaration' },
-        { 'include': '#decl' }
-      ]
-    },
-    'alias-declaration': {
-      'patterns': [
-        {
-          'match': 'alias',
-          'name': 'keyword.alias.d'
-        },
-        { 'include': '#storage-class' },
-        { 'include': '#basic-type' },
-        { 'include': '#declarator' },
-        { 'include': '#alias-declaration-x' }
-      ]
-    },
-    #
-    # Initializers
-    #
-    'initializer': {
-      'patterns': [
-        { 'include': '#void-initializer' },
-        { 'include': '#non-void-initializer' }
-      ]
-    },
-    'void-initializer': {
-      'patterns': [
-        'match': 'void',
-        'name': 'support.type.void.d'
-      ]
-    },
-    'non-void-initializer': {
-      'patterns': [
-        { 'include': '#exp-initializer' },
-        { 'include': '#array-initializer' },
-        { 'include': '#struct-initializer' }
-      ]
-    },
-    'exp-initializer': {
-      'patterns': [
-        { 'include': '#expression' }
-      ]
-    },
-    'array-initializer': {
-      'patterns': [
-        'begin': '\\[',
-        'beginCaptures': { '0': { 'name': 'support.type.array.initializer.begin.d' } },
-        'end': '\\]',
-        'endCaptures': {'0': { 'name': 'support.type.array.initializer.end.d' } },
-        'patterns': [
-          {
-            'match': ',',
-            'name': 'keyword.operator.comma.d'
-          },
-          { 'include': '#array-member-initialization' },
-        ]
-      ]
-    },
-    'array-member-initializations': {
-      'patterns': [
-        {
-          'match': ',',
-          'name': 'keyword.operator.comma.d'
-        },
-        { 'include': '#array-member-initialization' },
-      ]
-    },
-    'array-member-initialization': {
-      'patterns': [
-        { 'include': '#non-void-initializer' },
-        { 'include': '#expression' },
-        {
-          'match': ':',
-          'name': 'support.type.tag.d'
-        }
-      ]
-    },
-    'struct-initializer': {
-      'patterns': [
-        'begin': '\\{',
-        'beginCaptures': { '0': { 'name': 'support.type.struct.initializer.begin.d' } },
-        'end': '\\}',
-        'endCaptures': { '0': { 'name': 'support.type.struct.initializer.end.d' } },
-        'patterns': [
-          { 'include': '#struct-member-initializers' }
-        ]
-      ]
-    }
-    'struct-member-initializers': {
-      'patterns': [
-        {
-          'match': ',',
-          'name': 'keyword.operator.comma.d'
-        },
-        { 'include': '#struct-member-initializer' },
-      ]
-    },
-    'struct-member-initializer': {
-      'patterns': [
-        { 'include': '#non-void-initializer' },
-        { 'include': '#identifier' },
-        {
-          'match': ':',
-          'name': 'support.type.tag.d'
-        },
-      ]
-    },
+
 
     #
     # Assembly (Iasm)
@@ -656,7 +525,252 @@
     ###########################################################################
     # Declaration
     ###########################################################################
+    'declaration': {
+      'patterns': [
+        { 'include': '#alias-declaration' },
+        { 'include': '#aggregate-declaration' },
+        { 'include': '#enum-declaration' },
+        { 'include': '#import-declaration' },
+        { 'include': '#decl' }
+      ]
+    },
+    'alias-declaration': {
+      'patterns': [
+        {
+          'match': 'alias\\s+',
+          'name': 'keyword.alias.d'
+        },
+        { 'include': '#storage-class' },
+        { 'include': '#basic-type' },
+        { 'include': '#declarator' },
+        { 'include': '#alias-declaration-x' }
+      ]
+    },
+    'alias-declaration-x': {
+      'patterns': [
+        { 'include': '#comma' }
+        { 'include': '#identifier' },
+        { 'include': '#template-parameters' },
+        { 'include': '#equal' },
+        { 'include': '#storage-classes' },
+        { 'include': '#type' },
+      ]
+    },
+    'auto-declaration': {
+      'patterns': [
+        { 'include': '#storage-classes' },
+        { 'include': '#auto-declaration-x' }
+      ]
+    },
+    'auto-declaration-x': {
+      'patterns': [
+        { 'include': '#comman' },
+        { 'include': '#identifier' },
+        { 'include': '#template-parameters' },
+        { 'include': '#equal' },
+        { 'include': '#initializer' },
+      ]
+    },
+    'decl': {
+      'patterns': [
+        { 'include': '#storage-classes' },
+        { 'include': '#basic-type' },
+        { 'include': '#declarators' },
+        { 'include': '#declarator' },
+        { 'include': '#function-body' },
+        { 'include': '#auto-declaration' }
+      ]
+    },
+    'declarators': {
+      'patterns': [
+        { 'include': '#declarator-initializer' },
+        { 'include': '#equal' },
+        { 'include': '#declarator-identifier-list' }
+      ]
+    },
+    'declarator-initializer': {
+      'patterns': [
+        { 'include': '#declarator' },
+        { 'include': '#equal' },
+        { 'include': '#initializer' }
+      ]
+    },
+    'declarator-identifier-list': {
+      'patterns': [
+        { 'include': '#comma' },
+        { 'include': '#declarator-identifier' }
+      ]
+    },
+    'declarator-identifier': {
+      'patterns': [
+        { 'include': '#identifier' },
+        { 'include': '#equal' },
+        { 'include': '#initializer' }
+      ]
+    },
+    'declarator': {
+      'patterns': [
+        { 'include': '#basic-type-2' },
+        { 'include': '#identifier' },
+        { 'include': '#declarator-suffixes' },
+        {
+          'begin': '\\(',
+          'beginCaptures': { '0': {'name': 'support.type.parentheses.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'support.type.parentheses.end.d' } },
+          'patterns': [
+            { 'include': '#declarator' }
+          ]
+        }
+      ]
+    },
+    'declarator2': {
+      'patterns': [
+        { 'include': '#basic-type-2' },
+        { 'include': '#declarator-suffixes' },
+        {
+          'begin': '\\(',
+          'beginCaptures': { '0': {'name': 'support.type.parentheses.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'support.type.parentheses.end.d' } },
+          'patterns': [
+            { 'include': '#declarator2' }
+          ]
+        }
+      ]
+    },
+    'declarator-suffixes': {
+      'patterns': [
+        { 'include': '#declarator-suffix' }
+      ]
+    },
+    'declarator-suffix': {
+      'patterns': [
+        {
+          'match': '\\[\\s*\\]',
+          'name': 'support.type.declarator-suffix.empty-brackets.d'
+        }
+        {
+          'begin': '\\[',
+          'beginCaptures': 'support.type.declarator-suffix.bracket.begin.d',
+          'end': '\\]',
+          'endCaptures': 'support.type.declarator-suffix.bracket.end.d',
+          'patterns': [
+            { 'include': '#type' },
+            { 'include': '#assign-expression' }
+          ]
+        }
+        { 'include': '#parameters' },
+        { 'include': '#member-function-attributes' },
+        { 'include': '#template-parameters' },
+        { 'include': '#constraint' },
 
+      ]
+    },
+    'storage-classes': {
+      'patterns': [
+        { 'include': '#storage-class' }
+      ]
+    },
+    'storage-class': {
+      'patterns': [
+        {
+          'match': 'deprecated|enum|static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref',
+          'name': 'storage.class.d'
+        },
+        { 'include': '#linkage-attribute' },
+        { 'include': '#align-attribute' },
+        { 'include': '#property' },
+      ]
+    },
+    'initializer': {
+      'patterns': [
+        { 'include': '#void-initializer' },
+        { 'include': '#non-void-initializer' }
+      ]
+    },
+    'void-initializer': {
+      'patterns': [
+        'match': 'void',
+        'name': 'support.type.void.d'
+      ]
+    },
+    'non-void-initializer': {
+      'patterns': [
+        { 'include': '#exp-initializer' },
+        { 'include': '#array-initializer' },
+        { 'include': '#struct-initializer' }
+      ]
+    },
+    'exp-initializer': {
+      'patterns': [
+        { 'include': '#expression' }
+      ]
+    },
+    'array-initializer': {
+      'patterns': [
+        'begin': '\\[',
+        'beginCaptures': { '0': { 'name': 'support.type.array.initializer.begin.d' } },
+        'end': '\\]',
+        'endCaptures': {'0': { 'name': 'support.type.array.initializer.end.d' } },
+        'patterns': [
+          {
+            'match': ',',
+            'name': 'keyword.operator.comma.d'
+          },
+          { 'include': '#array-member-initialization' },
+        ]
+      ]
+    },
+    'array-member-initializations': {
+      'patterns': [
+        {
+          'match': ',',
+          'name': 'keyword.operator.comma.d'
+        },
+        { 'include': '#array-member-initialization' },
+      ]
+    },
+    'array-member-initialization': {
+      'patterns': [
+        { 'include': '#non-void-initializer' },
+        { 'include': '#expression' },
+        {
+          'match': ':',
+          'name': 'support.type.tag.d'
+        }
+      ]
+    },
+    'struct-initializer': {
+      'patterns': [
+        'begin': '\\{',
+        'beginCaptures': { '0': { 'name': 'support.type.struct.initializer.begin.d' } },
+        'end': '\\}',
+        'endCaptures': { '0': { 'name': 'support.type.struct.initializer.end.d' } },
+        'patterns': [
+          { 'include': '#struct-member-initializers' }
+        ]
+      ]
+    }
+    'struct-member-initializers': {
+      'patterns': [
+        {
+          'match': ',',
+          'name': 'keyword.operator.comma.d'
+        },
+        { 'include': '#struct-member-initializer' },
+      ]
+    },
+    'struct-member-initializer': {
+      'patterns': [
+        { 'include': '#non-void-initializer' },
+        { 'include': '#identifier' },
+        {
+          'match': ':',
+          'name': 'support.type.tag.d'
+        },
+      ]
+    },
 
 
 
