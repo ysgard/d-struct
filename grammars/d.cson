@@ -712,22 +712,32 @@
     }
     'function-attributes': {
       'patterns': [
-
+        { 'include': '#function-attribute' },
       ]
     },
     'function-attribute': {
       'patterns': [
-
+        {
+          'match': 'nothrow|pure',
+          'name': 'storage.type.modifier.function-attribute.d'
+        },
+        {
+          'include': '#property'
+        }
       ]
     },
     'member-function-attributes': {
       'patterns': [
-
+        { 'include': '#member-function-attribute' }
       ]
     },
     'member-function-attribute': {
       'patterns': [
-
+        {
+          'match': 'const|immutable|inout|shared',
+          'name': 'storage.type.modifier.member-function-attribute'
+        },
+        { 'include': '#function-attribute' }
       ]
     },
     'default-initializer-expression': {
@@ -738,32 +748,72 @@
     },
     'function-body': {
       'patterns': [
-
+        { 'include': '#block-statement' },
+        { 'include': '#in-statement' },
+        { 'include': '#out-statement' },
+        { 'include': '#body-statement' },
       ]
     },
     'in-statement': {
       'patterns': [
-
+        {
+          'match': 'in',
+          'name': '#keyword.control.in.d'
+        },
+        { 'include': '#block-statement' }
       ]
     },
     'out-statement': {
       'patterns': [
-
+        {
+          'begin': 'out\\s*\\(',
+          'beginCaptures': { '0': { 'name': 'keyword.control.out.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'keyword.control.out.end.d' } },
+          'patterns': [
+            { 'include': '#identifier' }
+          ]
+        },
+        {
+          'match': 'out',
+          'name': 'keyword.control.out.d'
+        },
+        { 'include': '#block-statement' }
       ]
     },
     'body-statement': {
       'patterns': [
-
+        {
+          'match': 'body',
+          'name': 'keyword.control.body.d'
+        },
+        { 'include': '#block-statement' }
       ]
     },
     'constructor': {
       'patterns': [
-
+        {
+          'match': 'this',
+          'name': 'entity.name.function.constructor.d'
+        },
+        { 'include': '#parameters' },
+        { 'include': '#member-function-attributes' },
+        { 'include': '#semi-colon' },
+        { 'include': '#function-body' },
+        { 'include': '#constructor-template' }
       ]
     },
     'constructor-template': {
       'patterns': [
-
+        {
+          'match': 'this',
+          'name': 'entity.name.function.constructor-template.d'
+        },
+        { 'include': '#template-parameters' },
+        { 'include': '#parameters' },
+        { 'include': '#member-function-attributes'},
+        { 'include': '#constraint' },
+        { 'include': '#function-body' }
       ]
     },
     'destructor': {
@@ -821,6 +871,35 @@
           'match': 'unittest',
           'name': 'entity.name.function.unit-test.d'
         },
+        { 'include': '#function-body' }
+      ]
+    },
+    'static-constructor': {
+      'patterns': [
+        { 'include': '#shared-static-constructor' }
+      ]
+    },
+    'static-destructor': {
+      'patterns': [
+        { 'include': '#shared-static-destructor' }
+      ]
+    },
+    'shared-static-constructor': {
+      'patterns': [
+        {
+          'match': '(shared\\s+)?static\\s+this\\s*\\(\\s*\\)',
+          'name': 'entity.name.class.constructor.shared-static.d'
+        },
+        { 'include': '#function-body' }
+      ]
+    },
+    'shared-static-destructor': {
+      'patterns': [
+        {
+          'match': '(shared\\s+)?static\\s+~\\s*this\\s*\\(\\s*\\)',
+          'name': 'entity.name.class.destructor.static.d'
+        },
+        { 'include': '#member-function-attributes' },
         { 'include': '#function-body' }
       ]
     },
