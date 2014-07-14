@@ -389,28 +389,12 @@
         }
       ]
     },
-    #
-    # Template
-    #
 
-
-
-
-
-    #
-    # Declarations
-    #
-
-
-    #
-    # Assembly (Iasm)
-    #
 
 
     ###########################################################################
     # Type
     ###########################################################################
-
 
 
     ###########################################################################
@@ -420,14 +404,281 @@
     ###########################################################################
     # Statement
     ###########################################################################
+    'statement': {
+      'patterns': [
 
+      ]
+    },
+    'no-scope-non-empty-statement': {
+      'patterns': [
 
+      ]
+    },
+    'no-scope-statement': {
+      'patterns': [
 
+      ]
+    },
+    'non-empty-or-scope-block-statement': {
+      'patterns': [
 
-    ###########################################################################
-    # Iasm
-    ###########################################################################
+      ]
+    },
+    'non-empty-statement': {
+      'patterns': [
 
+      ]
+    },
+    'non-empty-statement-no-case-no-default': {
+      'patterns': [
+
+      ]
+    },
+    'scope-statement': {
+      'patterns': [
+
+      ]
+    },
+    'scope-block-statement': {
+      'patterns': [
+
+      ]
+    },
+    'labeled-statement': {
+      'patterns': [
+
+      ]
+    },
+    'block-statement': {
+      'patterns': [
+
+      ]
+    },
+    'statement-list': {
+      'patterns': [
+
+      ]
+    },
+    'expression-statement': {
+      'patterns': [
+
+      ]
+    },
+    'declaration-statement': {
+      'patterns': [
+
+      ]
+    },
+    'if-statement': {
+      'patterns': [
+
+      ]
+    },
+    'if-condition': {
+      'patterns': [
+
+      ]
+    },
+    'then-statement': {
+      'patterns': [
+
+      ]
+    },
+    'else-statement': {
+      'patterns': [
+
+      ]
+    },
+    'while-statement': {
+      'patterns': [
+
+      ]
+    },
+    'do-statement': {
+      'patterns': [
+
+      ]
+    },
+    'for-statement': {
+      'patterns': [
+
+      ]
+    },
+    'initialize': {
+      'patterns': [
+
+      ]
+    },
+    'test': {
+      'patterns': [
+
+      ]
+    },
+    'increment': {
+      'patterns': [
+
+      ]
+    },
+    'foreach-statement': {
+      'patterns': [
+
+      ]
+    },
+    'foreach': {
+      'patterns': [
+
+      ]
+    },
+    'foreach-type-list': {
+      'patterns': [
+
+      ]
+    },
+    'for-each-type': {
+      'patterns': [
+
+      ]
+    },
+    'foreach-aggregate': {
+      'patterns': [
+
+      ]
+    },
+    'foreach-range-statement': {
+      'patterns': [
+
+      ]
+    },
+    'lwr-expression': {
+      'patterns': [
+
+      ]
+    },
+    'upr-expression': {
+      'patterns': [
+
+      ]
+    },
+    'switch-statement': {
+      'patterns': [
+
+      ]
+    },
+    'case-statement': {
+      'patterns': [
+
+      ]
+    },
+    'case-range-statement': {
+      'patterns': [
+
+      ]
+    },
+    'first-exp': {
+      'patterns': [
+
+      ]
+    },
+    'last-exp': {
+      'patterns': [
+
+      ]
+    },
+    'default-statement': {
+      'patterns': [
+
+      ]
+    },
+    'scope-statement-list': {
+      'patterns': [
+
+      ]
+    },
+    'statement-list-no-case-no-default': {
+      'patterns': [
+
+      ]
+    },
+    'statement-no-case-no-default': {
+      'patterns': [
+
+      ]
+    },
+    'final-switch-statement': {
+      'patterns': [
+
+      ]
+    },
+    'continue-statement': {
+      'patterns': [
+
+      ]
+    },
+    'break-statement': {
+      'patterns': [
+
+      ]
+    },
+    'return-statement': {
+      'patterns': [
+
+      ]
+    },
+    'goto-statement': {
+      'patterns': [
+
+      ]
+    },
+    'with-statement': {
+      'patterns': [
+
+      ]
+    },
+    'synchronized-statement': {
+      'patterns': [
+
+      ]
+    },
+    'try-statement': {
+      'patterns': [
+
+      ]
+    },
+    'catches': {
+      'patterns': [
+
+      ]
+    },
+    'last-catch': {
+      'patterns': [
+
+      ]
+    },
+    'catch': {
+      'patterns': [
+
+      ]
+    },
+    'catch-parameter': {
+      'patterns': [
+
+      ]
+    },
+    'finally-statement': {
+      'patterns': [
+
+      ]
+    },
+    'throw-statement': {
+      'patterns': [
+
+      ]
+    },
+    'scope-guard-statement': {
+      'patterns': [
+
+      ]
+    },
     'asm-statement': {
       'patterns': [
         'begin': 'asm\\s*\\{',
@@ -439,6 +690,24 @@
         ],
       ]
     },
+    'asm-instruction-list': {
+      'patterns': [
+
+      ]
+    },
+    'pragma-statement': {
+      'patterns': [
+
+      ]
+    },
+    'mixin-statement': {
+      'patterns': [
+
+      ]
+    },
+    ###########################################################################
+    # Iasm
+    ###########################################################################
     'asm-instruction': {
       'patterns': [
         {
