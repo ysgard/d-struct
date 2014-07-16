@@ -998,52 +998,106 @@
     },
     'for-statement': {
       'patterns': [
-
+        {
+          'match': 'for',
+          'name': 'keyword.control.for.d'
+        },
+        {
+          'begin': '\\(',
+          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
+          'end': '\\)',
+          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
+          'patterns': [
+            { 'include': '#initialize' },
+            { 'include': '#test' },
+            { 'include': '#semi-colon' },
+            { 'include': '#increment' }
+        },
+        { 'include': '#scope-statement' }
       ]
     },
     'initialize': {
       'patterns': [
-
+        { 'include': '#semi-colon' },
+        { 'include': '#no-scope-non-empty-statement' }
       ]
     },
     'test': {
       'patterns': [
-
+        { 'include': '#expression' }
       ]
     },
     'increment': {
       'patterns': [
-
+        { 'include': '#expression' }
       ]
     },
     'foreach-statement': {
       'patterns': [
-
+        { 'include': '#foreach' },
+        {
+          'begin': '\\(',
+          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
+          'end': '\\)',
+          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
+          'patterns': [
+            { 'include': '#foreach-type-list' },
+            { 'include': '#semi-colon' },
+            { 'include': '#foreach-aggregate' },
+          ]
+        },
+        { 'include': '#no-scope-non-empty-statement' }
       ]
     },
     'foreach': {
       'patterns': [
-
+        'match': 'foreach|foreach_reverse',
+        'name': 'keyword.control.foreach.d'
       ]
     },
     'foreach-type-list': {
       'patterns': [
-
+        { 'include': '#foreach-type' },
+        { 'include': '#comma' }
       ]
     },
     'for-each-type': {
       'patterns': [
-
+        {
+          'match': 'ref\\s+',
+          'name': 'storage.modifier.ref.d'
+        },
+        { 'include': '#type-ctors' },
+        { 'include': '#basic-type' },
+        { 'include': '#declarator' },
+        { 'include': '#identifier' }
       ]
     },
     'foreach-aggregate': {
       'patterns': [
-
+        { 'include': '#expression' }
       ]
     },
     'foreach-range-statement': {
       'patterns': [
-
+        { 'include': '#foreach' },
+        {
+          'begin': '\\(',
+          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
+          'end': '\\)',
+          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
+          'patterns': [
+            { 'include': '#foreach-type' },
+            { 'include': '#semi-colon' },
+            { 'include': '#lwr-expression' },
+            {
+              'match': '\\.\\.',
+              'name': 'keyword.operator.range.d'
+            },
+            { 'include': '#upr-expression' },
+          ]
+        },
+        { 'include': '#scope-statement' }
       ]
     },
     'lwr-expression': {
