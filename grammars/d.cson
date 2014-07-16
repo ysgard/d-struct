@@ -551,132 +551,281 @@
     },
     'lwr-expression': {
       'patterns': [
-
+        { 'include': '#expression' }
       ]
     },
     'upr-expression': {
       'patterns': [
-
+        { 'include': '#expression' }
       ]
     },
     'switch-statement': {
       'patterns': [
-
+        {
+          'begin': 'switch\\s*\\(',
+          'beginCaptures': { '0': { 'name': 'keyword.control.switch.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'keyword.control.switch.end.d' } },
+          'patterns': [
+            { 'include': '#expression' }
+          ]
+        },
+        { 'include': '#scope-statement' }
       ]
     },
     'case-statement': {
       'patterns': [
-
+        {
+          'match': 'case\\s+',
+          'name': 'keyword.control.case.range.d'
+        },
+        { 'include': '#argument-list' },
+        {
+          'match': ':',
+          'name': 'keyword.control.case.colon.d'
+        },
+        { 'include': '#scope-statement-list' }
       ]
     },
     'case-range-statement': {
       'patterns': [
-
+        {
+          'match': 'case\\s+',
+          'name': 'keyword.control.case.range.d'
+        },
+        { 'include': '#first-exp'},
+        {
+          'match': ':',
+          'name': 'keyword.control.case.colon.d'
+        },
+        {
+          'match': '\\.\\.\\s*case\\s+',
+          'name': 'keyword.control.case.range-2.d'
+        },
+        { 'include': '#last-exp' },
+        { 'include': '#scope-statement-list' }
       ]
     },
     'first-exp': {
       'patterns': [
-
+        { 'include': '#assign-expression' }
       ]
     },
     'last-exp': {
       'patterns': [
-
+        { 'include': '#assign-expression' }
       ]
     },
     'default-statement': {
       'patterns': [
-
+        {
+          'match': 'default\\s+:\\s+',
+          'name': 'keyword.control.default.d'
+        },
+        {
+          'include': '#scope-statement-list'
+        }
       ]
     },
     'scope-statement-list': {
       'patterns': [
-
+        { 'include': '#statement-list-no-case-no-default' }
       ]
     },
     'statement-list-no-case-no-default': {
       'patterns': [
-
+        { 'include': '#statement-no-case-no-default' },
       ]
     },
     'statement-no-case-no-default': {
       'patterns': [
-
+        { 'include': '#non-empty-statement-no-case-no-default' },
+        { 'include': '#scope-block-statement' }
       ]
     },
     'final-switch-statement': {
       'patterns': [
-
+        {
+          'begin': 'final\\s+switch\\s+\\(',
+          'beginCaptures': { '0': { 'name': 'keyword.control.final-switch.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'keyword.control.final-switch.end.d' } },
+          'patterns': [
+            { 'include': '#expression' }
+          ]
+        },
+        { 'include': '#scope-statement' }
       ]
     },
     'continue-statement': {
       'patterns': [
-
+        {
+          'begin': 'continue',
+          'beginCaptures': { '0': { 'name': 'keyword.control.continue.d' } },
+          'end': ';',
+          'patterns': [
+            { 'include': '#identifier' }
+          ]
+        }
       ]
     },
     'break-statement': {
       'patterns': [
-
+        {
+          'begin': 'break',
+          'beginCaptures': { '0': { 'name': 'keyword.control.break.d' } },
+          'end': ';',
+          'patterns': [
+            { 'include': '#identifier' }
+          ]
+        }
       ]
     },
     'return-statement': {
       'patterns': [
-
+        {
+          'begin': 'return\\s*',
+          'beginCaptures': { '0': { 'name': 'keyword.control.return.d' } },
+          'end': ';',
+          'patterns': [
+            { 'include': '#expression' }
+          ]
+        }
       ]
     },
     'goto-statement': {
       'patterns': [
-
+        {
+          'match': 'goto\\s+default',
+          'name': 'keyword.control.goto.d'
+        },
+        {
+          'begin': 'goto\\s+case\\s+',
+          'beginCaptures': { '0': { 'name': 'keyword.control.goto.d' } },
+          'end': ';',
+          'patterns': [
+            { 'include': '#expression' }
+          ]
+        },
+        {
+          'begin': 'goto\\s+',
+          'beginCaptures': { '0': { 'name': 'keyword.control.goto.d' } },
+          'end': ';',
+          'patterns': [
+            { 'include': '#identifier' }
+          ]
+        },
       ]
     },
     'with-statement': {
       'patterns': [
-
+        {
+          'begin': 'with\\s*\\(',
+          'beginCaptures': { '0': { 'name': 'keyword.control.with.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'keyword.control.with.end.d' } },
+          'patterns': [
+            { 'include': '#symbol' },
+            { 'include': '#template-instance' },
+            { 'include': '#expression' },
+          ]
+        },
+        { 'include': '#scope-statement' }
       ]
     },
     'synchronized-statement': {
       'patterns': [
-
+        {
+          'begin': 'synchronized\\s+\\(',
+          'beginCaptures': { '0': { 'name': 'keyword.control.synchronized.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'keyword.control.synchronized.end.d' } },
+          'patterns': [
+            { 'include': '#expression' }
+          ]
+        },
+        {
+          'match': 'synchronized\\s+(?!\\()',
+          'name': 'keyword.control.synchronized.d'
+        },
+        {  'include': '#scope-statement' }
       ]
     },
     'try-statement': {
       'patterns': [
-
+        {
+          'match': 'try\\s+',
+          'name': 'keyword.control.try.d'
+        },
+        { 'include': '#scope-statement' },
+        { 'include': '#catches' },
+        { 'include': '#finally-statement' }
       ]
     },
     'catches': {
       'patterns': [
-
+        { 'include': '#last-catch' },
+        { 'include': '#catch' },
+        { 'include': '#catches' }
       ]
     },
     'last-catch': {
       'patterns': [
-
+        {
+          'match': 'catch\\s+(?!\\()',
+          'name': 'keyword.control.catch.d'
+        },
+        { 'include': '#no-scope-non-empty-statement' }
       ]
     },
     'catch': {
       'patterns': [
-
+        {
+          'begin': 'catch\\s*\\(',
+          'beginCaptures': { '0': { 'name': 'keyword.control.catch.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'keyword.control.catch.end.d' } },
+          'patterns': [
+            { 'include': '#catch-parameter' },
+          ]
+        },
+        { 'include': '#no-scope-non-empty-statement' }
       ]
     },
     'catch-parameter': {
       'patterns': [
-
+        { 'include': '#basic-type' },
+        { 'include': '#identifier' }
       ]
     },
     'finally-statement': {
       'patterns': [
-
+        {
+          'match': 'finally\\s+',
+          'name': 'keyword.control.throw.d',
+        },
+        { 'include': '#no-scope-non-empty-statement' }
       ]
     },
     'throw-statement': {
       'patterns': [
-
+        {
+          'begin': 'throw\\s+',
+          'beginCaptures': { '0': { 'name': 'keyword.control.throw.d' } },
+          'end': ';',
+          'patterns': [
+            { 'include': '#expression' }
+          ]
+        }
       ]
     },
     'scope-guard-statement': {
       'patterns': [
-
+        {
+          'match': 'scope\\s*\\((exit|success|failure)\\)\\s+',
+          'name': 'keyword.control.scope.d'
+        },
+        { 'include': '#non-empty-or-scope-block-statement' }
       ]
     },
     'asm-statement': {
@@ -692,17 +841,24 @@
     },
     'asm-instruction-list': {
       'patterns': [
-
+        { 'include': '#asm-instruction' }
       ]
     },
     'pragma-statement': {
       'patterns': [
-
+        { 'include': '#pragma' },
+        { 'include': '#no-scope-statement' }
       ]
     },
     'mixin-statement': {
       'patterns': [
-
+        'begin': 'mixin\\s*\\(',
+        'beginCaptures': { '0': { 'name': 'keyword.control.mixin.begin.d' } },
+        'end': '\\)',
+        'endCaptures': { '0': { 'name': 'keyword.control.mixin.end.d' } }
+        'patterns': [
+          { 'include': '#assign-expression' }
+        ]
       ]
     },
     ###########################################################################
