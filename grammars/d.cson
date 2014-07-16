@@ -242,45 +242,13 @@
       ]
     },
 
-    #
-    # Storage Classes
-    #
 
-    #
-    # Traits
-    #
-    'traits-expression': {
-      'patterns': [
-        'begin': '__traits\\s*\\(',
-        'beginCaptures': { '0': { 'name': 'keyword.other.traits.begin.d' } },
-        'end': '\\)',
-        'endCaptures': { '0': { 'name': 'keyword.other.traits.end.d' } },
-        'patterns': [
-          { 'include': '#traits-keyword' },
-          { 'include': '#traits-argument' }
-        ]
-      ]
-    },
-    'traits-keyword': {
-      'patterns': [
-        'match': 'isAbstractClass|isArithmetic|isAssociativeArray|isFinalClass|isPOD|isNested|isFloating|isIntegral|isScalar|isStaticArray|isUnsigned|isVirtualFunction|isVirtualMethod|isAbstractFunction|isFinalFunction|isStaticFunction|isOverrideFunction|isRef|isOut|isLazy|hasMember|identifier|getAliasThis|getAttributes|getMember|getOverloads|getProtection|getVirtualFunctions|getVirtualMethods|getUnitTests|parent|classInstanceSize|getVirtualIndex|allMembers|derivedMembers|isSame|compiles',
-        'name': 'keyword.other.traits.d'
-      ]
-    },
-    'traits-argument': {
-      'patterns': [
-        { 'include': '#expression' }
-      ]
-    },
-    #
-    # Special Keywords
-    #
-    'special-keyword': {
-      'patterns': [
-        'match': '__FILE__|__MODULE__|__LINE__|__FUNCTION__|__PRETTY_FUNCTION__',
-        'name': 'keyword.other.special.d'
-      ]
-    }
+
+
+
+
+
+
 
 
 
@@ -400,7 +368,536 @@
     ###########################################################################
     # Expression
     ###########################################################################
+    'expression': {
+      'patterns': [
 
+      ]
+    },
+    'comma-expression': {
+      'patterns': [
+
+      ]
+    },
+    'assign-expression': {
+      'patterns': [
+
+      ]
+    },
+    'conditional-expression': {
+      'patterns': [
+
+      ]
+    },
+    'or-or-expression': {
+      'patterns': [
+
+      ]
+    },
+    'and-and-expression': {
+      'patterns': [
+
+      ]
+    },
+    'or-expression': {
+      'patterns': [
+
+      ]
+    },
+    'xor-expression': {
+      'patterns': [
+
+      ]
+    },
+    'and-expression': {
+      'patterns': [
+
+      ]
+    },
+    'cmp-expression': {
+      'patterns': [
+
+      ]
+    },
+    'equal-expression': {
+      'patterns': [
+
+      ]
+    },
+    'identity-expression': {
+      'patterns': [
+
+      ]
+    },
+    'rel-expression': {
+      'patterns': [
+
+      ]
+    },
+    'in-expression': {
+      'patterns': [
+
+      ]
+    },
+    'shift-expression': {
+      'patterns': [
+
+      ]
+    },
+    'add-expression': {
+      'patterns': [
+
+      ]
+    },
+    'cat-expression': {
+      'patterns': [
+
+      ]
+    },
+    'mul-expression': {
+      'patterns': [
+
+      ]
+    },
+    'unary-expression': {
+      'patterns': [
+        {
+          'match': '&|(\\+\\+)|(--)|\\*|-|\\+|!',
+          'name': 'keyword.operator.unary.d'
+        },
+        { 'include': '#complement-expression' },
+        {
+          'begin': '\\(',
+          'beginCaptures': 'support.type.parens-expression.begin.d',
+          'end': '\\)',
+          'endCaptures': 'support.type.parens-expression.end.d',
+          'patterns': [
+              { 'include': '#type' }
+          ]
+        },
+        { 'include': '#identifier' },
+        { 'include': '#template-instance' },
+        { 'include': '#delete-expression' },
+        { 'include': '#cast-expression' },
+        { 'include': '#pow-expression' }
+      ]
+    },
+    'complement-expression': {
+      'patterns': [
+        {
+          'match': '~',
+          'name': 'keyword.operator.complement.d'
+        },
+        { 'include': '#unary-expression' }
+      ]
+    },
+    'new-expression': {
+      'patterns': [
+        {
+          'match': 'new\\s+',
+          'name': 'keyword.other.new.d'
+        },
+        { 'include': '#allocator-arguments' },
+        { 'include': '#type' },
+        { 'include': '#new-expression-with-args' }
+      ]
+    },
+    'new-expression-with-args': {
+      'patterns': [
+        {
+          'match': 'new\\s+',
+          'name': 'keyword.other.new.d'
+        }
+        { 'include': '#allocator-arguments' },
+        { 'include': '#type' },
+        {
+          'begin': '\\[',
+          'beginCaptures': 'support.type.expression.bracket.begin.d',
+          'end': '\\]',
+          'endCaptures': 'support.type.expression.bracket.end.d',
+          'patterns': [
+            { 'include': '#assign-expression' },
+          ]
+        }
+        {
+          'begin': '\\(',
+          'beginCaptures': 'support.type.parens-expression.begin.d',
+          'end': '\\)',
+          'endCaptures': 'support.type.parens-expression.end.d',
+          'patterns': [
+              { 'include': '#argument-list' }
+          ]
+        },
+        { 'include': '#new-anon-class-expression' }
+      ]
+    },
+    'allocator-arguments': {
+      'patterns': [
+        'begin': '\\(',
+        'beginCaptures': 'support.type.parens-expression.begin.d',
+        'end': '\\)',
+        'endCaptures': 'support.type.parens-expression.end.d',
+        'patterns': [
+            { 'include': '#argument-list' }
+        ]
+      ]
+    },
+    'argument-list': {
+      'patterns': [
+        { 'include': '#assign-expression' },
+        { 'include': '#comma' }
+      ]
+    },
+    'new-anon-class-expression': {
+      'patterns': [
+        {
+          'match': 'new\\s+',
+          'name': 'keyword.other.new.d'
+        },
+        { 'include': '#allocator-arguments' },
+        {
+          'match': 'class\\s+',
+          'name': 'entity.name.class.d'
+        },
+        { 'include': '#class-arguments' },
+        { 'include': '#super-class' },
+        { 'include': '#interfaces' },
+        { 'include': '#aggregate-body' }
+      ]
+    },
+    'class-arguments': {
+      'patterns': [
+        'begin': '\\(',
+        'beginCaptures': 'support.type.parens-expression.begin.d',
+        'end': '\\)',
+        'endCaptures': 'support.type.parens-expression.end.d',
+        'patterns': [
+            { 'include': '#argument-list' }
+        ]
+      ]
+    },
+    'delete-expression': {
+      'patterns': [
+        {
+          'match': 'delete\\s+',
+          'name': 'keyword.other.delete.d'
+        },
+        { 'include': '#unary-expression' }
+      ]
+    },
+    'cast-expression': {
+      'patterns': [
+        {
+          'begin': 'cast\\s*\\(',
+          'beginCaptures': 'support.type.cast.begin.d',
+          'end': '\\)',
+          'endCaptures': 'support.type.cast.end.d',
+          'patterns': [
+              { 'include': '#type' },
+              { 'include': '#type-ctors' }
+          ]
+        },
+        { 'include': '#unary-expression' }
+      ]
+    },
+    'pow-expression': {
+      'patterns': [
+        { 'include': '#postfix-expression' },
+        {
+          'match': '\\^\\^',
+          'name': 'keyword.operator.pow.d'
+        },
+        { 'include': '#unary-expression' }
+      ]
+    },
+    'postfix-expression': {
+      'patterns': [
+        { 'include': '#primary-expression' },
+        { 'include': '#postfix-expression' },
+        { 'include': '#identifier' },
+        { 'include': '#template-instance' },
+        { 'include': '#new-expression' },
+        {
+          'match': '(\\+\\+)|(--)',
+          'name': 'keyword.operator.postfix-op.d'
+        },
+        {
+          'begin': '\\(',
+          'beginCaptures': 'support.type.parens-expression.begin.d',
+          'end': '\\)',
+          'endCaptures': 'support.type.parens-expression.end.d',
+          'patterns': [
+              { 'include': '#argument-list' }
+          ]
+        },
+        { 'include': '#type-ctors' },
+        { 'include': '#basic-type' },
+        { 'include': '#index-expression' },
+        { 'include': '#slice-expression' }
+      ]
+    },
+    'index-expression': {
+      'patterns': [
+        { 'include': '#postfix-expression' },
+        {
+          'begin': '\\[',
+          'beginCaptures': 'support.type.index.bracket.begin.d',
+          'end': '\\]',
+          'endCaptures': 'support.type.index.bracket.end.d',
+          'patterns': [
+              { 'include': '#argument-list' },
+          ]
+        }
+      ]
+    },
+    'slice-expression': {
+      'patterns': [
+        { 'include': '#postfix-expression' },
+        {
+          'begin': '\\[',
+          'beginCaptures': 'support.type.slice.bracket.begin.d',
+          'end': '\\]',
+          'endCaptures': 'support.type.slice.bracket.end.d',
+          'patterns': [
+              { 'include': '#assign-expression' },
+              {
+                'match': '\\.\\.',
+                'name': 'keyword.operator.range.d'
+              }
+          ]
+        }
+      ]
+    },
+    'primary-expression': {
+      'patterns': [
+        {
+          'match': 'this|super|null|true|false|$',
+          'name': 'constant.language.primary-expression.d'
+        },
+        { 'include': '#identifier' },
+        { 'include': '#template-instance' },
+        { 'include': '#integer-literal' },
+        { 'include': '#float-literal' },
+        { 'include': '#character-literal' },
+        { 'include': '#string-literals' },
+        { 'include': '#array-literal' },
+        { 'include': '#assoc-array-literal' },
+        { 'include': '#function-literal' },
+        { 'include': '#assert-expression' },
+        { 'include': '#mixin-expression' },
+        { 'include': '#import-expression' },
+        { 'include': '#new-expression-with-args' },
+        { 'include': '#basic-type-x' },
+        { 'include': '#typeof' },
+        { 'include': '#typeid-expression' },
+        { 'include': '#is-expression' },
+        {
+          'begin': '\\(',
+          'beginCaptures': 'support.type.parens-expression.begin.d',
+          'end': '\\)',
+          'endCaptures': 'support.type.parens-expression.end.d',
+          'patterns': [
+              { 'include': '#expression' }
+          ]
+        },
+        { 'include': '#traits-expression' },
+        { 'include': '#special-keyword' }
+      ]
+    },
+    'string-literals': {
+      'patterns': [
+        { 'include': '#string-literal' }
+      ]
+    },
+    'array-literal': {
+      'patterns': [
+        'begin': '\\[',
+        'beginCaptures': 'support.type.array.bracket.begin.d',
+        'end': '\\]',
+        'endCaptures': 'support.type.array.bracket.end.d',
+        'patterns': [
+            { 'include': '#argument-list' }
+        ]
+      ]
+    },
+    'assoc-array-literal': {
+      'patterns': [
+        'begin': '\\[',
+        'beginCaptures': 'support.type.assoc-array.bracket.begin.d',
+        'end': '\\]',
+        'endCaptures': 'support.type.assoc-array.bracket.end.d',
+        'patterns': [
+            { 'include': '#key-value-pairs' }
+        ]
+      ]
+    },
+    'key-value-pairs': {
+      'patterns': [
+        { 'include': '#key-value-pair' },
+        { 'include': '#comma' }
+      ]
+    },
+    'key-value-pair': {
+      'patterns': [
+        { 'include': '#key-expression' },
+        { 'include': '#colon' },
+        { 'include': '#value-expression' }
+      ]
+    },
+    'key-expression': {
+      'patterns': [
+        { 'include': '#assign-expression' }
+      ]
+    },
+    'value-expression': {
+      'patterns': [
+        { 'include': '#assign-expression' }
+      ]
+    },
+    'function-literal': {
+      'patterns': [
+        {
+          'match': '(function|delegate)\\s+',
+          'name': 'entity.name.function.d'
+        },
+        { 'include': '#type' },
+        { 'include': '#parameter-attributes' },
+        { 'include': '#function-body' },
+        { 'include': '#lambda' }
+      ]
+    },
+    'parameter-attributes': {
+      'patterns': [
+        { 'include': '#parameters' },
+        { 'include': '#function-attributes' }
+      ]
+    },
+    'lambda': {
+      'patterns': [
+        {
+          'match': '=>',
+          'name': 'keyword.operator.lambda.d'
+        },
+        { 'include': '#assign-expression' },
+        { 'include': '#identifier' },
+        {
+          'match': '(function|delegate)\\s+',
+          'name': 'entity.name.function.d'
+        },
+        { 'include': '#parameter-attributes' }
+      ]
+    },
+    'assert-expression': {
+      'patterns': [
+        'begin': 'assert\\s+\\(',
+        'beginCaptures': 'keyword.other.assert.begin.d',
+        'end': '\\)',
+        'endCaptures': 'keyword.other.assert.end.d',
+        'patterns': [
+          { 'include': '#assign-expression' },
+          { 'include': '#comma' }
+        ]
+      ]
+    },
+    'mixin-expression': {
+      'patterns': [
+        'begin': 'mixin\\s+\\(',
+        'beginCaptures': 'keyword.other.mixin.begin.d',
+        'end': '\\)',
+        'endCaptures': 'keyword.other.mixin.end.d',
+        'patterns': [
+          { 'include': '#assign-expression' }
+        ]
+      ]
+    },
+    'import-expression': {
+      'patterns': [
+        'begin': 'import\\s+\\(',
+        'beginCaptures': 'keyword.other.import.begin.d',
+        'end': '\\)',
+        'endCaptures': 'keyword.other.import.end.d',
+        'patterns': [
+          { 'include': '#assign-expression' }
+        ]
+      ]
+    },
+    'typeid-expression': {
+      'patterns': [
+        'begin': 'typeid\\s+\\(',
+        'beginCaptures': 'keyword.other.typeid.begin.d',
+        'end': '\\)',
+        'endCaptures': 'keyword.other.typeid.end.d',
+        'patterns': [
+          { 'include': '#type' },
+          { 'include': '#expression' }
+        ]
+      ]
+    },
+    'is-expression': {
+      'patterns': [
+        'begin': 'is\\s+\\(',
+        'beginCaptures': 'keyword.control.is.begin.d',
+        'end': '\\)',
+        'endCaptures': 'keyword.control.is.end.d',
+        'patterns': [
+          { 'include': '#type' },
+          {
+            'match': '==',
+            'name': 'keyword.operator.equivalency.d'
+          },
+          { 'include': '#colon' },
+          { 'include': '#type-specialization' },
+          { 'include': '#comma' },
+          { 'include': '#template-parameter-list' },
+          { 'include': '#identifier' }
+        ]
+      ]
+    },
+    'type-specialization': {
+      'patterns': [
+        {
+          'match': 'struct|union|class|interface|enum|function|delegate|super|const|immutable|inout|shared|return|__parameters',
+          'name': 'keyword.other.storage.type-specialization.d'
+        },
+        { 'include': '#type' }
+      ]
+    },
+    'traits-expression': {
+      'patterns': [
+        'begin': '__traits\\s+\\(',
+        'beginCaptures': 'keyword.other.traits.begin.d',
+        'end': '\\)',
+        'endCaptures': 'keyword.other.traits.end.d',
+        'patterns': [
+          { 'include': '#traits-keyword' },
+          { 'include': '#comma' },
+          { 'include': '#traits-argument' }
+        ]
+      ]
+    },
+    'traits-keyword': {
+      'patterns': [
+        'match': 'isAbstractClass|isArithmetic|isAssociativeArray|isFinalClass|isPOD|isNested|isFloating|isIntegral|isScalar|isStaticArray|isUnsigned|isVirtualFunction|isVirtualMethod|isAbstractFunction|isFinalFunction|isStaticFunction|isOverrideFunction|isRef|isOut|isLazy|hasMember|identifier|getAliasThis|getAttributes|getMember|getOverloads|getProtection|getVirtualFunctions|getVirtualMethods|getUnitTests|parent|classInstanceSize|getVirtualIndex|allMembers|derivedMembers|isSame|compiles',
+        'name': 'support.constant.traits-keyword.d'
+      ]
+    },
+    'traits-arguments': {
+      'patterns': [
+        { 'include': '#traits-argument' },
+        { 'include': '#comma' }
+      ]
+    },
+    'traits-argument': {
+      'patterns': [
+        { 'include': '#assign-expression' },
+        { 'include': '#type' }
+      ]
+    },
+    'special-keyword': {
+      'patterns': [
+        'match': '__FILE__|__MODULE__|__LINE__|__FUNCTION__|__PRETTY_FUNCTION__',
+        'name': 'constant.language.special-keyword.d'
+      ]
+    },
     ###########################################################################
     # Statement
     ###########################################################################
