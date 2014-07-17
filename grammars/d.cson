@@ -71,39 +71,50 @@
   ],
 
   'repository': {
-    #
-    # GENERAL GRAMMAR
-    #
-    #
-    # Basic Types
-    #
+
+    ###########################################################################
+    # Type
+    ###########################################################################
     'type': {
       'patterns': [
-        { 'include': '#type-ctor' },
+        { 'include': '#type-ctors' },
         { 'include': '#basic-type' },
-        { 'include': '#defined-type' },
-        { 'include': '#basic-type-2' },
-      ]
-    },
-    'type-ctor': {
-      'patterns': [
-        'match': '(const|immutable|inout|shared)+',
-        'name': 'storage.type.modifier.d'
+        { 'include': '#declarator2' }
       ]
     },
     'basic-type': {
       'patterns': [
+        {
+          'begin': '\\(',
+          'beginCaptures': 'support.type.parens-expression.begin.d',
+          'end': '\\)',
+          'endCaptures': 'support.type.parens-expression.end.d',
+          'patterns': [
+              { 'include': '#type' }
+          ]
+        },
         { 'include': '#basic-type-x' },
         { 'include': '#typeof' },
         { 'include': '#type-ctor-type' },
+        { 'include': '#identifier-list' }
       ]
     },
     'basic-type-x': {
       'patterns': [
-        'match': 'bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void',
-        'name': 'storage.type.basic-type-x.d'
+        {
+          'match': 'bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void',
+          'name': 'storage.type.basic-type.d'
+        },
+        { 'include': '#defined-type' }
       ]
     },
+    # defined in object.di, not actually part of grammar
+    'defined-type': {
+      'patterns': [
+        'match': 'wstring|dstring|string|size_t|ptrdiff_t',
+        'name': 'storage.type.defined.d'
+      ]
+    }
     'basic-type-2': {
       'patterns': [
         {
@@ -125,26 +136,29 @@
               'name': 'keyword.operator.slice.d'
             },
             { 'include': '#type' },
-            { 'include': '#expression' }
+            { 'include': '#assign-expression' }
           ]
         },
-        { 'include': '#delegate-basic-type-2' },
-        { 'include': '#function-basic-type-2' }
+        {
+          'match': 'delegate|function',
+          'name': 'entity.name.function.d'
+        },
+        { 'include': '#parameters' },
+        { 'include': '#member-function-attributes' },
+        { 'include': '#function-attributes' }
       ]
-    }
-    'delegate-basic-type-2': {
-
     },
-    'function-basic-type-2': {
-
-    },
-    # Defined in object.di
-    'defined-type': {
+    'type-ctors': {
       'patterns': [
-        'match': 'wstring|dstring|string|size_t|ptrdiff_t',
-        'name': 'storage.type.defined.d'
+        { 'include': '#type-ctor' }
       ]
-    }
+    },
+    'type-ctor': {
+      'patterns': [
+        'match': 'const|immutable|inout|shared',
+        'name': 'storage.type.modifier.d'
+      ]
+    },
     'typeof': {
       'begin': 'typeof\\s+\\(',
       'end': '\\)',
@@ -157,212 +171,6 @@
         { 'include': '#expression' }
       ],
     },
-    'type-ctor-type': {
-      'begin': '(const|immutable|inout|shared)\\s+\\(',
-      'end': '\\)',
-      'name': 'storage.type.ctor-type.d',
-      'patterns': [
-        { 'include': '#type' },
-      ]
-    },
-    #
-    #
-    #
-    #
-    # Assert
-    #
-    'assert-expression': {
-      'patterns': [
-        'begin': 'assert\\s*\\(',
-        'beginCaptures': { '0': { 'name': 'keyword.assert.begin.d' } },
-        'end': '\\)',
-        'endCaptures': { '0': { 'name': 'keyword.assert.end.d' } },
-        'patterns': [
-          { 'include': '#expression' }
-        ]
-      ]
-    },
-    #
-    # Typeid
-    #
-    'typeid-expression': {
-      'patterns': [
-        'begin': 'typeid\\s*\\(',
-        'beginCaptures': { '0': { 'name': 'keyword.typeid.begin.d' } },
-        'end': '\\)',
-        'endCaptures': { '0': { 'name': 'keyword.typeid.end.d' } },
-        'patterns': [
-          { 'include': '#type' },
-          { 'include': '#expression' }
-        ]
-      ]
-    },
-    #
-    # Imports
-    #
-    'import-expression': {
-      'begin': 'import\\s*\\(',
-      'beginCaptures': { '0': { 'name': 'keyword.import.begin.d' } },
-      'end': '\\)',
-      'endCaptures': { '0': { 'name': 'keyword.import.end.d' } },
-      'patterns': [
-        { 'include': '#expression' }
-      ]
-    },
-    #
-    # IsExpression and Type specializations
-    # (MISSING TemplateTypeParameters)
-    'is-expression': {
-      'patterns': [
-        {
-          'begin': 'is\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.operator.is.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.operator.is.end.d' } },
-          'patterns': [
-            {
-              'match': ':|==|,',
-              'name': 'keyword.operator.is-expression.d'
-            },
-            { 'include': '#type' },
-            { 'include': '#type-specialization' },
-            { 'include': '#identifier' },
-
-          ]
-        }
-      ]
-    },
-    'type-specialization': {
-      'patterns': [
-        {
-          'match': 'struct|union|class|interface|enum|function|delegate|super|const|immutable|inout|shared|return|__parameters',
-          'name': 'keyword.other.type-specialization.d',
-        },
-        { 'include': '#type' },
-      ]
-    },
-
-
-
-
-
-
-
-
-
-
-
-    #
-    # Expressions
-    #
-    # We cheat a bit here, since highlighting expressions is overkill, and in
-    # any case we want lexical entities like strings and numbers to be
-    # clearly visible.  So we group expressions into a meta class for the
-    # purposes of other entities.  Expression entities themselves just highlight
-    # lexical elements as well as the base expression operators, and a few
-    # others.
-    #
-    'assign-expression': {
-      'patterns': [
-        { 'include': '#expression' }
-      ]
-    },
-    'expression': {
-      'patterns': [
-          { 'include': '#operator' },
-          {
-            'match': ',',
-            'name': 'keyword.operator.comma.d'
-          }
-          { 'include': '#lexical' },
-      ]
-    },
-    'conditional-expression': {
-      'patterns': [
-        {
-          # ternary
-          'match': '\\?|:',
-          'name': 'keyword.operator.ternary.d'
-        },
-        {
-          # logical
-          'match': '!<>=|!<=|!>=|<>=|!<>|<=|>=|<>|!>|!<|==|!=|&&|\\|\\||<|>',
-          'name': 'keyword.operator.logical.d'
-        },
-        { 'include': '#lexical' }
-      ]
-    }
-    'operator': {
-      'patterns': [
-        {
-          # assign
-          'match': '=|\\+=|-=|\\*=|/=|%=|&=|\\|=|\\^=|~=|<<=|>>=|>>>=|^^=',
-          'name': 'keyword.operator.assign.d'
-        },
-        {
-          # ternary
-          'match': '\\?|:',
-          'name': 'keyword.operator.ternary.d'
-        },
-        {
-          # logical
-          'match': '!<>=|!<=|!>=|<>=|!<>|<=|>=|<>|!>|!<|==|!=|&&|\\|\\||<|>',
-          'name': 'keyword.operator.logical.d'
-        },
-        {
-          # bitwise
-          'match': '\\||\\^|&|<<|>>|>>>',
-          'name': 'keyword.operator.bitwise.d'
-        },
-        {
-          # arithmetic
-          'match': '\\+|-|\\*|/|%',
-          'name': 'keyword.operator.arithmetic.d'
-        },
-        {
-          # unary
-          'match': '[=~]\s*(&|\\+\\+|\\--|\\*|-|\\+|!)',
-          'name': 'keyword.operator.unary.d'
-        },
-        {
-          # misc
-          'match': '~|(\\s+!in\\s+)|(\\s+in\\s+)',
-          'name': 'keyword.operator.misc.d'
-        },
-        {
-          # primary expressions
-          'match': 'this|super|null|true|false|$',
-          'name': 'constant.language.primary.d'
-        }
-
-      ]
-    },
-    'assign-operator': {
-      'patterns': [
-        {
-          'match': '=|\\+=|-=|\\*=|/=|%=|&=|\\|=|\\^=|~=|<<=|>>=|>>>=|^^=',
-          'name': 'keyword.operator.assign.d'
-        },
-        { 'include': '#expression' },
-      ]
-    },
-    'ternary-operator': {
-      'patterns:': [
-        {
-          'match': '(\\?|:)',
-          'name': 'keyword.operator.ternary.d'
-        },
-        {
-          'include': '#expression',
-        }
-      ]
-    },
-
-
-
-    ###########################################################################
-    # Type
-    ###########################################################################
 
 
     ###########################################################################
@@ -370,92 +178,165 @@
     ###########################################################################
     'expression': {
       'patterns': [
-
+        { 'include': '#comma-expression' }
       ]
     },
     'comma-expression': {
       'patterns': [
-
+        { 'include': '#comma' },
+        { 'include': '#assign-expression' }
       ]
     },
     'assign-expression': {
       'patterns': [
-
+        { 'include': '#conditional-expression' },
+        {
+          'match': '>>>=|\\^\\^=|>>=|<<=|~=|\\^=|\\|=|&=|%=|/=|\\*=|-=|\\+=|=',
+          'name': 'keyword.operator.assign.d'
+        }
       ]
     },
     'conditional-expression': {
       'patterns': [
-
+        { 'include': '#or-or-expression' },
+        {
+          'begin': '\\?',
+          'beginCaptures': 'keyword.operator.conditional.begin.d',
+          'end': ':',
+          'endCaptures': 'keyword.operator.conditional.end.d',
+          'patterns': [
+              { 'include': '#expression' }
+          ]
+        }
       ]
     },
     'or-or-expression': {
       'patterns': [
-
+        {
+          'match': '\\|\\|',
+          'name': 'keyword.operator.oror.d'
+        },
+        { 'include': '#and-and-expression' }
       ]
     },
     'and-and-expression': {
       'patterns': [
-
+        {
+          'match': '&&',
+          'name': 'keyword.operator.andand.d'
+        },
+        { 'include': '#or-expression' },
+        { 'include': '#cmp-expression' },
       ]
     },
     'or-expression': {
       'patterns': [
-
+        {
+          'match': '\\|',
+          'name': 'keyword.operator.or.d'
+        },
+        { 'include': '#xor-expression' }
       ]
     },
     'xor-expression': {
       'patterns': [
-
+        {
+          'match': '\\^',
+          'name': 'keyword.operator.xor.d'
+        },
+        { 'include': '#and-expression' }
       ]
     },
     'and-expression': {
       'patterns': [
-
+        {
+          'match': '&',
+          'name': 'keyword.operator.and.d'
+        },
+        { 'include': '#shift-expression' },
       ]
     },
     'cmp-expression': {
       'patterns': [
-
+        { 'include': '#shift-expression' },
+        { 'include': '#equal-expression' },
+        { 'include': '#identity-expression' },
+        { 'include': '#rel-expression' },
+        { 'include': '#in-expression' }
       ]
     },
     'equal-expression': {
       'patterns': [
-
+        {
+          'match': '==|!=',
+          'name': 'keyword.operator.equality.d'
+        },
+        { 'include': '#shift-expression' }
       ]
     },
     'identity-expression': {
       'patterns': [
-
+        {
+          'match': 'is|!is',
+          'name': 'keyword.operator.identity.d'
+        },
+        { 'include': '#shift-expression' }
       ]
     },
     'rel-expression': {
       'patterns': [
-
+        {
+          'match': '!<>=|!<>|<>=|!>=|!<=|<=|>=|<>|!>|!<|<|>',
+          'name': 'keyword.operator.rel.d'
+        },
+        { 'include': '#shift-expression' }
       ]
     },
     'in-expression': {
       'patterns': [
-
+        {
+          'match': 'in|\\!in',
+          'name': 'keyword.operator.in.d'
+        },
+        { 'include': '#shift-expression' }
       ]
     },
     'shift-expression': {
       'patterns': [
-
+        {
+          'match': '<<|>>|>>>',
+          'name': 'keyword.operator.shift.d'
+        },
+        { 'include': '#add-expression' }
       ]
     },
     'add-expression': {
       'patterns': [
-
+        {
+          'match': '\\+|-',
+          'name': 'keyword.operator.add.d'
+        },
+        { 'include': '#mul-expression' },
+        { 'include': '#cat-expression'},
       ]
     },
     'cat-expression': {
       'patterns': [
-
+        {
+          'match': '~',
+          'name': 'keyword.operator.cat.d'
+        },
+        { 'include': '#add-expression' },
+        { 'include': '#mul-expression' }
       ]
     },
     'mul-expression': {
       'patterns': [
-
+        {
+          'match': '\\*|/|%'
+          'name': 'keyword.operator.mul.d'
+        },
+        { 'include': '#unary-expression' },
       ]
     },
     'unary-expression': {
@@ -930,7 +811,9 @@
     'non-empty-statement': {
       'patterns': [
         { 'include': '#non-empty-statement-no-case-no-default' },
-        { 'include': }
+        { 'include': '#case-statement' },
+        { 'include': '#case-range-statement' },
+        { 'include': '#default-statement' },
       ]
     },
     'non-empty-statement-no-case-no-default': {
@@ -1115,6 +998,7 @@
             { 'include': '#test' },
             { 'include': '#semi-colon' },
             { 'include': '#increment' }
+          ]
         },
         { 'include': '#scope-statement' }
       ]
