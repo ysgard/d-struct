@@ -988,12 +988,42 @@
     },
     'while-statement': {
       'patterns': [
-
+        {
+          'match': 'while',
+          'name': 'keyword.control.while.d'
+        },
+        {
+          'begin': '\\(',
+          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
+          'end': '\\)',
+          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
+          'patterns': [
+            { 'include': '#expression' }
+          ]
+        },
+        
       ]
     },
     'do-statement': {
       'patterns': [
-
+        {
+          'match': 'do',
+          'name': 'keyword.control.do.d'
+        },
+        { 'include': '#scope-statement' },
+        {
+          'match': 'while',
+          'name': 'keyword.control.while.d'
+        },
+        {
+          'begin': '\\(',
+          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
+          'end': '\\)',
+          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
+          'patterns': [
+            { 'include': '#expression' }
+          ]
+        }
       ]
     },
     'for-statement': {
