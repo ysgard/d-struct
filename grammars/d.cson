@@ -903,87 +903,160 @@
     ###########################################################################
     'statement': {
       'patterns': [
-
+        { 'include': '#semi-colon' },
+        { 'include': '#non-empty-statement' },
+        { 'include': '#scope-block-statement' }
       ]
     },
     'no-scope-non-empty-statement': {
       'patterns': [
-
+        { 'include': '#non-empty-statement' },
+        { 'include': '#block-statment'}
       ]
     },
     'no-scope-statement': {
       'patterns': [
-
+        { 'include': '#semi-colon' },
+        { 'include': '#non-empty-statement' },
+        { 'include': '#block-statement' }
       ]
     },
     'non-empty-or-scope-block-statement': {
       'patterns': [
-
+        { 'include': '#non-empty-statement' },
+        { 'include': '#scope-block-statement' }
       ]
     },
     'non-empty-statement': {
       'patterns': [
-
+        { 'include': '#non-empty-statement-no-case-no-default' },
+        { 'include': }
       ]
     },
     'non-empty-statement-no-case-no-default': {
       'patterns': [
-
+        { 'include': '#labeled-statement' },
+        { 'include': '#expression-statement' },
+        { 'include': '#declaration-statement' },
+        { 'include': '#if-statement' },
+        { 'include': '#while-statement' },
+        { 'include': '#do-statement' },
+        { 'include': '#for-statement' },
+        { 'include': '#foreach-statement' },
+        { 'include': '#switch-statement' },
+        { 'include': '#final-switch-statement' },
+        { 'include': '#continue-statement' },
+        { 'include': '#break-statement' },
+        { 'include': '#return-statement' },
+        { 'include': '#goto-statement' },
+        { 'include': '#with-statement' },
+        { 'include': '#synchronized-statement' },
+        { 'include': '#try-statement' },
+        { 'include': '#scope-guard-statement' },
+        { 'include': '#throw-statement' },
+        { 'include': '#asm-statement' },
+        { 'include': '#pragma-statement' },
+        { 'include': '#mixin-statement' },
+        { 'include': '#foreach-range-statement' },
+        { 'include': '#conditional-statement' },
+        { 'include': '#static-assert' },
+        { 'include': '#template-mixin' },
+        { 'include': '#import-declaration' },
       ]
     },
     'scope-statement': {
       'patterns': [
-
+        { 'include': '#non-empty-statement' },
+        { 'include': '#block-statement' }
       ]
     },
     'scope-block-statement': {
       'patterns': [
-
+        { 'include': '#block-statement' }
       ]
     },
     'labeled-statement': {
       'patterns': [
-
+        { 'include': '#colon' },
+        { 'include': '#no-scope-statement' },
+        { 'include': '#statement' },
+        { 'include': '#identifier' }
       ]
     },
     'block-statement': {
       'patterns': [
-
+        {
+          'begin': '\\{',
+          'beginCaptures': { '0': { 'name': 'support.type.brackets-expression.begin.d' } },
+          'end': '\\}',
+          'encCaptures': { '0': { 'name': 'support.type.brackets-expression.end.d' } },
+          'patterns': [
+            { 'include': '#statement-list' }
+          ]
+        },
       ]
     },
     'statement-list': {
       'patterns': [
-
+        { 'include': '#statement' }
       ]
     },
     'expression-statement': {
       'patterns': [
-
+        { 'include': '#expression' },
+        { 'include': '#semi-colon' }
       ]
     },
     'declaration-statement': {
       'patterns': [
-
+        { 'include': '#declaration' }
       ]
     },
     'if-statement': {
       'patterns': [
-
+        {
+          'match': 'if\\s+',
+          'name': 'keyword.control.if.d'
+        },
+        {
+          'begin': '\\(',
+          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
+          'end': '\\)',
+          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
+          'patterns': [
+            { 'include': '#if-condition' }
+          ]
+        },
+        { 'include': '#then-statement' },
+        {
+          'match': 'else\\s+',
+          'name': 'keyword.control.else.d'
+        },
+        { 'include': '#else-statement' }
       ]
     },
     'if-condition': {
       'patterns': [
-
+        {
+          'match': 'auto',
+          'name': 'storage.modifier.auto.d'
+        },
+        { 'include': '#equal' },
+        { 'include': '#ctors' },
+        { 'include': '#basic-type' },
+        { 'include': '#declarator' },
+        { 'include': '#expression' },
+        { 'include': '#identifier' }
       ]
     },
     'then-statement': {
       'patterns': [
-
+        { 'include': '#scope-statement' }
       ]
     },
     'else-statement': {
       'patterns': [
-
+        { 'include': '#scope-statement' }
       ]
     },
     'while-statement': {
@@ -1001,7 +1074,7 @@
             { 'include': '#expression' }
           ]
         },
-        
+
       ]
     },
     'do-statement': {
