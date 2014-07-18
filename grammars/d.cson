@@ -67,6 +67,7 @@
 
   'patterns': [
     { 'include': '#comment' },
+    { 'include': '#type' },
     { 'include': '#lexical' }
   ],
 

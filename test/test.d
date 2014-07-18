@@ -32,6 +32,7 @@ __FILE__
 struct {
 
 }
+double**[string fun], 
 asm {
   naked 3 + 43 __LOCAL_SIZE RAX XMM2 hello , no EAX near ptr
 };
