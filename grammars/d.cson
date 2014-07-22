@@ -67,7 +67,7 @@
 
   'patterns': [
     { 'include': '#comment' },
-    { 'include': '#type' },
+    # { 'include': '#statement' },
     { 'include': '#lexical' }
   ],
 
@@ -133,7 +133,7 @@
           'endCaptures': { '0': { 'name': 'storage.type.array.expression.end.d' } },
           'patterns': [
             {
-              'match': '\\.\\.|$',
+              'match': '\\.\\.|\\$',
               'name': 'keyword.operator.slice.d'
             },
             { 'include': '#type' },
@@ -1591,7 +1591,7 @@
     'declarator2': {
       'patterns': [
         { 'include': '#basic-type-2' },
-        { 'include': '#declarator-suffixes' },
+        # { 'include': '#declarator-suffixes' },
         {
           'begin': '\\(',
           'beginCaptures': { '0': {'name': 'support.type.parentheses.begin.d' } },
@@ -3210,7 +3210,7 @@
       'patterns': [
         {
           'match': '(\\.?[_\\w][_\\d\\w]*)+',
-          'name': 'invalid.d'
+          'name': 'variable.d'
         },
       ]
     },
