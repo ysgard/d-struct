@@ -67,43 +67,42 @@
 
   'patterns': [
     { 'include': '#comment' },
-    # { 'include': '#statement' },
+    { 'include': '#type' },
+    { 'include': '#expression' },
+    { 'include': '#parens' },
     { 'include': '#lexical' }
   ],
 
   'repository': {
 
-    ###########################################################################
-    # Type
-    ###########################################################################
+
+    # Generic Parentheses
+    'parens': {
+      'begin': '\\(',
+      'beginCaptures': 'support.type.parens-expression.begin.d',
+      'end': '\\)',
+      'endCaptures': 'support.type.parens-expression.end.d',
+      'patterns': [
+        { 'include': '$base' }
+      ]
+    }
+
+    # Type definitions
     'type': {
       'patterns': [
-        { 'include': '#type-ctors' },
-        { 'include': '#basic-type' },
-        { 'include': '#declarator2' }
+        { 'include': '#base-type' },
+        { 'include': '#defined-type' },
+        { 'include': '#extended-type' },
+        { 'include': '#type-ctor' },
+        { 'include': '#typeof' }
       ]
-    },
-    'basic-type': {
+    }
+
+    # Base types
+    'base-type': {
       'patterns': [
         {
-          'begin': '\\(',
-          'beginCaptures': 'support.type.parens-expression.begin.d',
-          'end': '\\)',
-          'endCaptures': 'support.type.parens-expression.end.d',
-          'patterns': [
-              { 'include': '#type' }
-          ]
-        },
-        { 'include': '#basic-type-x' },
-        { 'include': '#typeof' },
-        { 'include': '#type-ctor-type' },
-        { 'include': '#identifier-list' }
-      ]
-    },
-    'basic-type-x': {
-      'patterns': [
-        {
-          'match': 'bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void',
+          'match': '(bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)(\\**)',
           'name': 'storage.type.basic-type.d'
         },
         { 'include': '#defined-type' }
@@ -112,11 +111,15 @@
     # defined in object.di, not actually part of grammar
     'defined-type': {
       'patterns': [
-        'match': 'wstring|dstring|string|size_t|ptrdiff_t',
-        'name': 'storage.type.defined.d'
+        'match': '(wstring|dstring|string|size_t|ptrdiff_t)',
+        'captures': {
+          '0': { 'name': 'storage.type.defined.d' },
+          '1': { 'include': '#extended-type' }
+        }
       ]
-    }
-    'basic-type-2': {
+    },
+    # Pointers, arrays, slices, etc...
+    'extended-type': {
       'patterns': [
         {
           'match': '\\*',
@@ -137,21 +140,10 @@
               'name': 'keyword.operator.slice.d'
             },
             { 'include': '#type' },
-            { 'include': '#assign-expression' }
+            { 'include': '#expression' }
+
           ]
         },
-        {
-          'match': 'delegate|function',
-          'name': 'entity.name.function.d'
-        },
-        { 'include': '#parameters' },
-        { 'include': '#member-function-attributes' },
-        { 'include': '#function-attributes' }
-      ]
-    },
-    'type-ctors': {
-      'patterns': [
-        { 'include': '#type-ctor' }
       ]
     },
     'type-ctor': {
@@ -172,25 +164,40 @@
         { 'include': '#expression' }
       ],
     },
-
-
-    ###########################################################################
-    # Expression
-    ###########################################################################
+    #
+    #
+    # ###########################################################################
+    # # Expression
+    # ###########################################################################
     'expression': {
       'patterns': [
-        { 'include': '#comma-expression' }
-      ]
-    },
-    'comma-expression': {
-      'patterns': [
+        { 'include': '#lambda' },
+        { 'include': '#function-literal' },
+        { 'include': '#assert-expression' },
+        { 'include': '#assign-expression' },
+        { 'include': '#mixin-expression' },
+        { 'include': '#import-expression' },
+        { 'include': '#traits-expression' },
+        { 'include': '#is-expression' },
+        { 'include': '#typeid-expression' },
+        { 'include': '#shift-expression' },
+        { 'include': '#logical-expression' },
+        { 'include': '#rel-expression' },
+        { 'include': '#bitwise-expression' },
+        { 'include': '#identity-expression' },
+        { 'include': '#in-expression' },
+        { 'include': '#conditional-expression' },
+        { 'include': '#arithmetic expression' },
+        { 'include': '#new-expression' },
+        { 'include': '#delete-expression' },
+        { 'include': '#cast-expression' },
+        { 'include': '#type-specialization' },
         { 'include': '#comma' },
-        { 'include': '#assign-expression' }
+        { 'include': '#special-keyword' }
       ]
     },
     'assign-expression': {
       'patterns': [
-        { 'include': '#conditional-expression' },
         {
           'match': '>>>=|\\^\\^=|>>=|<<=|~=|\\^=|\\|=|&=|%=|/=|\\*=|-=|\\+=|=',
           'name': 'keyword.operator.assign.d'
@@ -199,89 +206,35 @@
     },
     'conditional-expression': {
       'patterns': [
-        { 'include': '#or-or-expression' },
         {
-          'begin': '\\?',
-          'beginCaptures': 'keyword.operator.conditional.begin.d',
-          'end': ':',
-          'endCaptures': 'keyword.operator.conditional.end.d',
-          'patterns': [
-              { 'include': '#expression' }
-          ]
+          'match': '\\s(\\?|:)\\s',
+          'name': 'keyword.operator.expression.d'
         }
       ]
     },
-    'or-or-expression': {
+    'logical-expression': {
       'patterns': [
         {
-          'match': '\\|\\|',
-          'name': 'keyword.operator.oror.d'
+          'match': '\\|\\||&&|==|!=|!',
+          'name': 'keyword.operator.logical.d'
         },
-        { 'include': '#and-and-expression' }
       ]
     },
-    'and-and-expression': {
+
+    'bitwise-expression': {
       'patterns': [
         {
-          'match': '&&',
-          'name': 'keyword.operator.andand.d'
+          'match': '\\||\\^|&',
+          'name': 'keyword.operator.bitwise.d'
         },
-        { 'include': '#or-expression' },
-        { 'include': '#cmp-expression' },
-      ]
-    },
-    'or-expression': {
-      'patterns': [
-        {
-          'match': '\\|',
-          'name': 'keyword.operator.or.d'
-        },
-        { 'include': '#xor-expression' }
-      ]
-    },
-    'xor-expression': {
-      'patterns': [
-        {
-          'match': '\\^',
-          'name': 'keyword.operator.xor.d'
-        },
-        { 'include': '#and-expression' }
-      ]
-    },
-    'and-expression': {
-      'patterns': [
-        {
-          'match': '&',
-          'name': 'keyword.operator.and.d'
-        },
-        { 'include': '#shift-expression' },
-      ]
-    },
-    'cmp-expression': {
-      'patterns': [
-        { 'include': '#shift-expression' },
-        { 'include': '#equal-expression' },
-        { 'include': '#identity-expression' },
-        { 'include': '#rel-expression' },
-        { 'include': '#in-expression' }
-      ]
-    },
-    'equal-expression': {
-      'patterns': [
-        {
-          'match': '==|!=',
-          'name': 'keyword.operator.equality.d'
-        },
-        { 'include': '#shift-expression' }
       ]
     },
     'identity-expression': {
       'patterns': [
         {
-          'match': 'is|!is',
+          'match': '\\s(is|!is)\\s',
           'name': 'keyword.operator.identity.d'
         },
-        { 'include': '#shift-expression' }
       ]
     },
     'rel-expression': {
@@ -290,16 +243,14 @@
           'match': '!<>=|!<>|<>=|!>=|!<=|<=|>=|<>|!>|!<|<|>',
           'name': 'keyword.operator.rel.d'
         },
-        { 'include': '#shift-expression' }
       ]
     },
     'in-expression': {
       'patterns': [
         {
-          'match': 'in|\\!in',
+          'match': '\\s(in|\\!in)\\s',
           'name': 'keyword.operator.in.d'
         },
-        { 'include': '#shift-expression' }
       ]
     },
     'shift-expression': {
@@ -311,65 +262,12 @@
         { 'include': '#add-expression' }
       ]
     },
-    'add-expression': {
+    'arithmetic-expression': {
       'patterns': [
         {
-          'match': '\\+|-',
+          'match': '\\^\\^|\\+\\+|--|\\+|-|~|\\*|/|%',
           'name': 'keyword.operator.add.d'
         },
-        { 'include': '#mul-expression' },
-        { 'include': '#cat-expression'},
-      ]
-    },
-    'cat-expression': {
-      'patterns': [
-        {
-          'match': '~',
-          'name': 'keyword.operator.cat.d'
-        },
-        { 'include': '#add-expression' },
-        { 'include': '#mul-expression' }
-      ]
-    },
-    'mul-expression': {
-      'patterns': [
-        {
-          'match': '\\*|/|%'
-          'name': 'keyword.operator.mul.d'
-        },
-        { 'include': '#unary-expression' },
-      ]
-    },
-    'unary-expression': {
-      'patterns': [
-        {
-          'match': '&|(\\+\\+)|(--)|\\*|-|\\+|!',
-          'name': 'keyword.operator.unary.d'
-        },
-        { 'include': '#complement-expression' },
-        {
-          'begin': '\\(',
-          'beginCaptures': 'support.type.parens-expression.begin.d',
-          'end': '\\)',
-          'endCaptures': 'support.type.parens-expression.end.d',
-          'patterns': [
-              { 'include': '#type' }
-          ]
-        },
-        { 'include': '#identifier' },
-        { 'include': '#template-instance' },
-        { 'include': '#delete-expression' },
-        { 'include': '#cast-expression' },
-        { 'include': '#pow-expression' }
-      ]
-    },
-    'complement-expression': {
-      'patterns': [
-        {
-          'match': '~',
-          'name': 'keyword.operator.complement.d'
-        },
-        { 'include': '#unary-expression' }
       ]
     },
     'new-expression': {
@@ -378,83 +276,6 @@
           'match': 'new\\s+',
           'name': 'keyword.other.new.d'
         },
-        { 'include': '#allocator-arguments' },
-        { 'include': '#type' },
-        { 'include': '#new-expression-with-args' }
-      ]
-    },
-    'new-expression-with-args': {
-      'patterns': [
-        {
-          'match': 'new\\s+',
-          'name': 'keyword.other.new.d'
-        }
-        { 'include': '#allocator-arguments' },
-        { 'include': '#type' },
-        {
-          'begin': '\\[',
-          'beginCaptures': 'support.type.expression.bracket.begin.d',
-          'end': '\\]',
-          'endCaptures': 'support.type.expression.bracket.end.d',
-          'patterns': [
-            { 'include': '#assign-expression' },
-          ]
-        }
-        {
-          'begin': '\\(',
-          'beginCaptures': 'support.type.parens-expression.begin.d',
-          'end': '\\)',
-          'endCaptures': 'support.type.parens-expression.end.d',
-          'patterns': [
-              { 'include': '#argument-list' }
-          ]
-        },
-        { 'include': '#new-anon-class-expression' }
-      ]
-    },
-    'allocator-arguments': {
-      'patterns': [
-        'begin': '\\(',
-        'beginCaptures': 'support.type.parens-expression.begin.d',
-        'end': '\\)',
-        'endCaptures': 'support.type.parens-expression.end.d',
-        'patterns': [
-            { 'include': '#argument-list' }
-        ]
-      ]
-    },
-    'argument-list': {
-      'patterns': [
-        { 'include': '#assign-expression' },
-        { 'include': '#comma' }
-      ]
-    },
-    'new-anon-class-expression': {
-      'patterns': [
-        {
-          'match': 'new\\s+',
-          'name': 'keyword.other.new.d'
-        },
-        { 'include': '#allocator-arguments' },
-        {
-          'match': 'class\\s+',
-          'name': 'entity.name.class.d'
-        },
-        { 'include': '#class-arguments' },
-        { 'include': '#super-class' },
-        { 'include': '#interfaces' },
-        { 'include': '#aggregate-body' }
-      ]
-    },
-    'class-arguments': {
-      'patterns': [
-        'begin': '\\(',
-        'beginCaptures': 'support.type.parens-expression.begin.d',
-        'end': '\\)',
-        'endCaptures': 'support.type.parens-expression.end.d',
-        'patterns': [
-            { 'include': '#argument-list' }
-        ]
       ]
     },
     'delete-expression': {
@@ -463,58 +284,19 @@
           'match': 'delete\\s+',
           'name': 'keyword.other.delete.d'
         },
-        { 'include': '#unary-expression' }
       ]
     },
     'cast-expression': {
       'patterns': [
         {
           'begin': 'cast\\s*\\(',
-          'beginCaptures': 'support.type.cast.begin.d',
+          'beginCaptures': { '0': { 'name': 'support.type.cast.begin.d' } },
           'end': '\\)',
-          'endCaptures': 'support.type.cast.end.d',
+          'endCaptures': { '0': { 'name': 'support.type.cast.end.d' } },
           'patterns': [
-              { 'include': '#type' },
-              { 'include': '#type-ctors' }
+              { 'include': '#type' }
           ]
         },
-        { 'include': '#unary-expression' }
-      ]
-    },
-    'pow-expression': {
-      'patterns': [
-        { 'include': '#postfix-expression' },
-        {
-          'match': '\\^\\^',
-          'name': 'keyword.operator.pow.d'
-        },
-        { 'include': '#unary-expression' }
-      ]
-    },
-    'postfix-expression': {
-      'patterns': [
-        { 'include': '#primary-expression' },
-        { 'include': '#postfix-expression' },
-        { 'include': '#identifier' },
-        { 'include': '#template-instance' },
-        { 'include': '#new-expression' },
-        {
-          'match': '(\\+\\+)|(--)',
-          'name': 'keyword.operator.postfix-op.d'
-        },
-        {
-          'begin': '\\(',
-          'beginCaptures': 'support.type.parens-expression.begin.d',
-          'end': '\\)',
-          'endCaptures': 'support.type.parens-expression.end.d',
-          'patterns': [
-              { 'include': '#argument-list' }
-          ]
-        },
-        { 'include': '#type-ctors' },
-        { 'include': '#basic-type' },
-        { 'include': '#index-expression' },
-        { 'include': '#slice-expression' }
       ]
     },
     'index-expression': {
@@ -522,117 +304,13 @@
         { 'include': '#postfix-expression' },
         {
           'begin': '\\[',
-          'beginCaptures': 'support.type.index.bracket.begin.d',
+          'beginCaptures': { '0': { 'name': 'support.type.index.bracket.begin.d' } }
           'end': '\\]',
-          'endCaptures': 'support.type.index.bracket.end.d',
+          'endCaptures': { '0': { 'name': 'support.type.index.bracket.end.d' } },
           'patterns': [
-              { 'include': '#argument-list' },
+              { 'include': '#expression' },
           ]
         }
-      ]
-    },
-    'slice-expression': {
-      'patterns': [
-        { 'include': '#postfix-expression' },
-        {
-          'begin': '\\[',
-          'beginCaptures': 'support.type.slice.bracket.begin.d',
-          'end': '\\]',
-          'endCaptures': 'support.type.slice.bracket.end.d',
-          'patterns': [
-              { 'include': '#assign-expression' },
-              {
-                'match': '\\.\\.',
-                'name': 'keyword.operator.range.d'
-              }
-          ]
-        }
-      ]
-    },
-    'primary-expression': {
-      'patterns': [
-        {
-          'match': 'this|super|null|true|false|$',
-          'name': 'constant.language.primary-expression.d'
-        },
-        { 'include': '#identifier' },
-        { 'include': '#template-instance' },
-        { 'include': '#integer-literal' },
-        { 'include': '#float-literal' },
-        { 'include': '#character-literal' },
-        { 'include': '#string-literals' },
-        { 'include': '#array-literal' },
-        { 'include': '#assoc-array-literal' },
-        { 'include': '#function-literal' },
-        { 'include': '#assert-expression' },
-        { 'include': '#mixin-expression' },
-        { 'include': '#import-expression' },
-        { 'include': '#new-expression-with-args' },
-        { 'include': '#basic-type-x' },
-        { 'include': '#typeof' },
-        { 'include': '#typeid-expression' },
-        { 'include': '#is-expression' },
-        {
-          'begin': '\\(',
-          'beginCaptures': 'support.type.parens-expression.begin.d',
-          'end': '\\)',
-          'endCaptures': 'support.type.parens-expression.end.d',
-          'patterns': [
-              { 'include': '#expression' }
-          ]
-        },
-        { 'include': '#traits-expression' },
-        { 'include': '#special-keyword' }
-      ]
-    },
-    'string-literals': {
-      'patterns': [
-        { 'include': '#string-literal' }
-      ]
-    },
-    'array-literal': {
-      'patterns': [
-        'begin': '\\[',
-        'beginCaptures': 'support.type.array.bracket.begin.d',
-        'end': '\\]',
-        'endCaptures': 'support.type.array.bracket.end.d',
-        'patterns': [
-            { 'include': '#argument-list' }
-        ]
-      ]
-    },
-    'assoc-array-literal': {
-      'patterns': [
-        'begin': '\\[',
-        'beginCaptures': 'support.type.assoc-array.bracket.begin.d',
-        'end': '\\]',
-        'endCaptures': 'support.type.assoc-array.bracket.end.d',
-        'patterns': [
-            { 'include': '#key-value-pairs' }
-        ]
-      ]
-    },
-    'key-value-pairs': {
-      'patterns': [
-        { 'include': '#key-value-pair' },
-        { 'include': '#comma' }
-      ]
-    },
-    'key-value-pair': {
-      'patterns': [
-        { 'include': '#key-expression' },
-        { 'include': '#colon' },
-        { 'include': '#value-expression' }
-      ]
-    },
-    'key-expression': {
-      'patterns': [
-        { 'include': '#assign-expression' }
-      ]
-    },
-    'value-expression': {
-      'patterns': [
-        { 'include': '#assign-expression' }
       ]
     },
     'function-literal': {
@@ -641,73 +319,55 @@
           'match': '(function|delegate)\\s+',
           'name': 'entity.name.function.d'
         },
-        { 'include': '#type' },
-        { 'include': '#parameter-attributes' },
-        { 'include': '#function-body' },
-        { 'include': '#lambda' }
-      ]
-    },
-    'parameter-attributes': {
-      'patterns': [
-        { 'include': '#parameters' },
-        { 'include': '#function-attributes' }
       ]
     },
     'lambda': {
       'patterns': [
         {
-          'match': '=>',
-          'name': 'keyword.operator.lambda.d'
+          'match': '=>\\s*(function|delegate)\\s+',
+          'name': 'entity.name.lambda.d'
         },
-        { 'include': '#assign-expression' },
-        { 'include': '#identifier' },
-        {
-          'match': '(function|delegate)\\s+',
-          'name': 'entity.name.function.d'
-        },
-        { 'include': '#parameter-attributes' }
       ]
     },
     'assert-expression': {
       'patterns': [
         'begin': 'assert\\s+\\(',
-        'beginCaptures': 'keyword.other.assert.begin.d',
+        'beginCaptures': { '0': { 'name': 'keyword.other.assert.begin.d' } },
         'end': '\\)',
-        'endCaptures': 'keyword.other.assert.end.d',
+        'endCaptures': { '0': { 'name': 'keyword.other.assert.end.d' } },
         'patterns': [
-          { 'include': '#assign-expression' },
-          { 'include': '#comma' }
+          { 'include': '#expression' }
         ]
       ]
     },
     'mixin-expression': {
       'patterns': [
         'begin': 'mixin\\s+\\(',
-        'beginCaptures': 'keyword.other.mixin.begin.d',
+        'beginCaptures': { '0': { 'name': 'keyword.other.mixin.begin.d' } },
         'end': '\\)',
-        'endCaptures': 'keyword.other.mixin.end.d',
+        'endCaptures': { '0': { 'name': 'keyword.other.mixin.end.d' } },
         'patterns': [
-          { 'include': '#assign-expression' }
+          { 'include': '#expression' }
         ]
       ]
     },
     'import-expression': {
       'patterns': [
         'begin': 'import\\s+\\(',
-        'beginCaptures': 'keyword.other.import.begin.d',
+        'beginCaptures': { '0': { 'name': 'keyword.other.import.begin.d' } },
         'end': '\\)',
-        'endCaptures': 'keyword.other.import.end.d',
+        'endCaptures': { '0': { 'name': 'keyword.other.import.end.d' } },
         'patterns': [
-          { 'include': '#assign-expression' }
+          { 'include': '#expression' }
         ]
       ]
     },
     'typeid-expression': {
       'patterns': [
-        'begin': 'typeid\\s+\\(',
-        'beginCaptures': 'keyword.other.typeid.begin.d',
+        'begin': 'typeid\\s*\\(',
+        'beginCaptures': { '0': { 'name': 'keyword.other.typeid.begin.d' } },
         'end': '\\)',
-        'endCaptures': 'keyword.other.typeid.end.d',
+        'endCaptures': { '0': { 'name': 'keyword.other.typeid.end.d' } },
         'patterns': [
           { 'include': '#type' },
           { 'include': '#expression' }
@@ -716,10 +376,10 @@
     },
     'is-expression': {
       'patterns': [
-        'begin': 'is\\s+\\(',
-        'beginCaptures': 'keyword.control.is.begin.d',
+        'begin': 'is\\s*\\(',
+        'beginCaptures': { '0': { 'name': 'keyword.operator.is.begin.d' } },
         'end': '\\)',
-        'endCaptures': 'keyword.control.is.end.d',
+        'endCaptures': { '0': { 'name': 'keyword.operator.is.end.d' } },
         'patterns': [
           { 'include': '#type' },
           {
@@ -727,10 +387,9 @@
             'name': 'keyword.operator.equivalency.d'
           },
           { 'include': '#colon' },
-          { 'include': '#type-specialization' },
           { 'include': '#comma' },
-          { 'include': '#template-parameter-list' },
-          { 'include': '#identifier' }
+          { 'include': '#identifier' },
+          { 'include': '#type-specialization' }
         ]
       ]
     },
@@ -740,15 +399,14 @@
           'match': 'struct|union|class|interface|enum|function|delegate|super|const|immutable|inout|shared|return|__parameters',
           'name': 'keyword.other.storage.type-specialization.d'
         },
-        { 'include': '#type' }
       ]
     },
     'traits-expression': {
       'patterns': [
-        'begin': '__traits\\s+\\(',
-        'beginCaptures': 'keyword.other.traits.begin.d',
+        'begin': '__traits\\s*\\(',
+        'beginCaptures': { '0': { 'name': 'keyword.other.traits.begin.d' } },
         'end': '\\)',
-        'endCaptures': 'keyword.other.traits.end.d',
+        'endCaptures': { '0': { 'name': 'keyword.other.traits.end.d' } },
         'patterns': [
           { 'include': '#traits-keyword' },
           { 'include': '#comma' },
@@ -780,2128 +438,2128 @@
         'name': 'constant.language.special-keyword.d'
       ]
     },
-    ###########################################################################
-    # Statement
-    ###########################################################################
-    'statement': {
-      'patterns': [
-        { 'include': '#semi-colon' },
-        { 'include': '#non-empty-statement' },
-        { 'include': '#scope-block-statement' }
-      ]
-    },
-    'no-scope-non-empty-statement': {
-      'patterns': [
-        { 'include': '#non-empty-statement' },
-        { 'include': '#block-statment'}
-      ]
-    },
-    'no-scope-statement': {
-      'patterns': [
-        { 'include': '#semi-colon' },
-        { 'include': '#non-empty-statement' },
-        { 'include': '#block-statement' }
-      ]
-    },
-    'non-empty-or-scope-block-statement': {
-      'patterns': [
-        { 'include': '#non-empty-statement' },
-        { 'include': '#scope-block-statement' }
-      ]
-    },
-    'non-empty-statement': {
-      'patterns': [
-        { 'include': '#non-empty-statement-no-case-no-default' },
-        { 'include': '#case-statement' },
-        { 'include': '#case-range-statement' },
-        { 'include': '#default-statement' },
-      ]
-    },
-    'non-empty-statement-no-case-no-default': {
-      'patterns': [
-        { 'include': '#labeled-statement' },
-        { 'include': '#expression-statement' },
-        { 'include': '#declaration-statement' },
-        { 'include': '#if-statement' },
-        { 'include': '#while-statement' },
-        { 'include': '#do-statement' },
-        { 'include': '#for-statement' },
-        { 'include': '#foreach-statement' },
-        { 'include': '#switch-statement' },
-        { 'include': '#final-switch-statement' },
-        { 'include': '#continue-statement' },
-        { 'include': '#break-statement' },
-        { 'include': '#return-statement' },
-        { 'include': '#goto-statement' },
-        { 'include': '#with-statement' },
-        { 'include': '#synchronized-statement' },
-        { 'include': '#try-statement' },
-        { 'include': '#scope-guard-statement' },
-        { 'include': '#throw-statement' },
-        { 'include': '#asm-statement' },
-        { 'include': '#pragma-statement' },
-        { 'include': '#mixin-statement' },
-        { 'include': '#foreach-range-statement' },
-        { 'include': '#conditional-statement' },
-        { 'include': '#static-assert' },
-        { 'include': '#template-mixin' },
-        { 'include': '#import-declaration' },
-      ]
-    },
-    'scope-statement': {
-      'patterns': [
-        { 'include': '#non-empty-statement' },
-        { 'include': '#block-statement' }
-      ]
-    },
-    'scope-block-statement': {
-      'patterns': [
-        { 'include': '#block-statement' }
-      ]
-    },
-    'labeled-statement': {
-      'patterns': [
-        { 'include': '#colon' },
-        { 'include': '#no-scope-statement' },
-        { 'include': '#statement' },
-        { 'include': '#identifier' }
-      ]
-    },
-    'block-statement': {
-      'patterns': [
-        {
-          'begin': '\\{',
-          'beginCaptures': { '0': { 'name': 'support.type.brackets-expression.begin.d' } },
-          'end': '\\}',
-          'encCaptures': { '0': { 'name': 'support.type.brackets-expression.end.d' } },
-          'patterns': [
-            { 'include': '#statement-list' }
-          ]
-        },
-      ]
-    },
-    'statement-list': {
-      'patterns': [
-        { 'include': '#statement' }
-      ]
-    },
-    'expression-statement': {
-      'patterns': [
-        { 'include': '#expression' },
-        { 'include': '#semi-colon' }
-      ]
-    },
-    'declaration-statement': {
-      'patterns': [
-        { 'include': '#declaration' }
-      ]
-    },
-    'if-statement': {
-      'patterns': [
-        {
-          'match': 'if\\s+',
-          'name': 'keyword.control.if.d'
-        },
-        {
-          'begin': '\\(',
-          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
-          'end': '\\)',
-          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
-          'patterns': [
-            { 'include': '#if-condition' }
-          ]
-        },
-        { 'include': '#then-statement' },
-        {
-          'match': 'else\\s+',
-          'name': 'keyword.control.else.d'
-        },
-        { 'include': '#else-statement' }
-      ]
-    },
-    'if-condition': {
-      'patterns': [
-        {
-          'match': 'auto',
-          'name': 'storage.modifier.auto.d'
-        },
-        { 'include': '#equal' },
-        { 'include': '#ctors' },
-        { 'include': '#basic-type' },
-        { 'include': '#declarator' },
-        { 'include': '#expression' },
-        { 'include': '#identifier' }
-      ]
-    },
-    'then-statement': {
-      'patterns': [
-        { 'include': '#scope-statement' }
-      ]
-    },
-    'else-statement': {
-      'patterns': [
-        { 'include': '#scope-statement' }
-      ]
-    },
-    'while-statement': {
-      'patterns': [
-        {
-          'match': 'while',
-          'name': 'keyword.control.while.d'
-        },
-        {
-          'begin': '\\(',
-          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
-          'end': '\\)',
-          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
-          'patterns': [
-            { 'include': '#expression' }
-          ]
-        },
-
-      ]
-    },
-    'do-statement': {
-      'patterns': [
-        {
-          'match': 'do',
-          'name': 'keyword.control.do.d'
-        },
-        { 'include': '#scope-statement' },
-        {
-          'match': 'while',
-          'name': 'keyword.control.while.d'
-        },
-        {
-          'begin': '\\(',
-          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
-          'end': '\\)',
-          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
-          'patterns': [
-            { 'include': '#expression' }
-          ]
-        }
-      ]
-    },
-    'for-statement': {
-      'patterns': [
-        {
-          'match': 'for',
-          'name': 'keyword.control.for.d'
-        },
-        {
-          'begin': '\\(',
-          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
-          'end': '\\)',
-          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
-          'patterns': [
-            { 'include': '#initialize' },
-            { 'include': '#test' },
-            { 'include': '#semi-colon' },
-            { 'include': '#increment' }
-          ]
-        },
-        { 'include': '#scope-statement' }
-      ]
-    },
-    'initialize': {
-      'patterns': [
-        { 'include': '#semi-colon' },
-        { 'include': '#no-scope-non-empty-statement' }
-      ]
-    },
-    'test': {
-      'patterns': [
-        { 'include': '#expression' }
-      ]
-    },
-    'increment': {
-      'patterns': [
-        { 'include': '#expression' }
-      ]
-    },
-    'foreach-statement': {
-      'patterns': [
-        { 'include': '#foreach' },
-        {
-          'begin': '\\(',
-          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
-          'end': '\\)',
-          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
-          'patterns': [
-            { 'include': '#foreach-type-list' },
-            { 'include': '#semi-colon' },
-            { 'include': '#foreach-aggregate' },
-          ]
-        },
-        { 'include': '#no-scope-non-empty-statement' }
-      ]
-    },
-    'foreach': {
-      'patterns': [
-        'match': 'foreach|foreach_reverse',
-        'name': 'keyword.control.foreach.d'
-      ]
-    },
-    'foreach-type-list': {
-      'patterns': [
-        { 'include': '#foreach-type' },
-        { 'include': '#comma' }
-      ]
-    },
-    'for-each-type': {
-      'patterns': [
-        {
-          'match': 'ref\\s+',
-          'name': 'storage.modifier.ref.d'
-        },
-        { 'include': '#type-ctors' },
-        { 'include': '#basic-type' },
-        { 'include': '#declarator' },
-        { 'include': '#identifier' }
-      ]
-    },
-    'foreach-aggregate': {
-      'patterns': [
-        { 'include': '#expression' }
-      ]
-    },
-    'foreach-range-statement': {
-      'patterns': [
-        { 'include': '#foreach' },
-        {
-          'begin': '\\(',
-          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
-          'end': '\\)',
-          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
-          'patterns': [
-            { 'include': '#foreach-type' },
-            { 'include': '#semi-colon' },
-            { 'include': '#lwr-expression' },
-            {
-              'match': '\\.\\.',
-              'name': 'keyword.operator.range.d'
-            },
-            { 'include': '#upr-expression' },
-          ]
-        },
-        { 'include': '#scope-statement' }
-      ]
-    },
-    'lwr-expression': {
-      'patterns': [
-        { 'include': '#expression' }
-      ]
-    },
-    'upr-expression': {
-      'patterns': [
-        { 'include': '#expression' }
-      ]
-    },
-    'switch-statement': {
-      'patterns': [
-        {
-          'begin': 'switch\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.switch.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.control.switch.end.d' } },
-          'patterns': [
-            { 'include': '#expression' }
-          ]
-        },
-        { 'include': '#scope-statement' }
-      ]
-    },
-    'case-statement': {
-      'patterns': [
-        {
-          'match': 'case\\s+',
-          'name': 'keyword.control.case.range.d'
-        },
-        { 'include': '#argument-list' },
-        {
-          'match': ':',
-          'name': 'keyword.control.case.colon.d'
-        },
-        { 'include': '#scope-statement-list' }
-      ]
-    },
-    'case-range-statement': {
-      'patterns': [
-        {
-          'match': 'case\\s+',
-          'name': 'keyword.control.case.range.d'
-        },
-        { 'include': '#first-exp'},
-        {
-          'match': ':',
-          'name': 'keyword.control.case.colon.d'
-        },
-        {
-          'match': '\\.\\.\\s*case\\s+',
-          'name': 'keyword.control.case.range-2.d'
-        },
-        { 'include': '#last-exp' },
-        { 'include': '#scope-statement-list' }
-      ]
-    },
-    'first-exp': {
-      'patterns': [
-        { 'include': '#assign-expression' }
-      ]
-    },
-    'last-exp': {
-      'patterns': [
-        { 'include': '#assign-expression' }
-      ]
-    },
-    'default-statement': {
-      'patterns': [
-        {
-          'match': 'default\\s+:\\s+',
-          'name': 'keyword.control.default.d'
-        },
-        {
-          'include': '#scope-statement-list'
-        }
-      ]
-    },
-    'scope-statement-list': {
-      'patterns': [
-        { 'include': '#statement-list-no-case-no-default' }
-      ]
-    },
-    'statement-list-no-case-no-default': {
-      'patterns': [
-        { 'include': '#statement-no-case-no-default' },
-      ]
-    },
-    'statement-no-case-no-default': {
-      'patterns': [
-        { 'include': '#non-empty-statement-no-case-no-default' },
-        { 'include': '#scope-block-statement' }
-      ]
-    },
-    'final-switch-statement': {
-      'patterns': [
-        {
-          'begin': 'final\\s+switch\\s+\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.final-switch.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.control.final-switch.end.d' } },
-          'patterns': [
-            { 'include': '#expression' }
-          ]
-        },
-        { 'include': '#scope-statement' }
-      ]
-    },
-    'continue-statement': {
-      'patterns': [
-        {
-          'begin': 'continue',
-          'beginCaptures': { '0': { 'name': 'keyword.control.continue.d' } },
-          'end': ';',
-          'patterns': [
-            { 'include': '#identifier' }
-          ]
-        }
-      ]
-    },
-    'break-statement': {
-      'patterns': [
-        {
-          'begin': 'break',
-          'beginCaptures': { '0': { 'name': 'keyword.control.break.d' } },
-          'end': ';',
-          'patterns': [
-            { 'include': '#identifier' }
-          ]
-        }
-      ]
-    },
-    'return-statement': {
-      'patterns': [
-        {
-          'begin': 'return\\s*',
-          'beginCaptures': { '0': { 'name': 'keyword.control.return.d' } },
-          'end': ';',
-          'patterns': [
-            { 'include': '#expression' }
-          ]
-        }
-      ]
-    },
-    'goto-statement': {
-      'patterns': [
-        {
-          'match': 'goto\\s+default',
-          'name': 'keyword.control.goto.d'
-        },
-        {
-          'begin': 'goto\\s+case\\s+',
-          'beginCaptures': { '0': { 'name': 'keyword.control.goto.d' } },
-          'end': ';',
-          'patterns': [
-            { 'include': '#expression' }
-          ]
-        },
-        {
-          'begin': 'goto\\s+',
-          'beginCaptures': { '0': { 'name': 'keyword.control.goto.d' } },
-          'end': ';',
-          'patterns': [
-            { 'include': '#identifier' }
-          ]
-        },
-      ]
-    },
-    'with-statement': {
-      'patterns': [
-        {
-          'begin': 'with\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.with.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.control.with.end.d' } },
-          'patterns': [
-            { 'include': '#symbol' },
-            { 'include': '#template-instance' },
-            { 'include': '#expression' },
-          ]
-        },
-        { 'include': '#scope-statement' }
-      ]
-    },
-    'synchronized-statement': {
-      'patterns': [
-        {
-          'begin': 'synchronized\\s+\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.synchronized.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.control.synchronized.end.d' } },
-          'patterns': [
-            { 'include': '#expression' }
-          ]
-        },
-        {
-          'match': 'synchronized\\s+(?!\\()',
-          'name': 'keyword.control.synchronized.d'
-        },
-        {  'include': '#scope-statement' }
-      ]
-    },
-    'try-statement': {
-      'patterns': [
-        {
-          'match': 'try\\s+',
-          'name': 'keyword.control.try.d'
-        },
-        { 'include': '#scope-statement' },
-        { 'include': '#catches' },
-        { 'include': '#finally-statement' }
-      ]
-    },
-    'catches': {
-      'patterns': [
-        { 'include': '#last-catch' },
-        { 'include': '#catch' },
-        { 'include': '#catches' }
-      ]
-    },
-    'last-catch': {
-      'patterns': [
-        {
-          'match': 'catch\\s+(?!\\()',
-          'name': 'keyword.control.catch.d'
-        },
-        { 'include': '#no-scope-non-empty-statement' }
-      ]
-    },
-    'catch': {
-      'patterns': [
-        {
-          'begin': 'catch\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.catch.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.control.catch.end.d' } },
-          'patterns': [
-            { 'include': '#catch-parameter' },
-          ]
-        },
-        { 'include': '#no-scope-non-empty-statement' }
-      ]
-    },
-    'catch-parameter': {
-      'patterns': [
-        { 'include': '#basic-type' },
-        { 'include': '#identifier' }
-      ]
-    },
-    'finally-statement': {
-      'patterns': [
-        {
-          'match': 'finally\\s+',
-          'name': 'keyword.control.throw.d',
-        },
-        { 'include': '#no-scope-non-empty-statement' }
-      ]
-    },
-    'throw-statement': {
-      'patterns': [
-        {
-          'begin': 'throw\\s+',
-          'beginCaptures': { '0': { 'name': 'keyword.control.throw.d' } },
-          'end': ';',
-          'patterns': [
-            { 'include': '#expression' }
-          ]
-        }
-      ]
-    },
-    'scope-guard-statement': {
-      'patterns': [
-        {
-          'match': 'scope\\s*\\((exit|success|failure)\\)\\s+',
-          'name': 'keyword.control.scope.d'
-        },
-        { 'include': '#non-empty-or-scope-block-statement' }
-      ]
-    },
-    'asm-statement': {
-      'patterns': [
-        'begin': 'asm\\s*\\{',
-        'end': '\\}',
-        'beginCaptures': { '0': { 'name': 'keyword.control.asm.begin.d' } },
-        'endCaptures': { '0': { 'name': 'keyword.control.asm.end.d' } },
-        'patterns': [
-          { 'include': '#asm-instruction' },
-        ],
-      ]
-    },
-    'asm-instruction-list': {
-      'patterns': [
-        { 'include': '#asm-instruction' }
-      ]
-    },
-    'pragma-statement': {
-      'patterns': [
-        { 'include': '#pragma' },
-        { 'include': '#no-scope-statement' }
-      ]
-    },
-    'mixin-statement': {
-      'patterns': [
-        'begin': 'mixin\\s*\\(',
-        'beginCaptures': { '0': { 'name': 'keyword.control.mixin.begin.d' } },
-        'end': '\\)',
-        'endCaptures': { '0': { 'name': 'keyword.control.mixin.end.d' } }
-        'patterns': [
-          { 'include': '#assign-expression' }
-        ]
-      ]
-    },
-    ###########################################################################
-    # Iasm
-    ###########################################################################
-    'asm-instruction': {
-      'patterns': [
-        {
-          'match': 'align|even|naked|db|ds|di|dl|df|dd|de|:',
-          'name': 'keyword.asm-instruction.d',
-        },
-        { 'include': '#operands' },
-        { 'include': '#integer-expression' }
-      ]
-    },
-    'operands': {
-      'patterns': [
-        {
-          'match': ',',
-          'name': 'keyword.operator.comma.assembly.d'
-        }
-        { 'include': '#asm-exp' },
-      ]
-    },
-    'asm-exp': {
-      'patterns': [
-        {
-          'match': '\\?|:',
-          'name': 'keyword.operator.ternary.assembly.d',
-        },
-        {
-          'match': '\\]|\\[',
-          'name': 'keyword.operator.bracket.assembly.d',
-        },
-        {
-          'match': '>>>|\\|\\||&&|==|!=|<=|>=|<<|>>|\\||\\^|&|<|>|\\+|-|\\*|/|%|~|!',
-          'name': 'keyword.operator.assembly.d'
-        },
-        { 'include': '#asm-una-exp' },
-      ]
-    }
-    'integer-expression': {
-      'patterns': [
-        { 'include': '#integer-literal' },
-        { 'include': '#identifier' },
-      ]
-    },
-    'asm-una-exp': {
-      'patterns': [
-        { 'include': '#asm-type-prefix' },
-        {
-          'match': 'offsetof|seg',
-          'name': 'support.type.assembly.d'
-        },
-        { 'include': '#asm-primary-expression' },
-      ]
-    },
-    'asm-primary-expression': {
-      'patterns': [
-        { 'include': '#integer-literal' },
-        { 'include': '#float-literal' },
-        {
-          'match': '__LOCAL_SIZE',
-          'name': 'constant.language.assembly.d'
-        },
-        { 'include': '#register' },
-        { 'include': '#register-64' },
-        { 'include': '#identifier' }
-      ]
-    },
-    'asm-type-prefix': {
-      'patterns': [
-        'match': '(near\\s+ptr)|(far\\s+ptr)|(byte\\s+ptr)|(short\\s+ptr)|(int\\s+ptr)|(word\\s+ptr)|(dword\\s+ptr)|(qword\\s+ptr)|(float\\s+ptr)|(double\\s+ptr)|(real\\s+ptr)',
-        'name': 'support.type.asm-type-prefix.d',
-      ]
-    },
-    'register': {
-      'patterns': [
-        'match': 'XMM0|XMM1|XMM2|XMM3|XMM4|XMM5|XMM6|XMM7|MM0|MM1|MM2|MM3|MM4|MM5|MM6|MM7|ST\\(0\\)|ST\\(1\\)|ST\\(2\\)|ST\\(3\\)|ST\\(4\\)|ST\\(5\\)|ST\\(6\\)|ST\\(7\\)|ST|TR1|TR2|TR3|TR4|TR5|TR6|TR7|DR0|DR1|DR2|DR3|DR4|DR5|DR6|DR7|CR0|CR2|CR3|CR4|EAX|EBX|ECX|EDX|EBP|ESP|EDI|ESI|AL|AH|AX|BL|BH|BX|CL|CH|CX|DL|DH|DX|BP|SP|DI|SI|ES|CS|SS|DS|GS|FS',
-        'name': 'storage.type.assembly.register.d',
-      ]
-    },
-    'register-64': {
-      'patterns': [
-        'match': 'RAX|RBX|RCX|RDX|BPL|RBP|SPL|RSP|DIL|RDI|SIL|RSI|R8B|R8W|R8D|R8|R9B|R9W|R9D|R9|R10B|R10W|R10D|R10|R11B|R11W|R11D|R11|R12B|R12W|R12D|R12|R13B|R13W|R13D|R13|R14B|R14W|R14D|R14|R15B|R15W|R15D|R15|XMM8|XMM9|XMM10|XMM11|XMM12|XMM13|XMM14|XMM15|YMM0|YMM1|YMM2|YMM3|YMM4|YMM5|YMM6|YMM7|YMM8|YMM9|YMM10|YMM11|YMM12|YMM13|YMM14|YMM15',
-        'name': 'storage.type.assembly.register-64.d'
-      ]
-    },
-    ###########################################################################
-    # Declaration
-    ###########################################################################
-    'declaration': {
-      'patterns': [
-        { 'include': '#alias-declaration' },
-        { 'include': '#aggregate-declaration' },
-        { 'include': '#enum-declaration' },
-        { 'include': '#import-declaration' },
-        { 'include': '#decl' }
-      ]
-    },
-    'alias-declaration': {
-      'patterns': [
-        {
-          'match': 'alias\\s+',
-          'name': 'keyword.alias.d'
-        },
-        { 'include': '#storage-class' },
-        { 'include': '#basic-type' },
-        { 'include': '#declarator' },
-        { 'include': '#alias-declaration-x' }
-      ]
-    },
-    'alias-declaration-x': {
-      'patterns': [
-        { 'include': '#comma' }
-        { 'include': '#identifier' },
-        { 'include': '#template-parameters' },
-        { 'include': '#equal' },
-        { 'include': '#storage-classes' },
-        { 'include': '#type' },
-      ]
-    },
-    'auto-declaration': {
-      'patterns': [
-        { 'include': '#storage-classes' },
-        { 'include': '#auto-declaration-x' }
-      ]
-    },
-    'auto-declaration-x': {
-      'patterns': [
-        { 'include': '#comman' },
-        { 'include': '#identifier' },
-        { 'include': '#template-parameters' },
-        { 'include': '#equal' },
-        { 'include': '#initializer' },
-      ]
-    },
-    'decl': {
-      'patterns': [
-        { 'include': '#storage-classes' },
-        { 'include': '#basic-type' },
-        { 'include': '#declarators' },
-        { 'include': '#declarator' },
-        { 'include': '#function-body' },
-        { 'include': '#auto-declaration' }
-      ]
-    },
-    'declarators': {
-      'patterns': [
-        { 'include': '#declarator-initializer' },
-        { 'include': '#equal' },
-        { 'include': '#declarator-identifier-list' }
-      ]
-    },
-    'declarator-initializer': {
-      'patterns': [
-        { 'include': '#declarator' },
-        { 'include': '#equal' },
-        { 'include': '#initializer' }
-      ]
-    },
-    'declarator-identifier-list': {
-      'patterns': [
-        { 'include': '#comma' },
-        { 'include': '#declarator-identifier' }
-      ]
-    },
-    'declarator-identifier': {
-      'patterns': [
-        { 'include': '#identifier' },
-        { 'include': '#equal' },
-        { 'include': '#initializer' }
-      ]
-    },
-    'declarator': {
-      'patterns': [
-        { 'include': '#basic-type-2' },
-        { 'include': '#identifier' },
-        { 'include': '#declarator-suffixes' },
-        {
-          'begin': '\\(',
-          'beginCaptures': { '0': {'name': 'support.type.parentheses.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'support.type.parentheses.end.d' } },
-          'patterns': [
-            { 'include': '#declarator' }
-          ]
-        }
-      ]
-    },
-    'declarator2': {
-      'patterns': [
-        { 'include': '#basic-type-2' },
-        # { 'include': '#declarator-suffixes' },
-        {
-          'begin': '\\(',
-          'beginCaptures': { '0': {'name': 'support.type.parentheses.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'support.type.parentheses.end.d' } },
-          'patterns': [
-            { 'include': '#declarator2' }
-          ]
-        }
-      ]
-    },
-    'declarator-suffixes': {
-      'patterns': [
-        { 'include': '#declarator-suffix' }
-      ]
-    },
-    'declarator-suffix': {
-      'patterns': [
-        {
-          'match': '\\[\\s*\\]',
-          'name': 'support.type.declarator-suffix.empty-brackets.d'
-        }
-        {
-          'begin': '\\[',
-          'beginCaptures': 'support.type.declarator-suffix.bracket.begin.d',
-          'end': '\\]',
-          'endCaptures': 'support.type.declarator-suffix.bracket.end.d',
-          'patterns': [
-            { 'include': '#type' },
-            { 'include': '#assign-expression' }
-          ]
-        }
-        { 'include': '#parameters' },
-        { 'include': '#member-function-attributes' },
-        { 'include': '#template-parameters' },
-        { 'include': '#constraint' },
-
-      ]
-    },
-    'storage-classes': {
-      'patterns': [
-        { 'include': '#storage-class' }
-      ]
-    },
-    'storage-class': {
-      'patterns': [
-        {
-          'match': 'deprecated|enum|static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref',
-          'name': 'storage.class.d'
-        },
-        { 'include': '#linkage-attribute' },
-        { 'include': '#align-attribute' },
-        { 'include': '#property' },
-      ]
-    },
-    'initializer': {
-      'patterns': [
-        { 'include': '#void-initializer' },
-        { 'include': '#non-void-initializer' }
-      ]
-    },
-    'void-initializer': {
-      'patterns': [
-        'match': 'void',
-        'name': 'support.type.void.d'
-      ]
-    },
-    'non-void-initializer': {
-      'patterns': [
-        { 'include': '#exp-initializer' },
-        { 'include': '#array-initializer' },
-        { 'include': '#struct-initializer' }
-      ]
-    },
-    'exp-initializer': {
-      'patterns': [
-        { 'include': '#expression' }
-      ]
-    },
-    'array-initializer': {
-      'patterns': [
-        'begin': '\\[',
-        'beginCaptures': { '0': { 'name': 'support.type.array.initializer.begin.d' } },
-        'end': '\\]',
-        'endCaptures': {'0': { 'name': 'support.type.array.initializer.end.d' } },
-        'patterns': [
-          {
-            'match': ',',
-            'name': 'keyword.operator.comma.d'
-          },
-          { 'include': '#array-member-initialization' },
-        ]
-      ]
-    },
-    'array-member-initializations': {
-      'patterns': [
-        {
-          'match': ',',
-          'name': 'keyword.operator.comma.d'
-        },
-        { 'include': '#array-member-initialization' },
-      ]
-    },
-    'array-member-initialization': {
-      'patterns': [
-        { 'include': '#non-void-initializer' },
-        { 'include': '#expression' },
-        {
-          'match': ':',
-          'name': 'support.type.tag.d'
-        }
-      ]
-    },
-    'struct-initializer': {
-      'patterns': [
-        'begin': '\\{',
-        'beginCaptures': { '0': { 'name': 'support.type.struct.initializer.begin.d' } },
-        'end': '\\}',
-        'endCaptures': { '0': { 'name': 'support.type.struct.initializer.end.d' } },
-        'patterns': [
-          { 'include': '#struct-member-initializers' }
-        ]
-      ]
-    }
-    'struct-member-initializers': {
-      'patterns': [
-        {
-          'match': ',',
-          'name': 'keyword.operator.comma.d'
-        },
-        { 'include': '#struct-member-initializer' },
-      ]
-    },
-    'struct-member-initializer': {
-      'patterns': [
-        { 'include': '#non-void-initializer' },
-        { 'include': '#identifier' },
-        {
-          'match': ':',
-          'name': 'support.type.tag.d'
-        },
-      ]
-    },
-
-
-
-    ###########################################################################
-    # Function
-    ###########################################################################
-    'parameters': {
-      'patterns': [
-        {
-          'match': '\\(\\s*\\.\\.\\.\\s*\\)',
-          'name': 'support.type.tuple-parameter.d'
-        },
-        {
-          'begin': '\\(',
-          'beginCaptures': { '0': { 'name': 'support.type.parameters.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'support.type.parameters.end.d' } },
-          'patterns': [
-              {
-                'match': ',',
-                'name': 'keyword.operator.comma.d'
-              },
-              { 'include': '#parameter' }
-          ]
-        }
-      ]
-    },
-    'parameter': {
-      'patterns': [
-        { 'include': '#in-out' },
-        { 'include': '#basic-type' },
-        { 'include': '#type' },
-        {
-          'match': '\\.\\.\\.',
-          'name': 'support.type.tuple.d'
-        },
-        { 'include': '#declarator' }
-      ]
-    },
-    'in-out': {
-      'patterns': [
-        { 'include': '#in-out-x' }
-      ]
-    },
-    'in-out-x': {
-      'patterns': [
-        {
-          'match': 'auto|final|in|out|lazy|ref|scope',
-          'name': 'storage.type.modifier.inout.d'
-        },
-        { 'include': '#type-ctor' }
-      ]
-    }
-    'function-attributes': {
-      'patterns': [
-        { 'include': '#function-attribute' },
-      ]
-    },
-    'function-attribute': {
-      'patterns': [
-        {
-          'match': 'nothrow|pure',
-          'name': 'storage.type.modifier.function-attribute.d'
-        },
-        {
-          'include': '#property'
-        }
-      ]
-    },
-    'member-function-attributes': {
-      'patterns': [
-        { 'include': '#member-function-attribute' }
-      ]
-    },
-    'member-function-attribute': {
-      'patterns': [
-        {
-          'match': 'const|immutable|inout|shared',
-          'name': 'storage.type.modifier.member-function-attribute'
-        },
-        { 'include': '#function-attribute' }
-      ]
-    },
-    'default-initializer-expression': {
-      'patterns': [
-        { 'include': '#expression' },
-        { 'include': '#special-keyword' }
-      ]
-    },
-    'function-body': {
-      'patterns': [
-        { 'include': '#block-statement' },
-        { 'include': '#in-statement' },
-        { 'include': '#out-statement' },
-        { 'include': '#body-statement' },
-      ]
-    },
-    'in-statement': {
-      'patterns': [
-        {
-          'match': 'in',
-          'name': '#keyword.control.in.d'
-        },
-        { 'include': '#block-statement' }
-      ]
-    },
-    'out-statement': {
-      'patterns': [
-        {
-          'begin': 'out\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.out.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.control.out.end.d' } },
-          'patterns': [
-            { 'include': '#identifier' }
-          ]
-        },
-        {
-          'match': 'out',
-          'name': 'keyword.control.out.d'
-        },
-        { 'include': '#block-statement' }
-      ]
-    },
-    'body-statement': {
-      'patterns': [
-        {
-          'match': 'body',
-          'name': 'keyword.control.body.d'
-        },
-        { 'include': '#block-statement' }
-      ]
-    },
-    'constructor': {
-      'patterns': [
-        {
-          'match': 'this',
-          'name': 'entity.name.function.constructor.d'
-        },
-        { 'include': '#parameters' },
-        { 'include': '#member-function-attributes' },
-        { 'include': '#semi-colon' },
-        { 'include': '#function-body' },
-        { 'include': '#constructor-template' }
-      ]
-    },
-    'constructor-template': {
-      'patterns': [
-        {
-          'match': 'this',
-          'name': 'entity.name.function.constructor-template.d'
-        },
-        { 'include': '#template-parameters' },
-        { 'include': '#parameters' },
-        { 'include': '#member-function-attributes'},
-        { 'include': '#constraint' },
-        { 'include': '#function-body' }
-      ]
-    },
-    'destructor': {
-      'patterns': [
-        {
-          'match': '~this\\s*\\(\\s*\\)',
-          'name': '#entity.name.class.destructor.d'
-        },
-        { 'include': '#member-function-attributes' },
-        { 'include': '#function-body' },
-      ]
-    },
-    'postblit': {
-      'patterns': [
-        {
-          'match': 'this\\s*\\(\\s*this\\s*\\)\\s',
-          'name': '#entity.name.class.postblit.d'
-        },
-        { 'include': '#member-function-attributes' },
-        { 'include': '#function-body'}
-      ]
-    },
-    'allocator': {
-      'patterns': [
-        {
-          'match': 'new',
-          'name': 'keyword.other.new.d'
-        },
-        { 'include': '#parameters' },
-        { 'include': '#function-body' }
-      ]
-    },
-    'deallocator': {
-      'patterns': [
-        {
-          'match': 'delete',
-          'name': 'keyword.other.delete.d'
-        },
-        { 'include': '#parameters' },
-        { 'include': '#function-body' }
-      ]
-    },
-    'invariant': {
-      'patterns': [
-        {
-          'match': 'invariant\\s*\\(\\s*\\)',
-          'name': 'entity.name.class.invariant.d'
-        },
-        { 'include': '#block-statement' }
-      ]
-    },
-    'unit-test': {
-      'patterns': [
-        {
-          'match': 'unittest',
-          'name': 'entity.name.function.unit-test.d'
-        },
-        { 'include': '#function-body' }
-      ]
-    },
-    'static-constructor': {
-      'patterns': [
-        { 'include': '#shared-static-constructor' }
-      ]
-    },
-    'static-destructor': {
-      'patterns': [
-        { 'include': '#shared-static-destructor' }
-      ]
-    },
-    'shared-static-constructor': {
-      'patterns': [
-        {
-          'match': '(shared\\s+)?static\\s+this\\s*\\(\\s*\\)',
-          'name': 'entity.name.class.constructor.shared-static.d'
-        },
-        { 'include': '#function-body' }
-      ]
-    },
-    'shared-static-destructor': {
-      'patterns': [
-        {
-          'match': '(shared\\s+)?static\\s+~\\s*this\\s*\\(\\s*\\)',
-          'name': 'entity.name.class.destructor.static.d'
-        },
-        { 'include': '#member-function-attributes' },
-        { 'include': '#function-body' }
-      ]
-    },
-    ###########################################################################
-    # Aggregate
-    ###########################################################################
-    'aggregate-declaration': {
-      'patterns': [
-        { 'include': '#class-declaration' },
-        { 'include': '#interface-declaration' },
-        { 'include': '#struct-declaration' },
-        { 'include': '#union-declaration' }
-      ]
-    },
-    'class-declaration': {
-      'patterns': [
-        {
-          'match': 'class',
-          'name': 'entity.name.class.d'
-        },
-        { 'include': '#identifier' },
-        { 'include': '#base-class-list' },
-        { 'include': '#aggregate-body' },
-        { 'include': '#class-template-declaration' }
-      ]
-    },
-    'class-template-declaration': {
-      'patterns': [
-        {
-          'match': 'class',
-          'name': 'entity.name.class.d'
-        },
-        { 'include': '#identifier' },
-        { 'include': '#template-parameters' },
-        { 'include': '#constraint' },
-        { 'include': '#base-class-list' },
-        { 'include': '#aggregate-body' }
-      ]
-    },
-    'interface-declaration': {
-      'patterns': [
-        {
-          'match': 'interface',
-          'name': 'entity.name.class.interface.d'
-        },
-        { 'include': '#identifier' },
-        { 'include': '#base-interface-list' },
-        { 'include': '#aggregate-body' },
-        { 'include': '#interface-template-declaration' },
-      ]
-    },
-    'interface-template-declaration': {
-      'patterns': [
-        {
-          'match': 'interface',
-          'name': 'entity.name.class.interface.d'
-        },
-        { 'include': '#identifier' },
-        { 'include': '#template-parameters' },
-        { 'include': '#constraint' },
-        { 'include': '#base-class-list' },
-        { 'include': '#aggregate-body' }
-      ]
-    },
-    'struct-declaration': {
-      'patterns': [
-        {
-          'match': 'struct',
-          'name': 'storage.type.struct.d'
-        },
-        { 'include': '#identifier' },
-        { 'include': '#aggregate-body' },
-        { 'include': '#struct-template-declaration' },
-        { 'include': '#anon-struct-declaration' }
-      ]
-    },
-    'struct-template-declaration': {
-      'patterns': [
-        {
-          'match': 'struct',
-          'name': 'storage.type.struct.d'
-        },
-        { 'include': '#identifier' },
-        { 'include': '#template-parameters' },
-        { 'include': '#constraint' },
-        { 'include': '#aggregate-body' },
-      ]
-    },
-    'anon-struct-declaration': {
-      'patterns': [
-        {
-          'match': 'struct',
-          'name': 'storage.type.struct.d'
-        },
-        { 'include': '#aggregate-body' }
-      ]
-    },
-    'union-declaration': {
-      'patterns': [
-        {
-          'match': 'union',
-          'name': 'storage.type.union.d'
-        },
-        { 'include': '#identifier' },
-        { 'include': '#aggregate-body' },
-        { 'include': '#union-template-declaration' },
-        { 'include': '#anon-union-declaration' }
-      ]
-    },
-    'union-template-declaration': {
-      'patterns': [
-        {
-          'match': 'union',
-          'name': 'storage.type.union.d'
-        },
-        { 'include': '#identifier' },
-        { 'include': '#template-parameters' },
-        { 'include': '#constraint' },
-        { 'include': '#aggregate-body' }
-      ]
-    },
-    'anon-union-declaration': {
-      'patterns': [
-        {
-          'match': 'union',
-          'name': 'storage.type.union.d'
-        },
-        { 'include': '#aggregate-body' }
-      ]
-    },
-    'aggregate-body': {
-      'patterns': [
-        'begin': '\\{',
-        'end': '\\}',
-        'patterns': [
-          { 'include': '#decl-defs' }
-        ]
-      ]
-    },
-    'base-class-list': {
-      'patterns': [
-        { 'include': '#colon' },
-        { 'include': '#super-class' },
-        { 'include': '#comma' },
-        { 'include': '#interfaces' }
-      ]
-    },
-    'base-interface-list': {
-      'patterns': [
-        { 'include': '#colon' },
-        { 'include': '#interfaces' }
-      ]
-    },
-    'super-class': {
-      'patterns': [
-        { 'include': '#identifier' },
-      ]
-    },
-    'interfaces': {
-      'patterns': [
-        { 'include': '#comma' },
-        { 'include': '#interface' }
-      ]
-    },
-    'interface': {
-      'patterns': [
-        { 'include': '#identifier' }
-      ]
-    },
-    'alias-this': {
-      'begin': 'alias\\s+',
-      'beginCaptures': { '0': { 'name': 'support.type.alias.d' } },
-      'end': 'this',
-      'endCaptures': { '0': { 'name': 'support.class.keyword.this.d' } },
-      'patterns': [
-        { 'include': '#identifier' }
-      ]
-    },
-    ###########################################################################
-    # Enum
-    ###########################################################################
-    'enum-declaration': {
-      'patterns': [
-        {
-          'match': 'enum',
-          'name': 'storage.type.enum.d'
-        },
-        { 'include': '#enum-tag' },
-        { 'include': '#enum-body' },
-        { 'include': '#colon' },
-        { 'include': '#enum-base-type' }
-      ]
-    },
-    'enum-tag': {
-      'patterns': [
-        { 'include': '#identifier' },
-      ]
-    },
-    'enum-base-type': {
-      'patterns': [
-        { 'include': '#type' }
-      ]
-    },
-    'enum-body': {
-      'patterns': [
-        { 'include': '#empty-enum-body' },
-        { 'include': '#enum-members-body' }
-      ]
-    },
-    'empty-enum-body': {
-      'patterns': [
-        { 'include': '#semi-colon' }
-      ]
-    },
-    'enum-members-body': {
-      'patterns': [
-        'begin': '\\{',
-        'end': '\\}',
-        'patterns': [
-          { 'include': '#enum-members' }
-        ]
-      ]
-    },
-    'enum-members': {
-      'patterns': [
-        { 'include': '#enum-member' },
-        { 'include': '#comma' }
-      ]
-    },
-    'enum-member': {
-      'patterns': [
-        { 'include': '#type' },
-        { 'include': '#identifier' },
-        { 'include': '#equal' },
-        { 'include': '#expression '}
-      ]
-    },
-
-    ###########################################################################
-    # Template
-    ###########################################################################
-    'template-declaration': {
-      'patterns': [
-        {
-          'match': 'template',
-          'name': 'support.class.template.d',
-        },
-        { 'include': '#identifier' },
-        { 'include': '#template-parameters' },
-        { 'include': '#constraint' },
-        {
-          'begin': '\\{',
-          'beginCaptures': { '0': { 'name': 'support.class.template.decldefs.begin.d' } },
-          'end': '\\}',
-          'endCaptures': { '0': { 'name': 'support.class.template.decldefs.end.d' } },
-          'patterns': [
-              { 'include': '#decl-defs' }
-          ]
-        }
-      ]
-    },
-    'template-parameters': {
-      'patterns': [
-        'begin': '\\(',
-        'beginCaptures': { '0': { 'name': 'support.class.template.parameters.begin.d' } },
-        'end': '\\)',
-        'endCaptures': { '0': { 'name': 'support.class.template.parameters.end.d' } },
-        'patterns': [
-          { 'include': '#template-parameter-list' }
-        ]
-      ]
-    },
-    'template-parameter-list': {
-      'patterns': [
-        {
-          'match': ',',
-          'name': 'keyword.operator.comma.d'
-        },
-        { 'include': '#template-parameter' }
-      ]
-    }
-    'template-parameter': {
-      'patterns': [
-        { 'include': '#template-type-parameter' },
-        { 'include': '#template-value-parameter' },
-        { 'include': '#template-alias-parameter' },
-        { 'include': '#template-tuple-parameter' },
-        { 'include': '#template-this-parameter' },
-      ]
-    },
-    'constraint': {
-      'patterns': [
-        'begin': 'if\\s+\\(',
-        'beginCaptures': { '0': { 'name': 'support.class.template.constraint.begin.d' } },
-        'end': '\\)',
-        'endCaptures': { '0': { 'name': 'support.class.template.constraint.end.d' } },
-        'patterns': [
-          { 'include': '#expression' }
-        ]
-      ]
-    },
-    'template-instance': {
-      'patterns': [
-        { 'include': '#template-arguments' },
-        { 'include': '#identifier' }
-      ]
-    },
-    'template-arguments': {
-      'patterns': [
-        {
-          'begin': '!\\s+\\(',
-          'beginCaptures': { '0': { 'name': 'support.class.template.arguments.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'support.class.template.arguments.end.d' } },
-          'patterns': [
-            { 'include': '#template-argument-list' }
-          ]
-        },
-        {
-          'match': '!',
-          'name': 'support.class.template.argument.d'
-        },
-        { 'include': '#template-single-argument' }
-      ]
-    }
-    'template-argument-list': {
-      'patterns': [
-        {
-          'match': ',',
-          'name': 'keyword.operator.comma.d'
-        },
-        { 'include': '#template-argument' }
-      ]
-    },
-    'template-argument': {
-      'patterns': [
-        { 'include': '#type' },
-        { 'include': '#expression' },
-        { 'include': '#symbol' }
-      ]
-    },
-    'symbol': {
-      'patterns': [
-        { 'include': '#symbol-tail' }
-      ]
-    },
-    'symbol-tail': {
-      'patterns': [
-        { 'include': '#template-instance' },
-        { 'include': '#identifier' },
-      ]
-    },
-    'template-single-argument': {
-      'patterns': [
-        {
-          'match': 'true|false|null|this',
-          'name': 'constant.language.template-single-argument.d'
-        },
-        { 'include': '#special-keyword' },
-        { 'include': '#basic-type-x' },
-        { 'include': '#string-literal' },
-        { 'include': '#character-literal' },
-        { 'include': '#integer-literal' },
-        { 'include': '#float-literal' },
-        { 'include': '#identifier' }
-      ]
-    },
-    'template-type-parameter': {
-      'patterns': [
-        { 'include': '#identifier' },
-        { 'include': '#template-type-parameter-specialization' },
-        { 'include': '#template-type-parameter-default' },
-      ]
-    },
-    'template-type-parameter-specialization': {
-      'patterns': [
-        {
-          'match': ':',
-          'name': 'support.class.tag.d'
-        },
-        { 'include': '#type' }
-      ]
-    },
-    'template-type-parameter-default': {
-      'patterns': [
-        {
-          'match': '=',
-          'name': 'support.class.template.operator.equal.d'
-        },
-        { 'include': '#type' }
-      ]
-    },
-    'template-this-parameter': {
-      'patterns': [
-        {
-          'match': 'this',
-          'name': 'support.class.keyword.this.d'
-        },
-        { 'include': '#template-type-parameter' }
-      ]
-    },
-    'template-value-parameter': {
-      'patterns': [
-        { 'include': '#basic-type' },
-        { 'include': '#declarator' },
-        { 'include': '#template-value-parameter-specialization' },
-        { 'include': '#template-value-parameter-default' },
-      ]
-    },
-    'template-value-parameter-specialization': {
-      'patterns': [
-        {
-          'match': ':',
-          'name': 'support.class.tag.d'
-        },
-        { 'include': '#conditional-expression' }
-      ]
-    },
-    'template-value-parameter-default': {
-      'patterns': [
-        {
-          'match': '=',
-          'name': 'support.class.template.operator.equal.d'
-        },
-        { 'include': '#expression' },
-        { 'include': '#special-keyword' }
-      ]
-    },
-    'template-alias-parameter': {
-      'patterns': [
-        {
-          'match': 'alias',
-          'name': 'support.class.template.alias.d'
-        },
-        { 'include': '#identifier' },
-        { 'include': '#template-alias-parameter-specialization' },
-        { 'include': '#template-alias-parameter-default' },
-        { 'include': '#basic-type' },
-        { 'include': '#declarator' },
-      ]
-    },
-    'template-alias-parameter-specialization': {
-      'patterns': [
-        {
-          'match': ':',
-          'name': 'support.class.tag.d'
-        },
-        { 'include': '#type' },
-        { 'include': '#conditional-expression' }
-      ]
-    },
-    'template-alias-parameter-default': {
-      'patterns': [
-        {
-          'match': '=',
-          'name': 'support.class.template.operator.equal.d'
-        },
-        { 'include': '#type' },
-        { 'include': '#conditional-expression' }
-      ]
-    },
-    'template-tuple-parameter': {
-      'patterns': [
-        { 'include': '#identifier' },
-        {
-          'match': '\\.\\.\\.',
-          'name': 'support.type.tuple.d'
-        }
-      ]
-    },
-    'template-mixin-declaration': {
-      'patterns': [
-        'begin': 'mixin\\s+template\\s+',
-        'beginCaptures': { '0': { 'name': 'support.class.template.mixin.template.begin.d' } },
-        'end': '\\{(.*)\\}',
-        'endCaptures': {
-          '0': {
-            'name': 'support.class.template.mixin.template.end.d',
-            'patterns': [
-              { 'include': '#decl-defs' }
-            ]
-          },
-        },
-        'patterns': [
-          { 'include': '#identifier' },
-          { 'include': '#template-parameters' },
-          { 'include': '#constraint' }
-        ]
-      ]
-    },
-    'template-mixin': {
-      'patterns': [
-        'begin': 'mixin\\s+',
-        'beginCaptures': { '0': { 'name': 'support.class.template.mixin.begin.d' } },
-        'end': ';',
-        'endCaptures': { '0': { 'name': 'support.class.template.mixin.end.d' } },
-        'patterns': [
-          { 'include': '#mixin-template-name' },
-          { 'include': '#template-arguments' },
-          { 'include': '#identifier' }
-        ]
-      ]
-    },
-    'mixin-template-name': {
-      'patterns': [
-        { 'include': '#qualified-identifier-list' },
-        { 'include': '#typeof' },
-      ]
-    },
-    'qualified-identifier-list': {
-      'patterns': [
-        { 'include': '#identifier' },
-        { 'include': '#template-instance' },
-      ]
-    },
-
-
-
-
-    ###########################################################################
-    # Attribute
-    ###########################################################################
-    'attribute-specifier': {
-      'patterns': [
-        { 'include': '#attribute' },
-        { 'include': '#colon' },
-        { 'include': '#declaration-block' }
-      ]
-    },
-    'attribute': {
-      'patterns': [
-        { 'include': '#linkage-attribute' },
-        { 'include': '#align-attribute' },
-        { 'include': '#deprecated-attribute' },
-        { 'include': '#protection-attribute' },
-        { 'include': '#pragma' },
-        {
-          'match': 'static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref',
-          'name': 'entity.other.attribute-name.d'
-        },
-        { 'include': '#property' },
-      ]
-    },
-    'declaration-block': {
-      'patterns': [
-        {
-          'begin': '\\{',
-          'end': '\\}',
-          'patterns': [
-            { 'include': '#decl-defs' },
-          ]
-        }
-        { 'include': '#decl-def' },
-      ]
-    }
-    'linkage-attribute': {
-      'patterns': [
-        {
-          'begin': 'extern\\s*\\(\\s*C\\+\\+,',
-          'beginCaptures': { '0': { 'name': 'keyword.other.extern.cplusplus.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.other.extern.cplusplus.end.d' } },
-          'patterns': [
-            { 'include': '#identifier-list' },
-          ]
-        },
-        {
-          'begin': 'extern\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.other.extern.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.other.extern.end.d' } },
-          'patterns': [
-            { 'include': '#linkage-type' },
-          ]
-        }
-      ]
-    },
-    'linkage-type': {
-      'patterns': [
-        'match': 'C|C\\+\\+|D|Windows|Pascal|System',
-        'name': 'storage.modifier.linkage-type.d'
-      ]
-    },
-    'align-attribute': {
-      'patterns': [
-        {
-          'begin': 'align\\(',
-          'end': '\\)',
-          'name': 'storage.modifier.align-attribute.d',
-          'patterns': [
-            { 'include': '#integer-literal' }
-          ]
-        },
-        {
-          'match': 'align\\s*[^\\(]',
-          'name': 'storage.modifier.align-attribute.d',
-        }
-      ]
-    },
-    'deprecated-attribute': {
-      'patterns': [
-        {
-          'begin': 'deprecated\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.other.deprecated.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.other.deprecated.end.d' } },
-          'patterns': [
-            { 'include': '#string-literal' },
-          ]
-        },
-        {
-          'match': 'deprecated\\s*[^\\(]',
-          'name': 'keyword.other.deprecated.plain.d'
-        }
-      ]
-    },
-    'protection-attribute': {
-      'patterns': [
-        'match': 'private|package|protected|public|export',
-        'name': 'keyword.other.protections.d'
-      ]
-    },
-    'property': {
-      'patterns': [
-        {
-          'match': '@(property|safe|trusted|system|disable|nogc)',
-          'name': 'entity.name.tag.property.d',
-        },
-      ]
-    },
-    'property-identifier': {
-      'patterns': [
-        'match': 'property|safe|trusted|system|disable|nogc',
-        'name': 'entity.name.tag.property.d'
-      ]
-    },
-    'user-defined-attribute': {
-      'patterns': [
-        {
-          'match': '@([_\\w][_\\d\\w]*)',
-          'name': 'entity.name.tag.user-defined-property.d',
-        },
-        {
-          'begin': '@([_\\w][_\\d\\w]*)\\(',
-          'end': '\\)',
-          'name': 'entity.name.tag.user-defined-property.d',
-          'patterns': [
-            { 'include': '#expression' }
-          ]
-        }
-      ]
-    },
-
-    'pragma': {
-      'patterns': [
-        {
-          'match': 'pragma\\s?\\(\\s*[_\\w][_\\d\\w]*\\s*\\)',
-          'name': 'gfm.markup.header.preprocessor.pragma.d'
-        },
-        {
-          'begin': 'pragma\\s?\\(\\s*[_\\w][_\\d\\w]*\\s*,',
-          'end': '\\)',
-          'name': 'gfm.markup.header.preprocessor.pragma.arguments.d'
-          'patterns': [
-            { 'include': '#expression' },
-          ]
-        },
-        {
-          'match': '^#!.+',
-          'name': 'gfm.markup.header.preprocessor.script-tag.d'
-        }
-      ]
-    },
-    ###########################################################################
-    # Conditional
-    ###########################################################################
-    'conditional-declaration': {
-      'patterns': [
-        { 'include': '#condition' },
-        { 'include': '#declaration-block' },
-        {
-          'match': 'else',
-          'name': 'keyword.control.else.d'
-        },
-        { 'include': '#colon' },
-        { 'include': '#decl-defs' },
-      ]
-    },
-    'conditional-statement': {
-      'patterns': [
-        { 'include': '#condition' },
-        { 'include': '#no-scope-non-empty-statement' },
-        {
-          'match': 'else',
-          'name': 'keyword.control.else.d'
-        },
-      ]
-    },
-    'condition': {
-      'patterns': [
-        { 'include': '#version-condition' },
-        { 'include': '#debug-condition' },
-        { 'include': '#static-if-condition' },
-      ]
-    },
-    'version-condition': {
-      'patterns': [
-        {
-          'match': 'version\\s*\\(\\s*unittest\\s*\\)',
-          'name': 'keyword.other.version.unittest.d'
-        },
-        {
-          'match': 'version\\s*\\(\\s*assert\\s*\\)',
-          'name': 'keyword.other.version.assert.d'
-        },
-        {
-          'begin': 'version\\s*\\(',
-          'beginCaptures': {
-            '0': { 'name': 'keyword.other.version.identifier.begin.d' },
-          },
-          'end': '\\)',
-          'endCaptures': {
-            '0': { 'name': 'keyword.other.version.identifer.end.d' }
-          }
-          'patterns': [
-            { 'include': '#integer-literal' },
-            { 'include': '#identifier' }
-          ]
-        }
-      ]
-    },
-    'debug-condition': {
-      'patterns': [
-        {
-          'begin': 'debug\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.other.debug.identifier.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.other.debug.identifier.end.d' } },
-          'patterns': [
-            { 'include': '#integer-literal' },
-            { 'include': '#identifier' },
-          ],
-        },
-        {
-          'match': 'debug\\s*[^\\(\\s)]',
-          'name': 'keyword.other.debug.plain.d'
-        }
-      ]
-    },
-    'version-specification': {
-      'patterns': [
-        'match': 'version\\s*=',
-        'name': 'keyword.other.version-specification.d'
-      ]
-    },
-    'debug-specification': {
-      'patterns': [
-        'match': 'debug\\s*=',
-        'name': 'keyword.other.debug-specification.d'
-      ]
-    },
-    'static-if-condition': {
-      'patterns': [
-        'begin': 'static\\s*if\\s*\\(',
-        'beginCaptures': { '0': { 'name': 'keyword.other.static-if.begin.d' } },
-        'end': '\\)',
-        'endCaptures': { '0': { 'name': 'keyword.other.static-if.end.d' } },
-        'patterns': [
-          { 'include' : '#expression' }
-        ],
-      ]
-    }
-    'static-assert': {
-      'patterns': [
-        'begin': 'static\\s*assert\\s*\\(',
-        'beginCaptures': { '0': { 'name': 'keyword.other.static-assert.begin.d' } },
-        'end': '\\)',
-        'endCaptures': { '0': { 'name': 'keyword.other.static-assert.end.d' } },
-        'patterns': [
-          { 'include' : '#expression' }
-        ],
-      ]
-    },
-    ###########################################################################
-    # Module
-    ###########################################################################
-    'module': {
-      'packages': [
-        { 'import': '#module-declaration' },
-        { 'import': '#decl-defs' }
-      ]
-    },
-    'decl-defs': {
-      'packages': [
-        { 'include': '#decl-def' }
-      ]
-    },
-    'decl-def': {
-      'packages': [
-        { 'include': '#attribute-specifier' },
-        { 'include': '#declaration' },
-        { 'include': '#constructor' },
-        { 'include': '#destructor' },
-        { 'include': '#postblit' },
-        { 'include': '#allocator' },
-        { 'include': '#deallocator' },
-        { 'include': '#invariant' },
-        { 'include': '#unit-test' },
-        { 'include': '#alias-this' },
-        { 'include': '#static-constructor' },
-        { 'include': '#static-destructor' },
-        { 'include': '#conditional-declaration' },
-        { 'include': '#debug-specification' },
-        { 'include': '#version-specification' },
-        { 'include': '#static-assert' },
-        { 'include': '#template-declaration' },
-        { 'include': '#template-mixin-declaration' },
-        { 'include': '#template-mixin' },
-        { 'include': '#mixin-declaration' },
-        { 'include': '#shared-static-constructor' },
-        { 'include': '#shared-static-destructor' },
-        { 'include': '#semi-colon' },
-      ]
-    },
-    'module-declaration': {
-      'patterns': [
-        'begin': 'module\\s+',
-        'beginCaptures': { '0': { 'name': 'keyword.package.module.d' } },
-        'end': ';',
-        'patterns': [
-          { 'include': '#module-fully-qualified-name' }
-        ]
-      ]
-    },
-    'module-fully-qualified-name': {
-      'patterns': [
-        { 'include': '#module-name' },
-      ]
-    },
-    'module-name': {
-      'patterns': [
-        { 'include': '#identifier' }
-      ]
-    },
-    'packages': {
-      'patterns': [
-        { 'include': '#package-name' }
-      ]
-    },
-    'package-name': {
-      'patterns': [
-        { 'include': '#identifier' }
-      ]
-    },
-
-    ###########################################################################
-    # Import Declarations
-    ###########################################################################
-    'import-declaration': {
-      'patterns': [
-        {
-          'match': '(static\\s+)?import\\s+',
-          'name': 'keyword.package.import.d'
-        },
-        {
-          '#include': '#import-list'
-        }
-      ]
-    },
-    'import-list': {
-      'patterns': [
-        { 'include': '#import' },
-        { 'include': '#import-bindings' },
-        { 'include': '#comma' },
-      ]
-    },
-    'import': {
-      'patterns': [
-        { 'include': '#module-fully-qualified-name' },
-        { 'include': '#module-alias-identifier' },
-        { 'include': '#equal' }
-      ]
-    },
-    'import-bindings': {
-      'patterns': [
-        { 'include': '#import' },
-        { 'include': '#colon' },
-        { 'include': '#import-bind-list' }
-      ]
-    },
-    'import-bind-list': {
-      'patterns': [
-        { 'include': '#comma' },
-        { 'include': '#import' }
-      ]
-    },
-    'import-bind': {
-      'patterns': [
-        { 'include': '#identifier' },
-        { 'include': '#equal' }
-      ]
-    },
-    'module-alias-identifier': {
-      'patterns': [
-        { 'include': '#identifier' }
-      ]
-    }
-    ###########################################################################
-    # Mixin Decl
-    ###########################################################################
-    'mixin-declaration': {
-      'patterns': [
-        'begin': 'mixin\\s*\\(',
-        'end': '\\)',
-        'beginCaptures': { '0': { 'name': 'keyword.mixin.begin.d' } },
-        'endCaptures': { '0': { 'name': 'keyword.mixin.end.d' } },
-        'patterns': [
-          { 'include': '#expression' }
-        ]
-      ]
-    },
-    ###########################################################################
-    # Misc
-    ###########################################################################
+    # ###########################################################################
+    # # Statement
+    # ###########################################################################
+    # 'statement': {
+    #   'patterns': [
+    #     { 'include': '#semi-colon' },
+    #     { 'include': '#non-empty-statement' },
+    #     { 'include': '#scope-block-statement' }
+    #   ]
+    # },
+    # 'no-scope-non-empty-statement': {
+    #   'patterns': [
+    #     { 'include': '#non-empty-statement' },
+    #     { 'include': '#block-statment'}
+    #   ]
+    # },
+    # 'no-scope-statement': {
+    #   'patterns': [
+    #     { 'include': '#semi-colon' },
+    #     { 'include': '#non-empty-statement' },
+    #     { 'include': '#block-statement' }
+    #   ]
+    # },
+    # 'non-empty-or-scope-block-statement': {
+    #   'patterns': [
+    #     { 'include': '#non-empty-statement' },
+    #     { 'include': '#scope-block-statement' }
+    #   ]
+    # },
+    # 'non-empty-statement': {
+    #   'patterns': [
+    #     { 'include': '#non-empty-statement-no-case-no-default' },
+    #     { 'include': '#case-statement' },
+    #     { 'include': '#case-range-statement' },
+    #     { 'include': '#default-statement' },
+    #   ]
+    # },
+    # 'non-empty-statement-no-case-no-default': {
+    #   'patterns': [
+    #     { 'include': '#labeled-statement' },
+    #     { 'include': '#expression-statement' },
+    #     { 'include': '#declaration-statement' },
+    #     { 'include': '#if-statement' },
+    #     { 'include': '#while-statement' },
+    #     { 'include': '#do-statement' },
+    #     { 'include': '#for-statement' },
+    #     { 'include': '#foreach-statement' },
+    #     { 'include': '#switch-statement' },
+    #     { 'include': '#final-switch-statement' },
+    #     { 'include': '#continue-statement' },
+    #     { 'include': '#break-statement' },
+    #     { 'include': '#return-statement' },
+    #     { 'include': '#goto-statement' },
+    #     { 'include': '#with-statement' },
+    #     { 'include': '#synchronized-statement' },
+    #     { 'include': '#try-statement' },
+    #     { 'include': '#scope-guard-statement' },
+    #     { 'include': '#throw-statement' },
+    #     { 'include': '#asm-statement' },
+    #     { 'include': '#pragma-statement' },
+    #     { 'include': '#mixin-statement' },
+    #     { 'include': '#foreach-range-statement' },
+    #     { 'include': '#conditional-statement' },
+    #     { 'include': '#static-assert' },
+    #     { 'include': '#template-mixin' },
+    #     { 'include': '#import-declaration' },
+    #   ]
+    # },
+    # 'scope-statement': {
+    #   'patterns': [
+    #     { 'include': '#non-empty-statement' },
+    #     { 'include': '#block-statement' }
+    #   ]
+    # },
+    # 'scope-block-statement': {
+    #   'patterns': [
+    #     { 'include': '#block-statement' }
+    #   ]
+    # },
+    # 'labeled-statement': {
+    #   'patterns': [
+    #     { 'include': '#colon' },
+    #     { 'include': '#no-scope-statement' },
+    #     { 'include': '#statement' },
+    #     { 'include': '#identifier' }
+    #   ]
+    # },
+    # 'block-statement': {
+    #   'patterns': [
+    #     {
+    #       'begin': '\\{',
+    #       'beginCaptures': { '0': { 'name': 'support.type.brackets-expression.begin.d' } },
+    #       'end': '\\}',
+    #       'encCaptures': { '0': { 'name': 'support.type.brackets-expression.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#statement-list' }
+    #       ]
+    #     },
+    #   ]
+    # },
+    # 'statement-list': {
+    #   'patterns': [
+    #     { 'include': '#statement' }
+    #   ]
+    # },
+    # 'expression-statement': {
+    #   'patterns': [
+    #     { 'include': '#expression' },
+    #     { 'include': '#semi-colon' }
+    #   ]
+    # },
+    # 'declaration-statement': {
+    #   'patterns': [
+    #     { 'include': '#declaration' }
+    #   ]
+    # },
+    # 'if-statement': {
+    #   'patterns': [
+    #     {
+    #       'match': 'if\\s+',
+    #       'name': 'keyword.control.if.d'
+    #     },
+    #     {
+    #       'begin': '\\(',
+    #       'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
+    #       'end': '\\)',
+    #       'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#if-condition' }
+    #       ]
+    #     },
+    #     { 'include': '#then-statement' },
+    #     {
+    #       'match': 'else\\s+',
+    #       'name': 'keyword.control.else.d'
+    #     },
+    #     { 'include': '#else-statement' }
+    #   ]
+    # },
+    # 'if-condition': {
+    #   'patterns': [
+    #     {
+    #       'match': 'auto',
+    #       'name': 'storage.modifier.auto.d'
+    #     },
+    #     { 'include': '#equal' },
+    #     { 'include': '#ctors' },
+    #     { 'include': '#basic-type' },
+    #     { 'include': '#declarator' },
+    #     { 'include': '#expression' },
+    #     { 'include': '#identifier' }
+    #   ]
+    # },
+    # 'then-statement': {
+    #   'patterns': [
+    #     { 'include': '#scope-statement' }
+    #   ]
+    # },
+    # 'else-statement': {
+    #   'patterns': [
+    #     { 'include': '#scope-statement' }
+    #   ]
+    # },
+    # 'while-statement': {
+    #   'patterns': [
+    #     {
+    #       'match': 'while',
+    #       'name': 'keyword.control.while.d'
+    #     },
+    #     {
+    #       'begin': '\\(',
+    #       'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
+    #       'end': '\\)',
+    #       'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#expression' }
+    #       ]
+    #     },
+    #
+    #   ]
+    # },
+    # 'do-statement': {
+    #   'patterns': [
+    #     {
+    #       'match': 'do',
+    #       'name': 'keyword.control.do.d'
+    #     },
+    #     { 'include': '#scope-statement' },
+    #     {
+    #       'match': 'while',
+    #       'name': 'keyword.control.while.d'
+    #     },
+    #     {
+    #       'begin': '\\(',
+    #       'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
+    #       'end': '\\)',
+    #       'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#expression' }
+    #       ]
+    #     }
+    #   ]
+    # },
+    # 'for-statement': {
+    #   'patterns': [
+    #     {
+    #       'match': 'for',
+    #       'name': 'keyword.control.for.d'
+    #     },
+    #     {
+    #       'begin': '\\(',
+    #       'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
+    #       'end': '\\)',
+    #       'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#initialize' },
+    #         { 'include': '#test' },
+    #         { 'include': '#semi-colon' },
+    #         { 'include': '#increment' }
+    #       ]
+    #     },
+    #     { 'include': '#scope-statement' }
+    #   ]
+    # },
+    # 'initialize': {
+    #   'patterns': [
+    #     { 'include': '#semi-colon' },
+    #     { 'include': '#no-scope-non-empty-statement' }
+    #   ]
+    # },
+    # 'test': {
+    #   'patterns': [
+    #     { 'include': '#expression' }
+    #   ]
+    # },
+    # 'increment': {
+    #   'patterns': [
+    #     { 'include': '#expression' }
+    #   ]
+    # },
+    # 'foreach-statement': {
+    #   'patterns': [
+    #     { 'include': '#foreach' },
+    #     {
+    #       'begin': '\\(',
+    #       'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
+    #       'end': '\\)',
+    #       'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#foreach-type-list' },
+    #         { 'include': '#semi-colon' },
+    #         { 'include': '#foreach-aggregate' },
+    #       ]
+    #     },
+    #     { 'include': '#no-scope-non-empty-statement' }
+    #   ]
+    # },
+    # 'foreach': {
+    #   'patterns': [
+    #     'match': 'foreach|foreach_reverse',
+    #     'name': 'keyword.control.foreach.d'
+    #   ]
+    # },
+    # 'foreach-type-list': {
+    #   'patterns': [
+    #     { 'include': '#foreach-type' },
+    #     { 'include': '#comma' }
+    #   ]
+    # },
+    # 'for-each-type': {
+    #   'patterns': [
+    #     {
+    #       'match': 'ref\\s+',
+    #       'name': 'storage.modifier.ref.d'
+    #     },
+    #     { 'include': '#type-ctors' },
+    #     { 'include': '#basic-type' },
+    #     { 'include': '#declarator' },
+    #     { 'include': '#identifier' }
+    #   ]
+    # },
+    # 'foreach-aggregate': {
+    #   'patterns': [
+    #     { 'include': '#expression' }
+    #   ]
+    # },
+    # 'foreach-range-statement': {
+    #   'patterns': [
+    #     { 'include': '#foreach' },
+    #     {
+    #       'begin': '\\(',
+    #       'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
+    #       'end': '\\)',
+    #       'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#foreach-type' },
+    #         { 'include': '#semi-colon' },
+    #         { 'include': '#lwr-expression' },
+    #         {
+    #           'match': '\\.\\.',
+    #           'name': 'keyword.operator.range.d'
+    #         },
+    #         { 'include': '#upr-expression' },
+    #       ]
+    #     },
+    #     { 'include': '#scope-statement' }
+    #   ]
+    # },
+    # 'lwr-expression': {
+    #   'patterns': [
+    #     { 'include': '#expression' }
+    #   ]
+    # },
+    # 'upr-expression': {
+    #   'patterns': [
+    #     { 'include': '#expression' }
+    #   ]
+    # },
+    # 'switch-statement': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'switch\\s*\\(',
+    #       'beginCaptures': { '0': { 'name': 'keyword.control.switch.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'keyword.control.switch.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#expression' }
+    #       ]
+    #     },
+    #     { 'include': '#scope-statement' }
+    #   ]
+    # },
+    # 'case-statement': {
+    #   'patterns': [
+    #     {
+    #       'match': 'case\\s+',
+    #       'name': 'keyword.control.case.range.d'
+    #     },
+    #     { 'include': '#argument-list' },
+    #     {
+    #       'match': ':',
+    #       'name': 'keyword.control.case.colon.d'
+    #     },
+    #     { 'include': '#scope-statement-list' }
+    #   ]
+    # },
+    # 'case-range-statement': {
+    #   'patterns': [
+    #     {
+    #       'match': 'case\\s+',
+    #       'name': 'keyword.control.case.range.d'
+    #     },
+    #     { 'include': '#first-exp'},
+    #     {
+    #       'match': ':',
+    #       'name': 'keyword.control.case.colon.d'
+    #     },
+    #     {
+    #       'match': '\\.\\.\\s*case\\s+',
+    #       'name': 'keyword.control.case.range-2.d'
+    #     },
+    #     { 'include': '#last-exp' },
+    #     { 'include': '#scope-statement-list' }
+    #   ]
+    # },
+    # 'first-exp': {
+    #   'patterns': [
+    #     { 'include': '#assign-expression' }
+    #   ]
+    # },
+    # 'last-exp': {
+    #   'patterns': [
+    #     { 'include': '#assign-expression' }
+    #   ]
+    # },
+    # 'default-statement': {
+    #   'patterns': [
+    #     {
+    #       'match': 'default\\s+:\\s+',
+    #       'name': 'keyword.control.default.d'
+    #     },
+    #     {
+    #       'include': '#scope-statement-list'
+    #     }
+    #   ]
+    # },
+    # 'scope-statement-list': {
+    #   'patterns': [
+    #     { 'include': '#statement-list-no-case-no-default' }
+    #   ]
+    # },
+    # 'statement-list-no-case-no-default': {
+    #   'patterns': [
+    #     { 'include': '#statement-no-case-no-default' },
+    #   ]
+    # },
+    # 'statement-no-case-no-default': {
+    #   'patterns': [
+    #     { 'include': '#non-empty-statement-no-case-no-default' },
+    #     { 'include': '#scope-block-statement' }
+    #   ]
+    # },
+    # 'final-switch-statement': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'final\\s+switch\\s+\\(',
+    #       'beginCaptures': { '0': { 'name': 'keyword.control.final-switch.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'keyword.control.final-switch.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#expression' }
+    #       ]
+    #     },
+    #     { 'include': '#scope-statement' }
+    #   ]
+    # },
+    # 'continue-statement': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'continue',
+    #       'beginCaptures': { '0': { 'name': 'keyword.control.continue.d' } },
+    #       'end': ';',
+    #       'patterns': [
+    #         { 'include': '#identifier' }
+    #       ]
+    #     }
+    #   ]
+    # },
+    # 'break-statement': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'break',
+    #       'beginCaptures': { '0': { 'name': 'keyword.control.break.d' } },
+    #       'end': ';',
+    #       'patterns': [
+    #         { 'include': '#identifier' }
+    #       ]
+    #     }
+    #   ]
+    # },
+    # 'return-statement': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'return\\s*',
+    #       'beginCaptures': { '0': { 'name': 'keyword.control.return.d' } },
+    #       'end': ';',
+    #       'patterns': [
+    #         { 'include': '#expression' }
+    #       ]
+    #     }
+    #   ]
+    # },
+    # 'goto-statement': {
+    #   'patterns': [
+    #     {
+    #       'match': 'goto\\s+default',
+    #       'name': 'keyword.control.goto.d'
+    #     },
+    #     {
+    #       'begin': 'goto\\s+case\\s+',
+    #       'beginCaptures': { '0': { 'name': 'keyword.control.goto.d' } },
+    #       'end': ';',
+    #       'patterns': [
+    #         { 'include': '#expression' }
+    #       ]
+    #     },
+    #     {
+    #       'begin': 'goto\\s+',
+    #       'beginCaptures': { '0': { 'name': 'keyword.control.goto.d' } },
+    #       'end': ';',
+    #       'patterns': [
+    #         { 'include': '#identifier' }
+    #       ]
+    #     },
+    #   ]
+    # },
+    # 'with-statement': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'with\\s*\\(',
+    #       'beginCaptures': { '0': { 'name': 'keyword.control.with.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'keyword.control.with.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#symbol' },
+    #         { 'include': '#template-instance' },
+    #         { 'include': '#expression' },
+    #       ]
+    #     },
+    #     { 'include': '#scope-statement' }
+    #   ]
+    # },
+    # 'synchronized-statement': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'synchronized\\s+\\(',
+    #       'beginCaptures': { '0': { 'name': 'keyword.control.synchronized.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'keyword.control.synchronized.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#expression' }
+    #       ]
+    #     },
+    #     {
+    #       'match': 'synchronized\\s+(?!\\()',
+    #       'name': 'keyword.control.synchronized.d'
+    #     },
+    #     {  'include': '#scope-statement' }
+    #   ]
+    # },
+    # 'try-statement': {
+    #   'patterns': [
+    #     {
+    #       'match': 'try\\s+',
+    #       'name': 'keyword.control.try.d'
+    #     },
+    #     { 'include': '#scope-statement' },
+    #     { 'include': '#catches' },
+    #     { 'include': '#finally-statement' }
+    #   ]
+    # },
+    # 'catches': {
+    #   'patterns': [
+    #     { 'include': '#last-catch' },
+    #     { 'include': '#catch' },
+    #     { 'include': '#catches' }
+    #   ]
+    # },
+    # 'last-catch': {
+    #   'patterns': [
+    #     {
+    #       'match': 'catch\\s+(?!\\()',
+    #       'name': 'keyword.control.catch.d'
+    #     },
+    #     { 'include': '#no-scope-non-empty-statement' }
+    #   ]
+    # },
+    # 'catch': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'catch\\s*\\(',
+    #       'beginCaptures': { '0': { 'name': 'keyword.control.catch.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'keyword.control.catch.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#catch-parameter' },
+    #       ]
+    #     },
+    #     { 'include': '#no-scope-non-empty-statement' }
+    #   ]
+    # },
+    # 'catch-parameter': {
+    #   'patterns': [
+    #     { 'include': '#basic-type' },
+    #     { 'include': '#identifier' }
+    #   ]
+    # },
+    # 'finally-statement': {
+    #   'patterns': [
+    #     {
+    #       'match': 'finally\\s+',
+    #       'name': 'keyword.control.throw.d',
+    #     },
+    #     { 'include': '#no-scope-non-empty-statement' }
+    #   ]
+    # },
+    # 'throw-statement': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'throw\\s+',
+    #       'beginCaptures': { '0': { 'name': 'keyword.control.throw.d' } },
+    #       'end': ';',
+    #       'patterns': [
+    #         { 'include': '#expression' }
+    #       ]
+    #     }
+    #   ]
+    # },
+    # 'scope-guard-statement': {
+    #   'patterns': [
+    #     {
+    #       'match': 'scope\\s*\\((exit|success|failure)\\)\\s+',
+    #       'name': 'keyword.control.scope.d'
+    #     },
+    #     { 'include': '#non-empty-or-scope-block-statement' }
+    #   ]
+    # },
+    # 'asm-statement': {
+    #   'patterns': [
+    #     'begin': 'asm\\s*\\{',
+    #     'end': '\\}',
+    #     'beginCaptures': { '0': { 'name': 'keyword.control.asm.begin.d' } },
+    #     'endCaptures': { '0': { 'name': 'keyword.control.asm.end.d' } },
+    #     'patterns': [
+    #       { 'include': '#asm-instruction' },
+    #     ],
+    #   ]
+    # },
+    # 'asm-instruction-list': {
+    #   'patterns': [
+    #     { 'include': '#asm-instruction' }
+    #   ]
+    # },
+    # 'pragma-statement': {
+    #   'patterns': [
+    #     { 'include': '#pragma' },
+    #     { 'include': '#no-scope-statement' }
+    #   ]
+    # },
+    # 'mixin-statement': {
+    #   'patterns': [
+    #     'begin': 'mixin\\s*\\(',
+    #     'beginCaptures': { '0': { 'name': 'keyword.control.mixin.begin.d' } },
+    #     'end': '\\)',
+    #     'endCaptures': { '0': { 'name': 'keyword.control.mixin.end.d' } }
+    #     'patterns': [
+    #       { 'include': '#assign-expression' }
+    #     ]
+    #   ]
+    # },
+    # ###########################################################################
+    # # Iasm
+    # ###########################################################################
+    # 'asm-instruction': {
+    #   'patterns': [
+    #     {
+    #       'match': 'align|even|naked|db|ds|di|dl|df|dd|de|:',
+    #       'name': 'keyword.asm-instruction.d',
+    #     },
+    #     { 'include': '#operands' },
+    #     { 'include': '#integer-expression' }
+    #   ]
+    # },
+    # 'operands': {
+    #   'patterns': [
+    #     {
+    #       'match': ',',
+    #       'name': 'keyword.operator.comma.assembly.d'
+    #     }
+    #     { 'include': '#asm-exp' },
+    #   ]
+    # },
+    # 'asm-exp': {
+    #   'patterns': [
+    #     {
+    #       'match': '\\?|:',
+    #       'name': 'keyword.operator.ternary.assembly.d',
+    #     },
+    #     {
+    #       'match': '\\]|\\[',
+    #       'name': 'keyword.operator.bracket.assembly.d',
+    #     },
+    #     {
+    #       'match': '>>>|\\|\\||&&|==|!=|<=|>=|<<|>>|\\||\\^|&|<|>|\\+|-|\\*|/|%|~|!',
+    #       'name': 'keyword.operator.assembly.d'
+    #     },
+    #     { 'include': '#asm-una-exp' },
+    #   ]
+    # }
+    # 'integer-expression': {
+    #   'patterns': [
+    #     { 'include': '#integer-literal' },
+    #     { 'include': '#identifier' },
+    #   ]
+    # },
+    # 'asm-una-exp': {
+    #   'patterns': [
+    #     { 'include': '#asm-type-prefix' },
+    #     {
+    #       'match': 'offsetof|seg',
+    #       'name': 'support.type.assembly.d'
+    #     },
+    #     { 'include': '#asm-primary-expression' },
+    #   ]
+    # },
+    # 'asm-primary-expression': {
+    #   'patterns': [
+    #     { 'include': '#integer-literal' },
+    #     { 'include': '#float-literal' },
+    #     {
+    #       'match': '__LOCAL_SIZE',
+    #       'name': 'constant.language.assembly.d'
+    #     },
+    #     { 'include': '#register' },
+    #     { 'include': '#register-64' },
+    #     { 'include': '#identifier' }
+    #   ]
+    # },
+    # 'asm-type-prefix': {
+    #   'patterns': [
+    #     'match': '(near\\s+ptr)|(far\\s+ptr)|(byte\\s+ptr)|(short\\s+ptr)|(int\\s+ptr)|(word\\s+ptr)|(dword\\s+ptr)|(qword\\s+ptr)|(float\\s+ptr)|(double\\s+ptr)|(real\\s+ptr)',
+    #     'name': 'support.type.asm-type-prefix.d',
+    #   ]
+    # },
+    # 'register': {
+    #   'patterns': [
+    #     'match': 'XMM0|XMM1|XMM2|XMM3|XMM4|XMM5|XMM6|XMM7|MM0|MM1|MM2|MM3|MM4|MM5|MM6|MM7|ST\\(0\\)|ST\\(1\\)|ST\\(2\\)|ST\\(3\\)|ST\\(4\\)|ST\\(5\\)|ST\\(6\\)|ST\\(7\\)|ST|TR1|TR2|TR3|TR4|TR5|TR6|TR7|DR0|DR1|DR2|DR3|DR4|DR5|DR6|DR7|CR0|CR2|CR3|CR4|EAX|EBX|ECX|EDX|EBP|ESP|EDI|ESI|AL|AH|AX|BL|BH|BX|CL|CH|CX|DL|DH|DX|BP|SP|DI|SI|ES|CS|SS|DS|GS|FS',
+    #     'name': 'storage.type.assembly.register.d',
+    #   ]
+    # },
+    # 'register-64': {
+    #   'patterns': [
+    #     'match': 'RAX|RBX|RCX|RDX|BPL|RBP|SPL|RSP|DIL|RDI|SIL|RSI|R8B|R8W|R8D|R8|R9B|R9W|R9D|R9|R10B|R10W|R10D|R10|R11B|R11W|R11D|R11|R12B|R12W|R12D|R12|R13B|R13W|R13D|R13|R14B|R14W|R14D|R14|R15B|R15W|R15D|R15|XMM8|XMM9|XMM10|XMM11|XMM12|XMM13|XMM14|XMM15|YMM0|YMM1|YMM2|YMM3|YMM4|YMM5|YMM6|YMM7|YMM8|YMM9|YMM10|YMM11|YMM12|YMM13|YMM14|YMM15',
+    #     'name': 'storage.type.assembly.register-64.d'
+    #   ]
+    # },
+    # ###########################################################################
+    # # Declaration
+    # ###########################################################################
+    # 'declaration': {
+    #   'patterns': [
+    #     { 'include': '#alias-declaration' },
+    #     { 'include': '#aggregate-declaration' },
+    #     { 'include': '#enum-declaration' },
+    #     { 'include': '#import-declaration' },
+    #     { 'include': '#decl' }
+    #   ]
+    # },
+    # 'alias-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': 'alias\\s+',
+    #       'name': 'keyword.alias.d'
+    #     },
+    #     { 'include': '#storage-class' },
+    #     { 'include': '#basic-type' },
+    #     { 'include': '#declarator' },
+    #     { 'include': '#alias-declaration-x' }
+    #   ]
+    # },
+    # 'alias-declaration-x': {
+    #   'patterns': [
+    #     { 'include': '#comma' }
+    #     { 'include': '#identifier' },
+    #     { 'include': '#template-parameters' },
+    #     { 'include': '#equal' },
+    #     { 'include': '#storage-classes' },
+    #     { 'include': '#type' },
+    #   ]
+    # },
+    # 'auto-declaration': {
+    #   'patterns': [
+    #     { 'include': '#storage-classes' },
+    #     { 'include': '#auto-declaration-x' }
+    #   ]
+    # },
+    # 'auto-declaration-x': {
+    #   'patterns': [
+    #     { 'include': '#comman' },
+    #     { 'include': '#identifier' },
+    #     { 'include': '#template-parameters' },
+    #     { 'include': '#equal' },
+    #     { 'include': '#initializer' },
+    #   ]
+    # },
+    # 'decl': {
+    #   'patterns': [
+    #     { 'include': '#storage-classes' },
+    #     { 'include': '#basic-type' },
+    #     { 'include': '#declarators' },
+    #     { 'include': '#declarator' },
+    #     { 'include': '#function-body' },
+    #     { 'include': '#auto-declaration' }
+    #   ]
+    # },
+    # 'declarators': {
+    #   'patterns': [
+    #     { 'include': '#declarator-initializer' },
+    #     { 'include': '#equal' },
+    #     { 'include': '#declarator-identifier-list' }
+    #   ]
+    # },
+    # 'declarator-initializer': {
+    #   'patterns': [
+    #     { 'include': '#declarator' },
+    #     { 'include': '#equal' },
+    #     { 'include': '#initializer' }
+    #   ]
+    # },
+    # 'declarator-identifier-list': {
+    #   'patterns': [
+    #     { 'include': '#comma' },
+    #     { 'include': '#declarator-identifier' }
+    #   ]
+    # },
+    # 'declarator-identifier': {
+    #   'patterns': [
+    #     { 'include': '#identifier' },
+    #     { 'include': '#equal' },
+    #     { 'include': '#initializer' }
+    #   ]
+    # },
+    # 'declarator': {
+    #   'patterns': [
+    #     { 'include': '#basic-type-2' },
+    #     { 'include': '#identifier' },
+    #     { 'include': '#declarator-suffixes' },
+    #     {
+    #       'begin': '\\(',
+    #       'beginCaptures': { '0': {'name': 'support.type.parentheses.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'support.type.parentheses.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#declarator' }
+    #       ]
+    #     }
+    #   ]
+    # },
+    # 'declarator2': {
+    #   'patterns': [
+    #     { 'include': '#basic-type-2' },
+    #     # { 'include': '#declarator-suffixes' },
+    #     {
+    #       'begin': '\\(',
+    #       'beginCaptures': { '0': {'name': 'support.type.parentheses.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'support.type.parentheses.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#declarator2' }
+    #       ]
+    #     }
+    #   ]
+    # },
+    # 'declarator-suffixes': {
+    #   'patterns': [
+    #     { 'include': '#declarator-suffix' }
+    #   ]
+    # },
+    # 'declarator-suffix': {
+    #   'patterns': [
+    #     {
+    #       'match': '\\[\\s*\\]',
+    #       'name': 'support.type.declarator-suffix.empty-brackets.d'
+    #     }
+    #     {
+    #       'begin': '\\[',
+    #       'beginCaptures': 'support.type.declarator-suffix.bracket.begin.d',
+    #       'end': '\\]',
+    #       'endCaptures': 'support.type.declarator-suffix.bracket.end.d',
+    #       'patterns': [
+    #         { 'include': '#type' },
+    #         { 'include': '#assign-expression' }
+    #       ]
+    #     }
+    #     { 'include': '#parameters' },
+    #     { 'include': '#member-function-attributes' },
+    #     { 'include': '#template-parameters' },
+    #     { 'include': '#constraint' },
+    #
+    #   ]
+    # },
+    # 'storage-classes': {
+    #   'patterns': [
+    #     { 'include': '#storage-class' }
+    #   ]
+    # },
+    # 'storage-class': {
+    #   'patterns': [
+    #     {
+    #       'match': 'deprecated|enum|static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref',
+    #       'name': 'storage.class.d'
+    #     },
+    #     { 'include': '#linkage-attribute' },
+    #     { 'include': '#align-attribute' },
+    #     { 'include': '#property' },
+    #   ]
+    # },
+    # 'initializer': {
+    #   'patterns': [
+    #     { 'include': '#void-initializer' },
+    #     { 'include': '#non-void-initializer' }
+    #   ]
+    # },
+    # 'void-initializer': {
+    #   'patterns': [
+    #     'match': 'void',
+    #     'name': 'support.type.void.d'
+    #   ]
+    # },
+    # 'non-void-initializer': {
+    #   'patterns': [
+    #     { 'include': '#exp-initializer' },
+    #     { 'include': '#array-initializer' },
+    #     { 'include': '#struct-initializer' }
+    #   ]
+    # },
+    # 'exp-initializer': {
+    #   'patterns': [
+    #     { 'include': '#expression' }
+    #   ]
+    # },
+    # 'array-initializer': {
+    #   'patterns': [
+    #     'begin': '\\[',
+    #     'beginCaptures': { '0': { 'name': 'support.type.array.initializer.begin.d' } },
+    #     'end': '\\]',
+    #     'endCaptures': {'0': { 'name': 'support.type.array.initializer.end.d' } },
+    #     'patterns': [
+    #       {
+    #         'match': ',',
+    #         'name': 'keyword.operator.comma.d'
+    #       },
+    #       { 'include': '#array-member-initialization' },
+    #     ]
+    #   ]
+    # },
+    # 'array-member-initializations': {
+    #   'patterns': [
+    #     {
+    #       'match': ',',
+    #       'name': 'keyword.operator.comma.d'
+    #     },
+    #     { 'include': '#array-member-initialization' },
+    #   ]
+    # },
+    # 'array-member-initialization': {
+    #   'patterns': [
+    #     { 'include': '#non-void-initializer' },
+    #     { 'include': '#expression' },
+    #     {
+    #       'match': ':',
+    #       'name': 'support.type.tag.d'
+    #     }
+    #   ]
+    # },
+    # 'struct-initializer': {
+    #   'patterns': [
+    #     'begin': '\\{',
+    #     'beginCaptures': { '0': { 'name': 'support.type.struct.initializer.begin.d' } },
+    #     'end': '\\}',
+    #     'endCaptures': { '0': { 'name': 'support.type.struct.initializer.end.d' } },
+    #     'patterns': [
+    #       { 'include': '#struct-member-initializers' }
+    #     ]
+    #   ]
+    # }
+    # 'struct-member-initializers': {
+    #   'patterns': [
+    #     {
+    #       'match': ',',
+    #       'name': 'keyword.operator.comma.d'
+    #     },
+    #     { 'include': '#struct-member-initializer' },
+    #   ]
+    # },
+    # 'struct-member-initializer': {
+    #   'patterns': [
+    #     { 'include': '#non-void-initializer' },
+    #     { 'include': '#identifier' },
+    #     {
+    #       'match': ':',
+    #       'name': 'support.type.tag.d'
+    #     },
+    #   ]
+    # },
+    #
+    #
+    #
+    # ###########################################################################
+    # # Function
+    # ###########################################################################
+    # 'parameters': {
+    #   'patterns': [
+    #     {
+    #       'match': '\\(\\s*\\.\\.\\.\\s*\\)',
+    #       'name': 'support.type.tuple-parameter.d'
+    #     },
+    #     {
+    #       'begin': '\\(',
+    #       'beginCaptures': { '0': { 'name': 'support.type.parameters.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'support.type.parameters.end.d' } },
+    #       'patterns': [
+    #           {
+    #             'match': ',',
+    #             'name': 'keyword.operator.comma.d'
+    #           },
+    #           { 'include': '#parameter' }
+    #       ]
+    #     }
+    #   ]
+    # },
+    # 'parameter': {
+    #   'patterns': [
+    #     { 'include': '#in-out' },
+    #     { 'include': '#basic-type' },
+    #     { 'include': '#type' },
+    #     {
+    #       'match': '\\.\\.\\.',
+    #       'name': 'support.type.tuple.d'
+    #     },
+    #     { 'include': '#declarator' }
+    #   ]
+    # },
+    # 'in-out': {
+    #   'patterns': [
+    #     { 'include': '#in-out-x' }
+    #   ]
+    # },
+    # 'in-out-x': {
+    #   'patterns': [
+    #     {
+    #       'match': 'auto|final|in|out|lazy|ref|scope',
+    #       'name': 'storage.type.modifier.inout.d'
+    #     },
+    #     { 'include': '#type-ctor' }
+    #   ]
+    # }
+    # 'function-attributes': {
+    #   'patterns': [
+    #     { 'include': '#function-attribute' },
+    #   ]
+    # },
+    # 'function-attribute': {
+    #   'patterns': [
+    #     {
+    #       'match': 'nothrow|pure',
+    #       'name': 'storage.type.modifier.function-attribute.d'
+    #     },
+    #     {
+    #       'include': '#property'
+    #     }
+    #   ]
+    # },
+    # 'member-function-attributes': {
+    #   'patterns': [
+    #     { 'include': '#member-function-attribute' }
+    #   ]
+    # },
+    # 'member-function-attribute': {
+    #   'patterns': [
+    #     {
+    #       'match': 'const|immutable|inout|shared',
+    #       'name': 'storage.type.modifier.member-function-attribute'
+    #     },
+    #     { 'include': '#function-attribute' }
+    #   ]
+    # },
+    # 'default-initializer-expression': {
+    #   'patterns': [
+    #     { 'include': '#expression' },
+    #     { 'include': '#special-keyword' }
+    #   ]
+    # },
+    # 'function-body': {
+    #   'patterns': [
+    #     { 'include': '#block-statement' },
+    #     { 'include': '#in-statement' },
+    #     { 'include': '#out-statement' },
+    #     { 'include': '#body-statement' },
+    #   ]
+    # },
+    # 'in-statement': {
+    #   'patterns': [
+    #     {
+    #       'match': 'in',
+    #       'name': '#keyword.control.in.d'
+    #     },
+    #     { 'include': '#block-statement' }
+    #   ]
+    # },
+    # 'out-statement': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'out\\s*\\(',
+    #       'beginCaptures': { '0': { 'name': 'keyword.control.out.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'keyword.control.out.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#identifier' }
+    #       ]
+    #     },
+    #     {
+    #       'match': 'out',
+    #       'name': 'keyword.control.out.d'
+    #     },
+    #     { 'include': '#block-statement' }
+    #   ]
+    # },
+    # 'body-statement': {
+    #   'patterns': [
+    #     {
+    #       'match': 'body',
+    #       'name': 'keyword.control.body.d'
+    #     },
+    #     { 'include': '#block-statement' }
+    #   ]
+    # },
+    # 'constructor': {
+    #   'patterns': [
+    #     {
+    #       'match': 'this',
+    #       'name': 'entity.name.function.constructor.d'
+    #     },
+    #     { 'include': '#parameters' },
+    #     { 'include': '#member-function-attributes' },
+    #     { 'include': '#semi-colon' },
+    #     { 'include': '#function-body' },
+    #     { 'include': '#constructor-template' }
+    #   ]
+    # },
+    # 'constructor-template': {
+    #   'patterns': [
+    #     {
+    #       'match': 'this',
+    #       'name': 'entity.name.function.constructor-template.d'
+    #     },
+    #     { 'include': '#template-parameters' },
+    #     { 'include': '#parameters' },
+    #     { 'include': '#member-function-attributes'},
+    #     { 'include': '#constraint' },
+    #     { 'include': '#function-body' }
+    #   ]
+    # },
+    # 'destructor': {
+    #   'patterns': [
+    #     {
+    #       'match': '~this\\s*\\(\\s*\\)',
+    #       'name': '#entity.name.class.destructor.d'
+    #     },
+    #     { 'include': '#member-function-attributes' },
+    #     { 'include': '#function-body' },
+    #   ]
+    # },
+    # 'postblit': {
+    #   'patterns': [
+    #     {
+    #       'match': 'this\\s*\\(\\s*this\\s*\\)\\s',
+    #       'name': '#entity.name.class.postblit.d'
+    #     },
+    #     { 'include': '#member-function-attributes' },
+    #     { 'include': '#function-body'}
+    #   ]
+    # },
+    # 'allocator': {
+    #   'patterns': [
+    #     {
+    #       'match': 'new',
+    #       'name': 'keyword.other.new.d'
+    #     },
+    #     { 'include': '#parameters' },
+    #     { 'include': '#function-body' }
+    #   ]
+    # },
+    # 'deallocator': {
+    #   'patterns': [
+    #     {
+    #       'match': 'delete',
+    #       'name': 'keyword.other.delete.d'
+    #     },
+    #     { 'include': '#parameters' },
+    #     { 'include': '#function-body' }
+    #   ]
+    # },
+    # 'invariant': {
+    #   'patterns': [
+    #     {
+    #       'match': 'invariant\\s*\\(\\s*\\)',
+    #       'name': 'entity.name.class.invariant.d'
+    #     },
+    #     { 'include': '#block-statement' }
+    #   ]
+    # },
+    # 'unit-test': {
+    #   'patterns': [
+    #     {
+    #       'match': 'unittest',
+    #       'name': 'entity.name.function.unit-test.d'
+    #     },
+    #     { 'include': '#function-body' }
+    #   ]
+    # },
+    # 'static-constructor': {
+    #   'patterns': [
+    #     { 'include': '#shared-static-constructor' }
+    #   ]
+    # },
+    # 'static-destructor': {
+    #   'patterns': [
+    #     { 'include': '#shared-static-destructor' }
+    #   ]
+    # },
+    # 'shared-static-constructor': {
+    #   'patterns': [
+    #     {
+    #       'match': '(shared\\s+)?static\\s+this\\s*\\(\\s*\\)',
+    #       'name': 'entity.name.class.constructor.shared-static.d'
+    #     },
+    #     { 'include': '#function-body' }
+    #   ]
+    # },
+    # 'shared-static-destructor': {
+    #   'patterns': [
+    #     {
+    #       'match': '(shared\\s+)?static\\s+~\\s*this\\s*\\(\\s*\\)',
+    #       'name': 'entity.name.class.destructor.static.d'
+    #     },
+    #     { 'include': '#member-function-attributes' },
+    #     { 'include': '#function-body' }
+    #   ]
+    # },
+    # ###########################################################################
+    # # Aggregate
+    # ###########################################################################
+    # 'aggregate-declaration': {
+    #   'patterns': [
+    #     { 'include': '#class-declaration' },
+    #     { 'include': '#interface-declaration' },
+    #     { 'include': '#struct-declaration' },
+    #     { 'include': '#union-declaration' }
+    #   ]
+    # },
+    # 'class-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': 'class',
+    #       'name': 'entity.name.class.d'
+    #     },
+    #     { 'include': '#identifier' },
+    #     { 'include': '#base-class-list' },
+    #     { 'include': '#aggregate-body' },
+    #     { 'include': '#class-template-declaration' }
+    #   ]
+    # },
+    # 'class-template-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': 'class',
+    #       'name': 'entity.name.class.d'
+    #     },
+    #     { 'include': '#identifier' },
+    #     { 'include': '#template-parameters' },
+    #     { 'include': '#constraint' },
+    #     { 'include': '#base-class-list' },
+    #     { 'include': '#aggregate-body' }
+    #   ]
+    # },
+    # 'interface-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': 'interface',
+    #       'name': 'entity.name.class.interface.d'
+    #     },
+    #     { 'include': '#identifier' },
+    #     { 'include': '#base-interface-list' },
+    #     { 'include': '#aggregate-body' },
+    #     { 'include': '#interface-template-declaration' },
+    #   ]
+    # },
+    # 'interface-template-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': 'interface',
+    #       'name': 'entity.name.class.interface.d'
+    #     },
+    #     { 'include': '#identifier' },
+    #     { 'include': '#template-parameters' },
+    #     { 'include': '#constraint' },
+    #     { 'include': '#base-class-list' },
+    #     { 'include': '#aggregate-body' }
+    #   ]
+    # },
+    # 'struct-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': 'struct',
+    #       'name': 'storage.type.struct.d'
+    #     },
+    #     { 'include': '#identifier' },
+    #     { 'include': '#aggregate-body' },
+    #     { 'include': '#struct-template-declaration' },
+    #     { 'include': '#anon-struct-declaration' }
+    #   ]
+    # },
+    # 'struct-template-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': 'struct',
+    #       'name': 'storage.type.struct.d'
+    #     },
+    #     { 'include': '#identifier' },
+    #     { 'include': '#template-parameters' },
+    #     { 'include': '#constraint' },
+    #     { 'include': '#aggregate-body' },
+    #   ]
+    # },
+    # 'anon-struct-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': 'struct',
+    #       'name': 'storage.type.struct.d'
+    #     },
+    #     { 'include': '#aggregate-body' }
+    #   ]
+    # },
+    # 'union-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': 'union',
+    #       'name': 'storage.type.union.d'
+    #     },
+    #     { 'include': '#identifier' },
+    #     { 'include': '#aggregate-body' },
+    #     { 'include': '#union-template-declaration' },
+    #     { 'include': '#anon-union-declaration' }
+    #   ]
+    # },
+    # 'union-template-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': 'union',
+    #       'name': 'storage.type.union.d'
+    #     },
+    #     { 'include': '#identifier' },
+    #     { 'include': '#template-parameters' },
+    #     { 'include': '#constraint' },
+    #     { 'include': '#aggregate-body' }
+    #   ]
+    # },
+    # 'anon-union-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': 'union',
+    #       'name': 'storage.type.union.d'
+    #     },
+    #     { 'include': '#aggregate-body' }
+    #   ]
+    # },
+    # 'aggregate-body': {
+    #   'patterns': [
+    #     'begin': '\\{',
+    #     'end': '\\}',
+    #     'patterns': [
+    #       { 'include': '#decl-defs' }
+    #     ]
+    #   ]
+    # },
+    # 'base-class-list': {
+    #   'patterns': [
+    #     { 'include': '#colon' },
+    #     { 'include': '#super-class' },
+    #     { 'include': '#comma' },
+    #     { 'include': '#interfaces' }
+    #   ]
+    # },
+    # 'base-interface-list': {
+    #   'patterns': [
+    #     { 'include': '#colon' },
+    #     { 'include': '#interfaces' }
+    #   ]
+    # },
+    # 'super-class': {
+    #   'patterns': [
+    #     { 'include': '#identifier' },
+    #   ]
+    # },
+    # 'interfaces': {
+    #   'patterns': [
+    #     { 'include': '#comma' },
+    #     { 'include': '#interface' }
+    #   ]
+    # },
+    # 'interface': {
+    #   'patterns': [
+    #     { 'include': '#identifier' }
+    #   ]
+    # },
+    # 'alias-this': {
+    #   'begin': 'alias\\s+',
+    #   'beginCaptures': { '0': { 'name': 'support.type.alias.d' } },
+    #   'end': 'this',
+    #   'endCaptures': { '0': { 'name': 'support.class.keyword.this.d' } },
+    #   'patterns': [
+    #     { 'include': '#identifier' }
+    #   ]
+    # },
+    # ###########################################################################
+    # # Enum
+    # ###########################################################################
+    # 'enum-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': 'enum',
+    #       'name': 'storage.type.enum.d'
+    #     },
+    #     { 'include': '#enum-tag' },
+    #     { 'include': '#enum-body' },
+    #     { 'include': '#colon' },
+    #     { 'include': '#enum-base-type' }
+    #   ]
+    # },
+    # 'enum-tag': {
+    #   'patterns': [
+    #     { 'include': '#identifier' },
+    #   ]
+    # },
+    # 'enum-base-type': {
+    #   'patterns': [
+    #     { 'include': '#type' }
+    #   ]
+    # },
+    # 'enum-body': {
+    #   'patterns': [
+    #     { 'include': '#empty-enum-body' },
+    #     { 'include': '#enum-members-body' }
+    #   ]
+    # },
+    # 'empty-enum-body': {
+    #   'patterns': [
+    #     { 'include': '#semi-colon' }
+    #   ]
+    # },
+    # 'enum-members-body': {
+    #   'patterns': [
+    #     'begin': '\\{',
+    #     'end': '\\}',
+    #     'patterns': [
+    #       { 'include': '#enum-members' }
+    #     ]
+    #   ]
+    # },
+    # 'enum-members': {
+    #   'patterns': [
+    #     { 'include': '#enum-member' },
+    #     { 'include': '#comma' }
+    #   ]
+    # },
+    # 'enum-member': {
+    #   'patterns': [
+    #     { 'include': '#type' },
+    #     { 'include': '#identifier' },
+    #     { 'include': '#equal' },
+    #     { 'include': '#expression '}
+    #   ]
+    # },
+    #
+    # ###########################################################################
+    # # Template
+    # ###########################################################################
+    # 'template-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': 'template',
+    #       'name': 'support.class.template.d',
+    #     },
+    #     { 'include': '#identifier' },
+    #     { 'include': '#template-parameters' },
+    #     { 'include': '#constraint' },
+    #     {
+    #       'begin': '\\{',
+    #       'beginCaptures': { '0': { 'name': 'support.class.template.decldefs.begin.d' } },
+    #       'end': '\\}',
+    #       'endCaptures': { '0': { 'name': 'support.class.template.decldefs.end.d' } },
+    #       'patterns': [
+    #           { 'include': '#decl-defs' }
+    #       ]
+    #     }
+    #   ]
+    # },
+    # 'template-parameters': {
+    #   'patterns': [
+    #     'begin': '\\(',
+    #     'beginCaptures': { '0': { 'name': 'support.class.template.parameters.begin.d' } },
+    #     'end': '\\)',
+    #     'endCaptures': { '0': { 'name': 'support.class.template.parameters.end.d' } },
+    #     'patterns': [
+    #       { 'include': '#template-parameter-list' }
+    #     ]
+    #   ]
+    # },
+    # 'template-parameter-list': {
+    #   'patterns': [
+    #     {
+    #       'match': ',',
+    #       'name': 'keyword.operator.comma.d'
+    #     },
+    #     { 'include': '#template-parameter' }
+    #   ]
+    # }
+    # 'template-parameter': {
+    #   'patterns': [
+    #     { 'include': '#template-type-parameter' },
+    #     { 'include': '#template-value-parameter' },
+    #     { 'include': '#template-alias-parameter' },
+    #     { 'include': '#template-tuple-parameter' },
+    #     { 'include': '#template-this-parameter' },
+    #   ]
+    # },
+    # 'constraint': {
+    #   'patterns': [
+    #     'begin': 'if\\s+\\(',
+    #     'beginCaptures': { '0': { 'name': 'support.class.template.constraint.begin.d' } },
+    #     'end': '\\)',
+    #     'endCaptures': { '0': { 'name': 'support.class.template.constraint.end.d' } },
+    #     'patterns': [
+    #       { 'include': '#expression' }
+    #     ]
+    #   ]
+    # },
+    # 'template-instance': {
+    #   'patterns': [
+    #     { 'include': '#template-arguments' },
+    #     { 'include': '#identifier' }
+    #   ]
+    # },
+    # 'template-arguments': {
+    #   'patterns': [
+    #     {
+    #       'begin': '!\\s+\\(',
+    #       'beginCaptures': { '0': { 'name': 'support.class.template.arguments.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'support.class.template.arguments.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#template-argument-list' }
+    #       ]
+    #     },
+    #     {
+    #       'match': '!',
+    #       'name': 'support.class.template.argument.d'
+    #     },
+    #     { 'include': '#template-single-argument' }
+    #   ]
+    # }
+    # 'template-argument-list': {
+    #   'patterns': [
+    #     {
+    #       'match': ',',
+    #       'name': 'keyword.operator.comma.d'
+    #     },
+    #     { 'include': '#template-argument' }
+    #   ]
+    # },
+    # 'template-argument': {
+    #   'patterns': [
+    #     { 'include': '#type' },
+    #     { 'include': '#expression' },
+    #     { 'include': '#symbol' }
+    #   ]
+    # },
+    # 'symbol': {
+    #   'patterns': [
+    #     { 'include': '#symbol-tail' }
+    #   ]
+    # },
+    # 'symbol-tail': {
+    #   'patterns': [
+    #     { 'include': '#template-instance' },
+    #     { 'include': '#identifier' },
+    #   ]
+    # },
+    # 'template-single-argument': {
+    #   'patterns': [
+    #     {
+    #       'match': 'true|false|null|this',
+    #       'name': 'constant.language.template-single-argument.d'
+    #     },
+    #     { 'include': '#special-keyword' },
+    #     { 'include': '#basic-type-x' },
+    #     { 'include': '#string-literal' },
+    #     { 'include': '#character-literal' },
+    #     { 'include': '#integer-literal' },
+    #     { 'include': '#float-literal' },
+    #     { 'include': '#identifier' }
+    #   ]
+    # },
+    # 'template-type-parameter': {
+    #   'patterns': [
+    #     { 'include': '#identifier' },
+    #     { 'include': '#template-type-parameter-specialization' },
+    #     { 'include': '#template-type-parameter-default' },
+    #   ]
+    # },
+    # 'template-type-parameter-specialization': {
+    #   'patterns': [
+    #     {
+    #       'match': ':',
+    #       'name': 'support.class.tag.d'
+    #     },
+    #     { 'include': '#type' }
+    #   ]
+    # },
+    # 'template-type-parameter-default': {
+    #   'patterns': [
+    #     {
+    #       'match': '=',
+    #       'name': 'support.class.template.operator.equal.d'
+    #     },
+    #     { 'include': '#type' }
+    #   ]
+    # },
+    # 'template-this-parameter': {
+    #   'patterns': [
+    #     {
+    #       'match': 'this',
+    #       'name': 'support.class.keyword.this.d'
+    #     },
+    #     { 'include': '#template-type-parameter' }
+    #   ]
+    # },
+    # 'template-value-parameter': {
+    #   'patterns': [
+    #     { 'include': '#basic-type' },
+    #     { 'include': '#declarator' },
+    #     { 'include': '#template-value-parameter-specialization' },
+    #     { 'include': '#template-value-parameter-default' },
+    #   ]
+    # },
+    # 'template-value-parameter-specialization': {
+    #   'patterns': [
+    #     {
+    #       'match': ':',
+    #       'name': 'support.class.tag.d'
+    #     },
+    #     { 'include': '#conditional-expression' }
+    #   ]
+    # },
+    # 'template-value-parameter-default': {
+    #   'patterns': [
+    #     {
+    #       'match': '=',
+    #       'name': 'support.class.template.operator.equal.d'
+    #     },
+    #     { 'include': '#expression' },
+    #     { 'include': '#special-keyword' }
+    #   ]
+    # },
+    # 'template-alias-parameter': {
+    #   'patterns': [
+    #     {
+    #       'match': 'alias',
+    #       'name': 'support.class.template.alias.d'
+    #     },
+    #     { 'include': '#identifier' },
+    #     { 'include': '#template-alias-parameter-specialization' },
+    #     { 'include': '#template-alias-parameter-default' },
+    #     { 'include': '#basic-type' },
+    #     { 'include': '#declarator' },
+    #   ]
+    # },
+    # 'template-alias-parameter-specialization': {
+    #   'patterns': [
+    #     {
+    #       'match': ':',
+    #       'name': 'support.class.tag.d'
+    #     },
+    #     { 'include': '#type' },
+    #     { 'include': '#conditional-expression' }
+    #   ]
+    # },
+    # 'template-alias-parameter-default': {
+    #   'patterns': [
+    #     {
+    #       'match': '=',
+    #       'name': 'support.class.template.operator.equal.d'
+    #     },
+    #     { 'include': '#type' },
+    #     { 'include': '#conditional-expression' }
+    #   ]
+    # },
+    # 'template-tuple-parameter': {
+    #   'patterns': [
+    #     { 'include': '#identifier' },
+    #     {
+    #       'match': '\\.\\.\\.',
+    #       'name': 'support.type.tuple.d'
+    #     }
+    #   ]
+    # },
+    # 'template-mixin-declaration': {
+    #   'patterns': [
+    #     'begin': 'mixin\\s+template\\s+',
+    #     'beginCaptures': { '0': { 'name': 'support.class.template.mixin.template.begin.d' } },
+    #     'end': '\\{(.*)\\}',
+    #     'endCaptures': {
+    #       '0': {
+    #         'name': 'support.class.template.mixin.template.end.d',
+    #         'patterns': [
+    #           { 'include': '#decl-defs' }
+    #         ]
+    #       },
+    #     },
+    #     'patterns': [
+    #       { 'include': '#identifier' },
+    #       { 'include': '#template-parameters' },
+    #       { 'include': '#constraint' }
+    #     ]
+    #   ]
+    # },
+    # 'template-mixin': {
+    #   'patterns': [
+    #     'begin': 'mixin\\s+',
+    #     'beginCaptures': { '0': { 'name': 'support.class.template.mixin.begin.d' } },
+    #     'end': ';',
+    #     'endCaptures': { '0': { 'name': 'support.class.template.mixin.end.d' } },
+    #     'patterns': [
+    #       { 'include': '#mixin-template-name' },
+    #       { 'include': '#template-arguments' },
+    #       { 'include': '#identifier' }
+    #     ]
+    #   ]
+    # },
+    # 'mixin-template-name': {
+    #   'patterns': [
+    #     { 'include': '#qualified-identifier-list' },
+    #     { 'include': '#typeof' },
+    #   ]
+    # },
+    # 'qualified-identifier-list': {
+    #   'patterns': [
+    #     { 'include': '#identifier' },
+    #     { 'include': '#template-instance' },
+    #   ]
+    # },
+    #
+    #
+    #
+    #
+    # ###########################################################################
+    # # Attribute
+    # ###########################################################################
+    # 'attribute-specifier': {
+    #   'patterns': [
+    #     { 'include': '#attribute' },
+    #     { 'include': '#colon' },
+    #     { 'include': '#declaration-block' }
+    #   ]
+    # },
+    # 'attribute': {
+    #   'patterns': [
+    #     { 'include': '#linkage-attribute' },
+    #     { 'include': '#align-attribute' },
+    #     { 'include': '#deprecated-attribute' },
+    #     { 'include': '#protection-attribute' },
+    #     { 'include': '#pragma' },
+    #     {
+    #       'match': 'static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref',
+    #       'name': 'entity.other.attribute-name.d'
+    #     },
+    #     { 'include': '#property' },
+    #   ]
+    # },
+    # 'declaration-block': {
+    #   'patterns': [
+    #     {
+    #       'begin': '\\{',
+    #       'end': '\\}',
+    #       'patterns': [
+    #         { 'include': '#decl-defs' },
+    #       ]
+    #     }
+    #     { 'include': '#decl-def' },
+    #   ]
+    # }
+    # 'linkage-attribute': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'extern\\s*\\(\\s*C\\+\\+,',
+    #       'beginCaptures': { '0': { 'name': 'keyword.other.extern.cplusplus.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'keyword.other.extern.cplusplus.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#identifier-list' },
+    #       ]
+    #     },
+    #     {
+    #       'begin': 'extern\\s*\\(',
+    #       'beginCaptures': { '0': { 'name': 'keyword.other.extern.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'keyword.other.extern.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#linkage-type' },
+    #       ]
+    #     }
+    #   ]
+    # },
+    # 'linkage-type': {
+    #   'patterns': [
+    #     'match': 'C|C\\+\\+|D|Windows|Pascal|System',
+    #     'name': 'storage.modifier.linkage-type.d'
+    #   ]
+    # },
+    # 'align-attribute': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'align\\(',
+    #       'end': '\\)',
+    #       'name': 'storage.modifier.align-attribute.d',
+    #       'patterns': [
+    #         { 'include': '#integer-literal' }
+    #       ]
+    #     },
+    #     {
+    #       'match': 'align\\s*[^\\(]',
+    #       'name': 'storage.modifier.align-attribute.d',
+    #     }
+    #   ]
+    # },
+    # 'deprecated-attribute': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'deprecated\\s*\\(',
+    #       'beginCaptures': { '0': { 'name': 'keyword.other.deprecated.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'keyword.other.deprecated.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#string-literal' },
+    #       ]
+    #     },
+    #     {
+    #       'match': 'deprecated\\s*[^\\(]',
+    #       'name': 'keyword.other.deprecated.plain.d'
+    #     }
+    #   ]
+    # },
+    # 'protection-attribute': {
+    #   'patterns': [
+    #     'match': 'private|package|protected|public|export',
+    #     'name': 'keyword.other.protections.d'
+    #   ]
+    # },
+    # 'property': {
+    #   'patterns': [
+    #     {
+    #       'match': '@(property|safe|trusted|system|disable|nogc)',
+    #       'name': 'entity.name.tag.property.d',
+    #     },
+    #   ]
+    # },
+    # 'property-identifier': {
+    #   'patterns': [
+    #     'match': 'property|safe|trusted|system|disable|nogc',
+    #     'name': 'entity.name.tag.property.d'
+    #   ]
+    # },
+    # 'user-defined-attribute': {
+    #   'patterns': [
+    #     {
+    #       'match': '@([_\\w][_\\d\\w]*)',
+    #       'name': 'entity.name.tag.user-defined-property.d',
+    #     },
+    #     {
+    #       'begin': '@([_\\w][_\\d\\w]*)\\(',
+    #       'end': '\\)',
+    #       'name': 'entity.name.tag.user-defined-property.d',
+    #       'patterns': [
+    #         { 'include': '#expression' }
+    #       ]
+    #     }
+    #   ]
+    # },
+    #
+    # 'pragma': {
+    #   'patterns': [
+    #     {
+    #       'match': 'pragma\\s?\\(\\s*[_\\w][_\\d\\w]*\\s*\\)',
+    #       'name': 'gfm.markup.header.preprocessor.pragma.d'
+    #     },
+    #     {
+    #       'begin': 'pragma\\s?\\(\\s*[_\\w][_\\d\\w]*\\s*,',
+    #       'end': '\\)',
+    #       'name': 'gfm.markup.header.preprocessor.pragma.arguments.d'
+    #       'patterns': [
+    #         { 'include': '#expression' },
+    #       ]
+    #     },
+    #     {
+    #       'match': '^#!.+',
+    #       'name': 'gfm.markup.header.preprocessor.script-tag.d'
+    #     }
+    #   ]
+    # },
+    # ###########################################################################
+    # # Conditional
+    # ###########################################################################
+    # 'conditional-declaration': {
+    #   'patterns': [
+    #     { 'include': '#condition' },
+    #     { 'include': '#declaration-block' },
+    #     {
+    #       'match': 'else',
+    #       'name': 'keyword.control.else.d'
+    #     },
+    #     { 'include': '#colon' },
+    #     { 'include': '#decl-defs' },
+    #   ]
+    # },
+    # 'conditional-statement': {
+    #   'patterns': [
+    #     { 'include': '#condition' },
+    #     { 'include': '#no-scope-non-empty-statement' },
+    #     {
+    #       'match': 'else',
+    #       'name': 'keyword.control.else.d'
+    #     },
+    #   ]
+    # },
+    # 'condition': {
+    #   'patterns': [
+    #     { 'include': '#version-condition' },
+    #     { 'include': '#debug-condition' },
+    #     { 'include': '#static-if-condition' },
+    #   ]
+    # },
+    # 'version-condition': {
+    #   'patterns': [
+    #     {
+    #       'match': 'version\\s*\\(\\s*unittest\\s*\\)',
+    #       'name': 'keyword.other.version.unittest.d'
+    #     },
+    #     {
+    #       'match': 'version\\s*\\(\\s*assert\\s*\\)',
+    #       'name': 'keyword.other.version.assert.d'
+    #     },
+    #     {
+    #       'begin': 'version\\s*\\(',
+    #       'beginCaptures': {
+    #         '0': { 'name': 'keyword.other.version.identifier.begin.d' },
+    #       },
+    #       'end': '\\)',
+    #       'endCaptures': {
+    #         '0': { 'name': 'keyword.other.version.identifer.end.d' }
+    #       }
+    #       'patterns': [
+    #         { 'include': '#integer-literal' },
+    #         { 'include': '#identifier' }
+    #       ]
+    #     }
+    #   ]
+    # },
+    # 'debug-condition': {
+    #   'patterns': [
+    #     {
+    #       'begin': 'debug\\s*\\(',
+    #       'beginCaptures': { '0': { 'name': 'keyword.other.debug.identifier.begin.d' } },
+    #       'end': '\\)',
+    #       'endCaptures': { '0': { 'name': 'keyword.other.debug.identifier.end.d' } },
+    #       'patterns': [
+    #         { 'include': '#integer-literal' },
+    #         { 'include': '#identifier' },
+    #       ],
+    #     },
+    #     {
+    #       'match': 'debug\\s*[^\\(\\s)]',
+    #       'name': 'keyword.other.debug.plain.d'
+    #     }
+    #   ]
+    # },
+    # 'version-specification': {
+    #   'patterns': [
+    #     'match': 'version\\s*=',
+    #     'name': 'keyword.other.version-specification.d'
+    #   ]
+    # },
+    # 'debug-specification': {
+    #   'patterns': [
+    #     'match': 'debug\\s*=',
+    #     'name': 'keyword.other.debug-specification.d'
+    #   ]
+    # },
+    # 'static-if-condition': {
+    #   'patterns': [
+    #     'begin': 'static\\s*if\\s*\\(',
+    #     'beginCaptures': { '0': { 'name': 'keyword.other.static-if.begin.d' } },
+    #     'end': '\\)',
+    #     'endCaptures': { '0': { 'name': 'keyword.other.static-if.end.d' } },
+    #     'patterns': [
+    #       { 'include' : '#expression' }
+    #     ],
+    #   ]
+    # }
+    # 'static-assert': {
+    #   'patterns': [
+    #     'begin': 'static\\s*assert\\s*\\(',
+    #     'beginCaptures': { '0': { 'name': 'keyword.other.static-assert.begin.d' } },
+    #     'end': '\\)',
+    #     'endCaptures': { '0': { 'name': 'keyword.other.static-assert.end.d' } },
+    #     'patterns': [
+    #       { 'include' : '#expression' }
+    #     ],
+    #   ]
+    # },
+    # ###########################################################################
+    # # Module
+    # ###########################################################################
+    # 'module': {
+    #   'packages': [
+    #     { 'import': '#module-declaration' },
+    #     { 'import': '#decl-defs' }
+    #   ]
+    # },
+    # 'decl-defs': {
+    #   'packages': [
+    #     { 'include': '#decl-def' }
+    #   ]
+    # },
+    # 'decl-def': {
+    #   'packages': [
+    #     { 'include': '#attribute-specifier' },
+    #     { 'include': '#declaration' },
+    #     { 'include': '#constructor' },
+    #     { 'include': '#destructor' },
+    #     { 'include': '#postblit' },
+    #     { 'include': '#allocator' },
+    #     { 'include': '#deallocator' },
+    #     { 'include': '#invariant' },
+    #     { 'include': '#unit-test' },
+    #     { 'include': '#alias-this' },
+    #     { 'include': '#static-constructor' },
+    #     { 'include': '#static-destructor' },
+    #     { 'include': '#conditional-declaration' },
+    #     { 'include': '#debug-specification' },
+    #     { 'include': '#version-specification' },
+    #     { 'include': '#static-assert' },
+    #     { 'include': '#template-declaration' },
+    #     { 'include': '#template-mixin-declaration' },
+    #     { 'include': '#template-mixin' },
+    #     { 'include': '#mixin-declaration' },
+    #     { 'include': '#shared-static-constructor' },
+    #     { 'include': '#shared-static-destructor' },
+    #     { 'include': '#semi-colon' },
+    #   ]
+    # },
+    # 'module-declaration': {
+    #   'patterns': [
+    #     'begin': 'module\\s+',
+    #     'beginCaptures': { '0': { 'name': 'keyword.package.module.d' } },
+    #     'end': ';',
+    #     'patterns': [
+    #       { 'include': '#module-fully-qualified-name' }
+    #     ]
+    #   ]
+    # },
+    # 'module-fully-qualified-name': {
+    #   'patterns': [
+    #     { 'include': '#module-name' },
+    #   ]
+    # },
+    # 'module-name': {
+    #   'patterns': [
+    #     { 'include': '#identifier' }
+    #   ]
+    # },
+    # 'packages': {
+    #   'patterns': [
+    #     { 'include': '#package-name' }
+    #   ]
+    # },
+    # 'package-name': {
+    #   'patterns': [
+    #     { 'include': '#identifier' }
+    #   ]
+    # },
+    #
+    # ###########################################################################
+    # # Import Declarations
+    # ###########################################################################
+    # 'import-declaration': {
+    #   'patterns': [
+    #     {
+    #       'match': '(static\\s+)?import\\s+',
+    #       'name': 'keyword.package.import.d'
+    #     },
+    #     {
+    #       '#include': '#import-list'
+    #     }
+    #   ]
+    # },
+    # 'import-list': {
+    #   'patterns': [
+    #     { 'include': '#import' },
+    #     { 'include': '#import-bindings' },
+    #     { 'include': '#comma' },
+    #   ]
+    # },
+    # 'import': {
+    #   'patterns': [
+    #     { 'include': '#module-fully-qualified-name' },
+    #     { 'include': '#module-alias-identifier' },
+    #     { 'include': '#equal' }
+    #   ]
+    # },
+    # 'import-bindings': {
+    #   'patterns': [
+    #     { 'include': '#import' },
+    #     { 'include': '#colon' },
+    #     { 'include': '#import-bind-list' }
+    #   ]
+    # },
+    # 'import-bind-list': {
+    #   'patterns': [
+    #     { 'include': '#comma' },
+    #     { 'include': '#import' }
+    #   ]
+    # },
+    # 'import-bind': {
+    #   'patterns': [
+    #     { 'include': '#identifier' },
+    #     { 'include': '#equal' }
+    #   ]
+    # },
+    # 'module-alias-identifier': {
+    #   'patterns': [
+    #     { 'include': '#identifier' }
+    #   ]
+    # }
+    # ###########################################################################
+    # # Mixin Decl
+    # ###########################################################################
+    # 'mixin-declaration': {
+    #   'patterns': [
+    #     'begin': 'mixin\\s*\\(',
+    #     'end': '\\)',
+    #     'beginCaptures': { '0': { 'name': 'keyword.mixin.begin.d' } },
+    #     'endCaptures': { '0': { 'name': 'keyword.mixin.end.d' } },
+    #     'patterns': [
+    #       { 'include': '#expression' }
+    #     ]
+    #   ]
+    # },
+    # ###########################################################################
+    # # Misc
+    # ###########################################################################
     'comma': {
       'patterns': [
         'match': ',',
