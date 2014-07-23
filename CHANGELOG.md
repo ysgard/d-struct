@@ -1,3 +1,6 @@
+## 0.3.0
+* Full grammar in syntax, now being extensively debugged.
+
 ## 0.2.0 - Second Release
 * Now performs lexical syntax highlighting, but still no language grammar or dub support.
 
