@@ -9,6 +9,7 @@
      dmd hello.d -D
   */
 import this;
+some_label: This isa  label
 import( a=b );
 # line This is a line!
 pragma ( hello, an expression );
@@ -84,6 +85,11 @@ __VERSION__
 .5
 .5f
 .5f
+if (x == 3) {
+  This is a block
+} else {
+  more stuff 
+}
 hello.this.is a . big stuff, followed by another is()
 extern (D);
 final int x(5);
