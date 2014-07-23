@@ -443,7 +443,7 @@
     # ###########################################################################
     'statement': {
       'patterns': [
-        { 'include': '#block-statement' },
+        # { 'include': '#block-statement' },
         { 'include': '#non-block-statement' },
         { 'include': '#semi-colon' }
       ]
@@ -451,8 +451,7 @@
     'non-block-statement': {
       'patterns': [
         { 'include': '#labeled-statement' },
-        { 'include': '#expression-statement' },
-        { 'include': '#declaration-statement' },
+        # { 'include': '#declaration-statement' },
         { 'include': '#if-statement' },
         { 'include': '#while-statement' },
         { 'include': '#do-statement' },
@@ -470,20 +469,19 @@
         { 'include': '#scope-guard-statement' },
         { 'include': '#throw-statement' },
         { 'include': '#asm-statement' },
-        { 'include': '#pragma-statement' },
-        { 'include': '#mixin-statement' },
-        { 'include': '#foreach-range-statement' },
-        { 'include': '#conditional-statement' },
-        { 'include': '#static-assert' },
-        { 'include': '#template-mixin' },
+        # { 'include': '#pragma-statement' },
+        # { 'include': '#mixin-statement' },
+        # { 'include': '#foreach-range-statement' },
+        # { 'include': '#conditional-statement' },
+        # { 'include': '#static-assert' },
+        # { 'include': '#template-mixin' },
         { 'include': '#import-declaration' },
       ]
     },
     'labeled-statement': {
       'patterns': [
-        { 'include': '#colon' },
-        { 'include': '#statement' },
-        { 'include': '#identifier' }
+        'match': '[a-zA-Z_][a-zA-Z_0-9]*:',
+        'name': 'entity.name.tag.label.d'
       ]
     },
     'block-statement': {
@@ -499,11 +497,6 @@
         },
       ]
     },
-    'expression-statement': {
-      'patterns': [
-        { 'include': '#expression' },
-      ]
-    },
     'declaration-statement': {
       'patterns': [
         { 'include': '#declaration' }
@@ -515,7 +508,7 @@
           'begin': 'if\\s*\\(',
           'beginCaptures': { '0': { 'name': 'keyword.control.if.begin.d' } },
           'end': '\\)',
-          'encCaptures': { '0': { 'name': 'keyword.control.if.end.d' } },
+          'endCaptures': { '0': { 'name': 'keyword.control.if.end.d' } },
           'patterns': [
             { 'include': '#if-condition' }
           ]
@@ -862,6 +855,7 @@
         'end': '\\}',
         'beginCaptures': { '0': { 'name': 'keyword.control.asm.begin.d' } },
         'endCaptures': { '0': { 'name': 'keyword.control.asm.end.d' } },
+        'contentName': 'gfm.markup.raw.assembly.d',
         'patterns': [
           { 'include': '#asm-instruction' },
         ],
@@ -892,18 +886,25 @@
           'match': 'align|even|naked|db|ds|di|dl|df|dd|de|:',
           'name': 'keyword.asm-instruction.d',
         },
+        {
+          'match': '__LOCAL_SIZE',
+          'name': 'constant.language.assembly.d'
+        },
+        {
+          'match': 'offsetof|seg',
+          'name': 'support.type.assembly.d'
+        },
+        { 'include': '#asm-type-prefix' },
+        { 'include': '#asm-primary-expression' }
+        { 'include': '#operands' },
+        { 'include': '#register' },
+        { 'include': '#register-64' },
+        { 'include': '#float-literal' },
+        { 'include': '#integer-literal' },
+        { 'include': '#identifier' },
       ]
     },
     'operands': {
-      'patterns': [
-        {
-          'match': ',',
-          'name': 'keyword.operator.comma.assembly.d'
-        }
-        { 'include': '#asm-exp' },
-      ]
-    },
-    'asm-exp': {
       'patterns': [
         {
           'match': '\\?|:',
@@ -917,38 +918,8 @@
           'match': '>>>|\\|\\||&&|==|!=|<=|>=|<<|>>|\\||\\^|&|<|>|\\+|-|\\*|/|%|~|!',
           'name': 'keyword.operator.assembly.d'
         },
-        { 'include': '#asm-una-exp' },
       ]
     }
-    'integer-expression': {
-      'patterns': [
-        { 'include': '#integer-literal' },
-        { 'include': '#identifier' },
-      ]
-    },
-    'asm-una-exp': {
-      'patterns': [
-        { 'include': '#asm-type-prefix' },
-        {
-          'match': 'offsetof|seg',
-          'name': 'support.type.assembly.d'
-        },
-        { 'include': '#asm-primary-expression' },
-      ]
-    },
-    'asm-primary-expression': {
-      'patterns': [
-        { 'include': '#integer-literal' },
-        { 'include': '#float-literal' },
-        {
-          'match': '__LOCAL_SIZE',
-          'name': 'constant.language.assembly.d'
-        },
-        { 'include': '#register' },
-        { 'include': '#register-64' },
-        { 'include': '#identifier' }
-      ]
-    },
     'asm-type-prefix': {
       'patterns': [
         'match': '(near\\s+ptr)|(far\\s+ptr)|(byte\\s+ptr)|(short\\s+ptr)|(int\\s+ptr)|(word\\s+ptr)|(dword\\s+ptr)|(qword\\s+ptr)|(float\\s+ptr)|(double\\s+ptr)|(real\\s+ptr)',
@@ -1039,6 +1010,7 @@
           'match': '\\.\\.\\.',
           'name': 'support.type.tuple.d'
         },
+        { 'include': '#identifier' }
       ]
     },
     'in-out': {
@@ -1047,7 +1019,6 @@
           'match': 'auto|final|in|out|lazy|ref|scope',
           'name': 'storage.type.modifier.inout.d'
         },
-        { 'include': '#type' }
       ]
     }
     'function-attribute': {
@@ -1061,358 +1032,155 @@
         }
       ]
     },
-    # 'member-function-attributes': {
-    #   'patterns': [
-    #     { 'include': '#member-function-attribute' }
-    #   ]
-    # },
-    # 'member-function-attribute': {
-    #   'patterns': [
-    #     {
-    #       'match': 'const|immutable|inout|shared',
-    #       'name': 'storage.type.modifier.member-function-attribute'
-    #     },
-    #     { 'include': '#function-attribute' }
-    #   ]
-    # },
-    # 'default-initializer-expression': {
-    #   'patterns': [
-    #     { 'include': '#expression' },
-    #     { 'include': '#special-keyword' }
-    #   ]
-    # },
+    'member-function-attribute': {
+      'patterns': [
+        {
+          'match': 'const|immutable|inout|shared',
+          'name': 'storage.type.modifier.member-function-attribute'
+        },
+      ]
+    },
     'function-body': {
       'patterns': [
-        { 'include': '#block-statement' },
         { 'include': '#in-statement' },
         { 'include': '#out-statement' },
         { 'include': '#body-statement' },
+        { 'include': '#block-statement' },
       ]
     },
-    # 'in-statement': {
-    #   'patterns': [
-    #     {
-    #       'match': 'in',
-    #       'name': '#keyword.control.in.d'
-    #     },
-    #     { 'include': '#block-statement' }
-    #   ]
-    # },
-    # 'out-statement': {
-    #   'patterns': [
-    #     {
-    #       'begin': 'out\\s*\\(',
-    #       'beginCaptures': { '0': { 'name': 'keyword.control.out.begin.d' } },
-    #       'end': '\\)',
-    #       'endCaptures': { '0': { 'name': 'keyword.control.out.end.d' } },
-    #       'patterns': [
-    #         { 'include': '#identifier' }
-    #       ]
-    #     },
-    #     {
-    #       'match': 'out',
-    #       'name': 'keyword.control.out.d'
-    #     },
-    #     { 'include': '#block-statement' }
-    #   ]
-    # },
-    # 'body-statement': {
-    #   'patterns': [
-    #     {
-    #       'match': 'body',
-    #       'name': 'keyword.control.body.d'
-    #     },
-    #     { 'include': '#block-statement' }
-    #   ]
-    # },
-    # 'constructor': {
-    #   'patterns': [
-    #     {
-    #       'match': 'this',
-    #       'name': 'entity.name.function.constructor.d'
-    #     },
-    #     { 'include': '#parameters' },
-    #     { 'include': '#member-function-attributes' },
-    #     { 'include': '#semi-colon' },
-    #     { 'include': '#function-body' },
-    #     { 'include': '#constructor-template' }
-    #   ]
-    # },
-    # 'constructor-template': {
-    #   'patterns': [
-    #     {
-    #       'match': 'this',
-    #       'name': 'entity.name.function.constructor-template.d'
-    #     },
-    #     { 'include': '#template-parameters' },
-    #     { 'include': '#parameters' },
-    #     { 'include': '#member-function-attributes'},
-    #     { 'include': '#constraint' },
-    #     { 'include': '#function-body' }
-    #   ]
-    # },
-    # 'destructor': {
-    #   'patterns': [
-    #     {
-    #       'match': '~this\\s*\\(\\s*\\)',
-    #       'name': '#entity.name.class.destructor.d'
-    #     },
-    #     { 'include': '#member-function-attributes' },
-    #     { 'include': '#function-body' },
-    #   ]
-    # },
-    # 'postblit': {
-    #   'patterns': [
-    #     {
-    #       'match': 'this\\s*\\(\\s*this\\s*\\)\\s',
-    #       'name': '#entity.name.class.postblit.d'
-    #     },
-    #     { 'include': '#member-function-attributes' },
-    #     { 'include': '#function-body'}
-    #   ]
-    # },
-    # 'allocator': {
-    #   'patterns': [
-    #     {
-    #       'match': 'new',
-    #       'name': 'keyword.other.new.d'
-    #     },
-    #     { 'include': '#parameters' },
-    #     { 'include': '#function-body' }
-    #   ]
-    # },
-    # 'deallocator': {
-    #   'patterns': [
-    #     {
-    #       'match': 'delete',
-    #       'name': 'keyword.other.delete.d'
-    #     },
-    #     { 'include': '#parameters' },
-    #     { 'include': '#function-body' }
-    #   ]
-    # },
-    # 'invariant': {
-    #   'patterns': [
-    #     {
-    #       'match': 'invariant\\s*\\(\\s*\\)',
-    #       'name': 'entity.name.class.invariant.d'
-    #     },
-    #     { 'include': '#block-statement' }
-    #   ]
-    # },
-    # 'unit-test': {
-    #   'patterns': [
-    #     {
-    #       'match': 'unittest',
-    #       'name': 'entity.name.function.unit-test.d'
-    #     },
-    #     { 'include': '#function-body' }
-    #   ]
-    # },
-    # 'static-constructor': {
-    #   'patterns': [
-    #     { 'include': '#shared-static-constructor' }
-    #   ]
-    # },
-    # 'static-destructor': {
-    #   'patterns': [
-    #     { 'include': '#shared-static-destructor' }
-    #   ]
-    # },
-    # 'shared-static-constructor': {
-    #   'patterns': [
-    #     {
-    #       'match': '(shared\\s+)?static\\s+this\\s*\\(\\s*\\)',
-    #       'name': 'entity.name.class.constructor.shared-static.d'
-    #     },
-    #     { 'include': '#function-body' }
-    #   ]
-    # },
-    # 'shared-static-destructor': {
-    #   'patterns': [
-    #     {
-    #       'match': '(shared\\s+)?static\\s+~\\s*this\\s*\\(\\s*\\)',
-    #       'name': 'entity.name.class.destructor.static.d'
-    #     },
-    #     { 'include': '#member-function-attributes' },
-    #     { 'include': '#function-body' }
-    #   ]
-    # },
+    'in-statement': {
+      'patterns': [
+        {
+          'match': 'in',
+          'name': '#keyword.control.in.d'
+        },
+      ]
+    },
+    'out-statement': {
+      'patterns': [
+        {
+          'begin': 'out\\s*\\(',
+          'beginCaptures': { '0': { 'name': 'keyword.control.out.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'keyword.control.out.end.d' } },
+          'patterns': [
+            { 'include': '#identifier' }
+          ]
+        },
+        {
+          'match': 'out',
+          'name': 'keyword.control.out.d'
+        },
+      ]
+    },
+    'body-statement': {
+      'patterns': [
+        {
+          'match': 'body',
+          'name': 'keyword.control.body.d'
+        },
+      ]
+    },
+    'constructor': {
+      'patterns': [
+        {
+          'match': 'this',
+          'name': 'entity.name.function.constructor.d'
+        },
+      ]
+    },
+    'destructor': {
+      'patterns': [
+        {
+          'match': '~this\\s*\\(\\s*\\)',
+          'name': '#entity.name.class.destructor.d'
+        },
+      ]
+    },
+    'postblit': {
+      'patterns': [
+        {
+          'match': 'this\\s*\\(\\s*this\\s*\\)\\s',
+          'name': '#entity.name.class.postblit.d'
+        },
+      ]
+    },
+    'invariant': {
+      'patterns': [
+        {
+          'match': 'invariant\\s*\\(\\s*\\)',
+          'name': 'entity.name.class.invariant.d'
+        },
+      ]
+    },
+    'unit-test': {
+      'patterns': [
+        {
+          'match': 'unittest',
+          'name': 'entity.name.function.unit-test.d'
+        },
+      ]
+    },
+    'shared-static-constructor': {
+      'patterns': [
+        {
+          'match': '(shared\\s+)?static\\s+this\\s*\\(\\s*\\)',
+          'name': 'entity.name.class.constructor.shared-static.d'
+        },
+        { 'include': '#function-body' }
+      ]
+    },
+    'shared-static-destructor': {
+      'patterns': [
+        {
+          'match': '(shared\\s+)?static\\s+~\\s*this\\s*\\(\\s*\\)',
+          'name': 'entity.name.class.destructor.static.d'
+        },
+      ]
+    },
     # ###########################################################################
     # # Aggregate
     # ###########################################################################
-    # 'aggregate-declaration': {
-    #   'patterns': [
-    #     { 'include': '#class-declaration' },
-    #     { 'include': '#interface-declaration' },
-    #     { 'include': '#struct-declaration' },
-    #     { 'include': '#union-declaration' }
-    #   ]
-    # },
-    # 'class-declaration': {
-    #   'patterns': [
-    #     {
-    #       'match': 'class',
-    #       'name': 'entity.name.class.d'
-    #     },
-    #     { 'include': '#identifier' },
-    #     { 'include': '#base-class-list' },
-    #     { 'include': '#aggregate-body' },
-    #     { 'include': '#class-template-declaration' }
-    #   ]
-    # },
-    # 'class-template-declaration': {
-    #   'patterns': [
-    #     {
-    #       'match': 'class',
-    #       'name': 'entity.name.class.d'
-    #     },
-    #     { 'include': '#identifier' },
-    #     { 'include': '#template-parameters' },
-    #     { 'include': '#constraint' },
-    #     { 'include': '#base-class-list' },
-    #     { 'include': '#aggregate-body' }
-    #   ]
-    # },
-    # 'interface-declaration': {
-    #   'patterns': [
-    #     {
-    #       'match': 'interface',
-    #       'name': 'entity.name.class.interface.d'
-    #     },
-    #     { 'include': '#identifier' },
-    #     { 'include': '#base-interface-list' },
-    #     { 'include': '#aggregate-body' },
-    #     { 'include': '#interface-template-declaration' },
-    #   ]
-    # },
-    # 'interface-template-declaration': {
-    #   'patterns': [
-    #     {
-    #       'match': 'interface',
-    #       'name': 'entity.name.class.interface.d'
-    #     },
-    #     { 'include': '#identifier' },
-    #     { 'include': '#template-parameters' },
-    #     { 'include': '#constraint' },
-    #     { 'include': '#base-class-list' },
-    #     { 'include': '#aggregate-body' }
-    #   ]
-    # },
-    # 'struct-declaration': {
-    #   'patterns': [
-    #     {
-    #       'match': 'struct',
-    #       'name': 'storage.type.struct.d'
-    #     },
-    #     { 'include': '#identifier' },
-    #     { 'include': '#aggregate-body' },
-    #     { 'include': '#struct-template-declaration' },
-    #     { 'include': '#anon-struct-declaration' }
-    #   ]
-    # },
-    # 'struct-template-declaration': {
-    #   'patterns': [
-    #     {
-    #       'match': 'struct',
-    #       'name': 'storage.type.struct.d'
-    #     },
-    #     { 'include': '#identifier' },
-    #     { 'include': '#template-parameters' },
-    #     { 'include': '#constraint' },
-    #     { 'include': '#aggregate-body' },
-    #   ]
-    # },
-    # 'anon-struct-declaration': {
-    #   'patterns': [
-    #     {
-    #       'match': 'struct',
-    #       'name': 'storage.type.struct.d'
-    #     },
-    #     { 'include': '#aggregate-body' }
-    #   ]
-    # },
-    # 'union-declaration': {
-    #   'patterns': [
-    #     {
-    #       'match': 'union',
-    #       'name': 'storage.type.union.d'
-    #     },
-    #     { 'include': '#identifier' },
-    #     { 'include': '#aggregate-body' },
-    #     { 'include': '#union-template-declaration' },
-    #     { 'include': '#anon-union-declaration' }
-    #   ]
-    # },
-    # 'union-template-declaration': {
-    #   'patterns': [
-    #     {
-    #       'match': 'union',
-    #       'name': 'storage.type.union.d'
-    #     },
-    #     { 'include': '#identifier' },
-    #     { 'include': '#template-parameters' },
-    #     { 'include': '#constraint' },
-    #     { 'include': '#aggregate-body' }
-    #   ]
-    # },
-    # 'anon-union-declaration': {
-    #   'patterns': [
-    #     {
-    #       'match': 'union',
-    #       'name': 'storage.type.union.d'
-    #     },
-    #     { 'include': '#aggregate-body' }
-    #   ]
-    # },
-    # 'aggregate-body': {
-    #   'patterns': [
-    #     'begin': '\\{',
-    #     'end': '\\}',
-    #     'patterns': [
-    #       { 'include': '#decl-defs' }
-    #     ]
-    #   ]
-    # },
-    # 'base-class-list': {
-    #   'patterns': [
-    #     { 'include': '#colon' },
-    #     { 'include': '#super-class' },
-    #     { 'include': '#comma' },
-    #     { 'include': '#interfaces' }
-    #   ]
-    # },
-    # 'base-interface-list': {
-    #   'patterns': [
-    #     { 'include': '#colon' },
-    #     { 'include': '#interfaces' }
-    #   ]
-    # },
-    # 'super-class': {
-    #   'patterns': [
-    #     { 'include': '#identifier' },
-    #   ]
-    # },
-    # 'interfaces': {
-    #   'patterns': [
-    #     { 'include': '#comma' },
-    #     { 'include': '#interface' }
-    #   ]
-    # },
-    # 'interface': {
-    #   'patterns': [
-    #     { 'include': '#identifier' }
-    #   ]
-    # },
-    # 'alias-this': {
-    #   'begin': 'alias\\s+',
-    #   'beginCaptures': { '0': { 'name': 'support.type.alias.d' } },
-    #   'end': 'this',
-    #   'endCaptures': { '0': { 'name': 'support.class.keyword.this.d' } },
-    #   'patterns': [
-    #     { 'include': '#identifier' }
-    #   ]
-    # },
+    'aggregate-declaration': {
+      'patterns': [
+        { 'include': '#class-declaration' },
+        { 'include': '#interface-declaration' },
+        { 'include': '#struct-declaration' },
+        { 'include': '#union-declaration' }
+      ]
+    },
+    'class-declaration': {
+      'patterns': [
+        {
+          'match': 'class',
+          'name': 'entity.name.class.d'
+        },
+      ]
+    },
+    'interface-declaration': {
+      'patterns': [
+        {
+          'match': 'interface',
+          'name': 'entity.name.class.interface.d'
+        },
+      ]
+    },
+    'struct-declaration': {
+      'patterns': [
+        {
+          'match': 'struct',
+          'name': 'storage.type.struct.d'
+        },
+      ]
+    },
+    'union-declaration': {
+      'patterns': [
+        {
+          'match': 'union',
+          'name': 'storage.type.union.d'
+        },
+      ]
+    },
     # ###########################################################################
     # # Enum
     # ###########################################################################
