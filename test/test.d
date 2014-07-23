@@ -8,7 +8,7 @@
    or to get generated documentation:
      dmd hello.d -D
   */
-import this,
+import this;
 import( a=b );
 # line This is a line!
 pragma ( hello, an expression );
@@ -46,7 +46,7 @@ char
 deprecated char
 module something;
 version ( hello );
-is(string a, x + x, something);
+is(string a, x == x, something);
 version=3;
 version = (a < b) ? true : false;
 debug (something); is(djkfjdk)
