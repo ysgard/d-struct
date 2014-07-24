@@ -67,32 +67,22 @@
 
   'patterns': [
     { 'include': '#comment' },
+
+    # Type
     { 'include': '#type' },
-    { 'include': '#statement' },
+
+    # Expressions
     { 'include': '#expression' },
-    { 'include': '#lexical' }
   ],
 
   'repository': {
-
-
-    # Generic Parentheses
-    'parens': {
-      'begin': '\\(',
-      'beginCaptures': 'support.type.parens-expression.begin.d',
-      'end': '\\)',
-      'endCaptures': 'support.type.parens-expression.end.d',
-      'patterns': [
-        { 'include': '$base' }
-      ]
-    }
 
     # Type definitions
     'type': {
       'patterns': [
         { 'include': '#base-type' },
         { 'include': '#defined-type' },
-        { 'include': '#extended-type' },
+        # { 'include': '#extended-type' },
         { 'include': '#type-ctor' },
         { 'include': '#typeof' }
       ]
@@ -102,7 +92,7 @@
     'base-type': {
       'patterns': [
         {
-          'match': '(bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)(\\**)',
+          'match': '(bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)',
           'name': 'storage.type.basic-type.d'
         },
         { 'include': '#defined-type' }
@@ -112,23 +102,12 @@
     'defined-type': {
       'patterns': [
         'match': '(wstring|dstring|string|size_t|ptrdiff_t)',
-        'captures': {
-          '0': { 'name': 'storage.type.defined.d' },
-          '1': { 'include': '#extended-type' }
-        }
+        'name': 'storage.type.defined.d'
       ]
     },
     # Pointers, arrays, slices, etc...
     'extended-type': {
       'patterns': [
-        {
-          'match': '\\*',
-          'name': 'storage.type.pointer.d'
-        },
-        {
-          'match': '\\[\\s*\\]',
-          'name': 'storage.type.array.empty.d'
-        },
         {
           'begin': '\\[',
           'beginCaptures': { '0': { 'name': 'storage.type.array.expression.begin.d' } },
@@ -171,6 +150,7 @@
     # ###########################################################################
     'expression': {
       'patterns': [
+        { 'include': '#index-expression' },
         { 'include': '#lambda' },
         { 'include': '#function-literal' },
         { 'include': '#assert-expression' },
@@ -193,7 +173,8 @@
         { 'include': '#cast-expression' },
         { 'include': '#type-specialization' },
         { 'include': '#comma' },
-        { 'include': '#special-keyword' }
+        { 'include': '#special-keyword' },
+        { 'include': '#lexical' }
       ]
     },
     'assign-expression': {
@@ -304,11 +285,15 @@
         { 'include': '#postfix-expression' },
         {
           'begin': '\\[',
-          'beginCaptures': { '0': { 'name': 'support.type.index.bracket.begin.d' } }
+          #'beginCaptures': { '0': { 'name': 'support.type.index.bracket.begin.d' } }
           'end': '\\]',
-          'endCaptures': { '0': { 'name': 'support.type.index.bracket.end.d' } },
+          #'endCaptures': { '0': { 'name': 'support.type.index.bracket.end.d' } },
           'patterns': [
-              { 'include': '#expression' },
+            {
+              'match': '\\.\\.|\\$',
+              'name': 'keyword.operator.slice.d'
+            },
+            { 'include': '#expression' }
           ]
         }
       ]
@@ -316,7 +301,7 @@
     'function-literal': {
       'patterns': [
         {
-          'match': '(function|delegate)\\s+',
+          'match': '(function|delegate)',
           'name': 'entity.name.function.d'
         },
       ]
@@ -324,14 +309,14 @@
     'lambda': {
       'patterns': [
         {
-          'match': '=>\\s*(function|delegate)\\s+',
-          'name': 'entity.name.lambda.d'
+          'match': '=>\\s*(function|delegate)',
+          'name': 'entity.name.function.lambda.d'
         },
       ]
     },
     'assert-expression': {
       'patterns': [
-        'begin': 'assert\\s+\\(',
+        'begin': 'assert\\s*\\(',
         'beginCaptures': { '0': { 'name': 'keyword.other.assert.begin.d' } },
         'end': '\\)',
         'endCaptures': { '0': { 'name': 'keyword.other.assert.end.d' } },
@@ -342,7 +327,7 @@
     },
     'mixin-expression': {
       'patterns': [
-        'begin': 'mixin\\s+\\(',
+        'begin': 'mixin\\s*\\(',
         'beginCaptures': { '0': { 'name': 'keyword.other.mixin.begin.d' } },
         'end': '\\)',
         'endCaptures': { '0': { 'name': 'keyword.other.mixin.end.d' } },
@@ -353,7 +338,7 @@
     },
     'import-expression': {
       'patterns': [
-        'begin': 'import\\s+\\(',
+        'begin': 'import\\s*\\(',
         'beginCaptures': { '0': { 'name': 'keyword.other.import.begin.d' } },
         'end': '\\)',
         'endCaptures': { '0': { 'name': 'keyword.other.import.end.d' } },
@@ -469,12 +454,12 @@
         { 'include': '#scope-guard-statement' },
         { 'include': '#throw-statement' },
         { 'include': '#asm-statement' },
-        # { 'include': '#pragma-statement' },
-        # { 'include': '#mixin-statement' },
-        # { 'include': '#foreach-range-statement' },
-        # { 'include': '#conditional-statement' },
-        # { 'include': '#static-assert' },
-        # { 'include': '#template-mixin' },
+        { 'include': '#pragma-statement' },
+        { 'include': '#mixin-statement' },
+        { 'include': '#foreach-range-statement' },
+        { 'include': '#conditional-statement' },
+        { 'include': '#static-assert' },
+        { 'include': '#template-mixin' },
         { 'include': '#import-declaration' },
       ]
     },
@@ -735,7 +720,7 @@
     'return-statement': {
       'patterns': [
         {
-          'begin': 'return\\s*',
+          'begin': 'return',
           'name': 'keyword.control.return.d'
         }
       ]
@@ -984,22 +969,10 @@
     'parameters': {
       'patterns': [
         {
-          'match': '\\(\\s*\\.\\.\\.\\s*\\)',
-          'name': 'support.type.tuple-parameter.d'
+          'match': ',',
+          'name': 'keyword.operator.comma.d'
         },
-        {
-          'begin': '\\(',
-          'beginCaptures': { '0': { 'name': 'support.type.parameters.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'support.type.parameters.end.d' } },
-          'patterns': [
-              {
-                'match': ',',
-                'name': 'keyword.operator.comma.d'
-              },
-              { 'include': '#parameter' }
-          ]
-        }
+        { 'include': '#parameter' }
       ]
     },
     'parameter': {
@@ -1010,7 +983,10 @@
           'match': '\\.\\.\\.',
           'name': 'support.type.tuple.d'
         },
-        { 'include': '#identifier' }
+        {
+          'match': '(\\.?[_\\w][_\\d\\w]*)+',
+          'name': 'variable.parameter.d'
+        }
       ]
     },
     'in-out': {
@@ -1248,7 +1224,8 @@
           'end': '\\)',
           'endCaptures': { '0': { 'name': 'keyword.other.extern.cplusplus.end.d' } },
           'patterns': [
-            { 'include': '#identifier-list' },
+            { 'include': '#identifier' },
+            { 'include': '#comma' }
           ]
         },
         {
@@ -1448,7 +1425,7 @@
     },
     'static-if-condition': {
       'patterns': [
-        'begin': 'static\\s*if\\s*\\(',
+        'begin': 'static\\s+if\\s*\\(',
         'beginCaptures': { '0': { 'name': 'keyword.other.static-if.begin.d' } },
         'end': '\\)',
         'endCaptures': { '0': { 'name': 'keyword.other.static-if.end.d' } },
@@ -1459,7 +1436,7 @@
     }
     'static-assert': {
       'patterns': [
-        'begin': 'static\\s*assert\\s*\\(',
+        'begin': 'static\\s+assert\\s*\\(',
         'beginCaptures': { '0': { 'name': 'keyword.other.static-assert.begin.d' } },
         'end': '\\)',
         'endCaptures': { '0': { 'name': 'keyword.other.static-assert.end.d' } },

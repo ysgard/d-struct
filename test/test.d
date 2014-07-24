@@ -19,8 +19,10 @@ auto x = [
   "french roast": 7.49
 ];
 double[] keys = somefunc.some;
+assert ( q => function() )
 assert(keys == [ -1.5, 0.5, -0.5 ]);
-args = args[1 .. $ -1 ];
+meh[1 .. 3]
+args = args[1 .. $ 4 ];
 alias T elementtype;
 template Select(bool, cond, T1, T2) {
   static if(cond) {
@@ -29,12 +31,19 @@ template Select(bool, cond, T1, T2) {
     alias T2 Type;
   }
 }
+__traits( isAbstractClass )
+isAbstractClass
+
 __FILE__
 struct {
 
+a = b ? c : d;
+q = new ba;
+delete ba;
+a => function
 }
 double**
-double**[string fun],
+double**[string*, bool*] , arg[fun]
 asm {
   naked 3 + 43 __LOCAL_SIZE RAX XMM2 hello , no EAX near ptr
   3 * 5
@@ -88,7 +97,7 @@ __VERSION__
 if (x == 3) {
   This is a block
 } else {
-  more stuff 
+  more stuff
 }
 hello.this.is a . big stuff, followed by another is()
 extern (D);
@@ -104,7 +113,7 @@ void main(char[][] args)   // 'void' here means return 0 by default.
      // Strings are denoted as a dynamic array of chars 'char[]'
      // auto type inference and built-in foreach
      foreach(argc, argv; args)
-    {
+
         // OOP is supported, of course! And automatic type inference.
          auto cl = new CmdLin(argc, argv);
 
@@ -120,7 +129,7 @@ void main(char[][] args)   // 'void' here means return 0 by default.
         // all vars. automatically initialized
          int count, allocated;
     }
-
+    ()
     // Note that declarations read right-to-left.
     // So that 'char[][]' reads as an array of an array of chars.
 
