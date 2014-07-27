@@ -71,8 +71,13 @@
     # Type
     { 'include': '#type' },
 
+    # statement
+    { 'include': '#statement' },
+
     # Expressions
     { 'include': '#expression' },
+
+
   ],
 
   'repository': {
@@ -143,8 +148,6 @@
         { 'include': '#expression' }
       ],
     },
-    #
-    #
     # ###########################################################################
     # # Expression
     # ###########################################################################
@@ -174,6 +177,7 @@
         { 'include': '#type-specialization' },
         { 'include': '#comma' },
         { 'include': '#special-keyword' },
+        { 'include': '#functions' },
         { 'include': '#lexical' }
       ]
     },
@@ -302,14 +306,14 @@
       'patterns': [
         {
           'match': '(function|delegate)',
-          'name': 'entity.name.function.d'
+          'name': 'keyword.other.function-literal.d'
         },
       ]
     },
     'lambda': {
       'patterns': [
         {
-          'match': '=>\\s*(function|delegate)',
+          'match': '(?<=\\))\\s*=>',
           'name': 'entity.name.function.lambda.d'
         },
       ]
@@ -436,7 +440,7 @@
     'non-block-statement': {
       'patterns': [
         { 'include': '#labeled-statement' },
-        # { 'include': '#declaration-statement' },
+        { 'include': '#declaration-statement' },
         { 'include': '#if-statement' },
         { 'include': '#while-statement' },
         { 'include': '#do-statement' },
@@ -444,6 +448,7 @@
         { 'include': '#foreach-statement' },
         { 'include': '#switch-statement' },
         { 'include': '#final-switch-statement' },
+        { 'include': '#case-statement' },
         { 'include': '#continue-statement' },
         { 'include': '#break-statement' },
         { 'include': '#return-statement' },
@@ -453,20 +458,19 @@
         { 'include': '#try-statement' },
         { 'include': '#scope-guard-statement' },
         { 'include': '#throw-statement' },
+        { 'include': '#finally-statement' },
         { 'include': '#asm-statement' },
         { 'include': '#pragma-statement' },
         { 'include': '#mixin-statement' },
-        { 'include': '#foreach-range-statement' },
         { 'include': '#conditional-statement' },
         { 'include': '#static-assert' },
-        { 'include': '#template-mixin' },
         { 'include': '#import-declaration' },
       ]
     },
     'labeled-statement': {
       'patterns': [
         'match': '[a-zA-Z_][a-zA-Z_0-9]*:',
-        'name': 'entity.name.tag.label.d'
+        'name': 'keyword.other.label.d'
       ]
     },
     'block-statement': {
@@ -553,78 +557,17 @@
     },
     'foreach-statement': {
       'patterns': [
-        { 'include': '#foreach' },
         {
-          'begin': '\\(',
-          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
+          'begin': '(foreach|foreach_reverse)\\s*\\(',
+          'beginCaptures': { '0': { 'name': 'keyword.control.foreach.begin.d' } },
           'end': '\\)',
-          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
+          'endCaptures': { '0': { 'name': 'keyword.control.foreach.end.d' } },
           'patterns': [
-            { 'include': '#foreach-type-list' },
+            { 'include': '#type' },
+            { 'include': '#expression' },
             { 'include': '#semi-colon' },
-            { 'include': '#foreach-aggregate' },
           ]
         },
-        { 'include': '#no-scope-non-empty-statement' }
-      ]
-    },
-    'foreach': {
-      'patterns': [
-        'match': 'foreach|foreach_reverse',
-        'name': 'keyword.control.foreach.d'
-      ]
-    },
-    'foreach-type-list': {
-      'patterns': [
-        { 'include': '#foreach-type' },
-        { 'include': '#comma' }
-      ]
-    },
-    'for-each-type': {
-      'patterns': [
-        {
-          'match': 'ref\\s+',
-          'name': 'storage.modifier.ref.d'
-        },
-        { 'include': '#type' },
-        { 'include': '#identifier' }
-      ]
-    },
-    'foreach-aggregate': {
-      'patterns': [
-        { 'include': '#expression' }
-      ]
-    },
-    'foreach-range-statement': {
-      'patterns': [
-        { 'include': '#foreach' },
-        {
-          'begin': '\\(',
-          'beginCaptures': { '0': { 'name': 'support.type.parens-expression.begin.d' } },
-          'end': '\\)',
-          'encCaptures': { '0': { 'name': 'support.type.parens-expression.end.d' } },
-          'patterns': [
-            { 'include': '#foreach-type' },
-            { 'include': '#semi-colon' },
-            { 'include': '#lwr-expression' },
-            {
-              'match': '\\.\\.',
-              'name': 'keyword.operator.range.d'
-            },
-            { 'include': '#upr-expression' },
-          ]
-        },
-        { 'include': '#scope-statement' }
-      ]
-    },
-    'lwr-expression': {
-      'patterns': [
-        { 'include': '#expression' }
-      ]
-    },
-    'upr-expression': {
-      'patterns': [
-        { 'include': '#expression' }
       ]
     },
     'switch-statement': {
@@ -712,7 +655,7 @@
     'break-statement': {
       'patterns': [
         {
-          'begin': 'break',
+          'match': 'break',
           'name': 'keyword.control.break.d'
         }
       ]
@@ -720,7 +663,7 @@
     'return-statement': {
       'patterns': [
         {
-          'begin': 'return',
+          'match': 'return',
           'name': 'keyword.control.return.d'
         }
       ]
@@ -732,11 +675,11 @@
           'name': 'keyword.control.goto.d'
         },
         {
-          'begin': 'goto\\s+case\\s+',
+          'match': 'goto\\s+case\\s+',
           'name': 'keyword.control.goto.d'
         },
         {
-          'begin': 'goto\\s+',
+          'match': 'goto\\s+',
           'name': 'keyword.control.goto.d'
         },
       ]
@@ -759,7 +702,7 @@
     'synchronized-statement': {
       'patterns': [
         {
-          'begin': 'synchronized\\s+\\(',
+          'begin': 'synchronized\\s*\\(',
           'beginCaptures': { '0': { 'name': 'keyword.control.synchronized.begin.d' } },
           'end': '\\)',
           'endCaptures': { '0': { 'name': 'keyword.control.synchronized.end.d' } },
@@ -791,7 +734,7 @@
     'last-catch': {
       'patterns': [
         {
-          'match': 'catch\\s+(?!\\()',
+          'match': 'catch\\s*(?!\\()',
           'name': 'keyword.control.catch.d'
         },
       ]
@@ -821,7 +764,7 @@
     'throw-statement': {
       'patterns': [
         {
-          'begin': 'throw\\s+',
+          'match': 'throw\\s+',
           'name': 'keyword.control.throw.d'
         }
       ]
@@ -867,6 +810,7 @@
     # ###########################################################################
     'asm-instruction': {
       'patterns': [
+        { 'include': '#comment' },
         {
           'match': 'align|even|naked|db|ds|di|dl|df|dd|de|:',
           'name': 'keyword.asm-instruction.d',
@@ -939,16 +883,17 @@
     },
     'alias-declaration': {
       'patterns': [
-        {
-          'match': 'alias\\s+',
-          'name': 'keyword.alias.d'
+        'match': '(alias)\\s+(.+)(?=;)',
+        'captures': {
+          '1': { 'name': 'keyword.other.alias.d' },
+          '2': { 'name': 'support.type.alias.d' },
         },
       ]
     },
     'storage-class': {
       'patterns': [
         {
-          'match': 'deprecated|enum|static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref',
+          'match': '(deprecated|enum|static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref)\\s+',
           'name': 'storage.class.d'
         },
         { 'include': '#linkage-attribute' },
@@ -963,9 +908,40 @@
       ]
     },
 
-    # ###########################################################################
-    # # Function
-    # ###########################################################################
+    ###########################################################################
+    # Function
+    ###########################################################################
+    'functions': {
+      'patterns': [
+        { 'include': '#function-attribute' },
+        { 'include': '#function-prelude' },
+        { 'include': '#function-parameters' }
+      ]
+    },
+    'function-prelude': {
+      'patterns': [
+        'match': '((\\.?[_\\w][_\\d\\w]*)+)\\s*(?=\\()',
+        'name': 'entity.name.function.d'
+      ]
+    },
+    'function-parameters': {
+      'begin': '\\((?=.*(\\{|=>))',
+      'beginCaptures': 'entity.name.function.d',
+      'end': '\\)',
+      'endCaptures': 'entity.name.function.d',
+      'patterns': [
+        { 'include': '#parameters' }
+      ],
+    },
+    # 'anonymous-function': {
+    #   'begin': '(bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)\\(',
+    #   'beginCaptures': 'entity.name.function.begin.d',
+    #   'end': '\\)',
+    #   'endCaptures': 'entity.name.function.end.d',
+    #   'patterns': [
+    #     { 'include': '#parameters' }
+    #   ]
+    # },
     'parameters': {
       'patterns': [
         {
@@ -984,15 +960,20 @@
           'name': 'support.type.tuple.d'
         },
         {
+          'match': '[R-Z]([0-9])?',
+          'name': 'variable.parameter.d'
+        },
+        {
           'match': '(\\.?[_\\w][_\\d\\w]*)+',
           'name': 'variable.parameter.d'
-        }
+        },
+        { 'include': '#lexical' }
       ]
     },
     'in-out': {
       'patterns': [
         {
-          'match': 'auto|final|in|out|lazy|ref|scope',
+          'match': '(auto|final|in|out|lazy|ref|scope)\\s+',
           'name': 'storage.type.modifier.inout.d'
         },
       ]
@@ -1000,7 +981,7 @@
     'function-attribute': {
       'patterns': [
         {
-          'match': 'nothrow|pure',
+          'match': '(nothrow|pure)\\s+',
           'name': 'storage.type.modifier.function-attribute.d'
         },
         {
@@ -1011,7 +992,7 @@
     'member-function-attribute': {
       'patterns': [
         {
-          'match': 'const|immutable|inout|shared',
+          'match': '(const|immutable|inout|shared)\\s+',
           'name': 'storage.type.modifier.member-function-attribute'
         },
       ]
@@ -1183,27 +1164,27 @@
     # ###########################################################################
     # # Attribute
     # ###########################################################################
-    # 'attribute-specifier': {
-    #   'patterns': [
-    #     { 'include': '#attribute' },
-    #     { 'include': '#colon' },
-    #     { 'include': '#declaration-block' }
-    #   ]
-    # },
-    # 'attribute': {
-    #   'patterns': [
-    #     { 'include': '#linkage-attribute' },
-    #     { 'include': '#align-attribute' },
-    #     { 'include': '#deprecated-attribute' },
-    #     { 'include': '#protection-attribute' },
-    #     { 'include': '#pragma' },
-    #     {
-    #       'match': 'static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref',
-    #       'name': 'entity.other.attribute-name.d'
-    #     },
-    #     { 'include': '#property' },
-    #   ]
-    # },
+    'attribute-specifier': {
+      'patterns': [
+        { 'include': '#attribute' },
+        { 'include': '#colon' },
+        { 'include': '#declaration-block' }
+      ]
+    },
+    'attribute': {
+      'patterns': [
+        { 'include': '#linkage-attribute' },
+        { 'include': '#align-attribute' },
+        { 'include': '#deprecated-attribute' },
+        { 'include': '#protection-attribute' },
+        { 'include': '#pragma' },
+        {
+          'match': 'static|extern|abstract|final|override|synchronized|auto|scope|const|immutable|inout|shared|__gshared|nothrow|pure|ref',
+          'name': 'entity.other.attribute-name.d'
+        },
+        { 'include': '#property' },
+      ]
+    },
     'declaration-block': {
       'patterns': [
         {
@@ -1318,13 +1299,13 @@
     'pragma': {
       'patterns': [
         {
-          'match': 'pragma\\s?\\(\\s*[_\\w][_\\d\\w]*\\s*\\)',
-          'name': 'gfm.markup.header.preprocessor.pragma.d'
+          'match': 'pragma\\s*\\(\\s*[_\\w][_\\d\\w]*\\s*\\)',
+          'name': 'keyword.other.pragma.d'
         },
         {
-          'begin': 'pragma\\s?\\(\\s*[_\\w][_\\d\\w]*\\s*,',
+          'begin': 'pragma\\s*\\(\\s*[_\\w][_\\d\\w]*\\s*,',
           'end': '\\)',
-          'name': 'gfm.markup.header.preprocessor.pragma.arguments.d'
+          'name': 'keyword.other.pragma.d'
           'patterns': [
             { 'include': '#expression' },
           ]
@@ -1537,7 +1518,7 @@
     'semi-colon': {
       'patterns': [
         'match': ';',
-        'name': 'meta.statement.semi-colon.d'
+        'name': 'keyword.operator.semi-colon.d'
       ]
     },
 

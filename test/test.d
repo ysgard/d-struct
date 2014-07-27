@@ -12,19 +12,31 @@ import this;
 some_label: This isa  label
 import( a=b );
 # line This is a line!
-pragma ( hello, an expression );
+a, b
+pragma( b, 1+2 );
 auto x = [
   "french vanilla" : 8.75,
   "java": 7.99,
   "french roast": 7.49
 ];
+version( Demo ) {
+  do_stuff...
+}
+static assert ()
+static if ()
+mixin("
+    int x = 3;
+    for (int i = 0; i < 3; i++)
+      writeln(x + i, ++j);
+    ");    // ok
+
 double[] keys = somefunc.some;
-assert ( q => function() )
+assert ( q => function(a, b)  )
 assert(keys == [ -1.5, 0.5, -0.5 ]);
 meh[1 .. 3]
 args = args[1 .. $ 4 ];
 alias T elementtype;
-template Select(bool, cond, T1, T2) {
+template Select(T1, T, U)(bool, cond, T1, T2) {
   static if(cond) {
     alias T1 Type;
   } else {
@@ -32,7 +44,20 @@ template Select(bool, cond, T1, T2) {
   }
 }
 __traits( isAbstractClass )
-isAbstractClass
+isAbstractClass()
+try {
+    try {
+      throw new Exception("first");
+    }
+    finally {
+      writeln("finally");
+      throw new Exception("second");
+    }
+  }
+  catch(Exception e) {
+    writeln("catch %s", e.msg);
+  }
+  writeln("done");
 
 __FILE__
 struct {
@@ -45,7 +70,7 @@ a => function
 double**
 double**[string*, bool*] , arg[fun]
 asm {
-  naked 3 + 43 __LOCAL_SIZE RAX XMM2 hello , no EAX near ptr
+  naked 3 + 43 __LOCAL_SIZE RAX XMM2 hello , no EAX near ptr // this is a comment
   3 * 5
 };
 deprecated char[]
@@ -99,11 +124,25 @@ if (x == 3) {
 } else {
   more stuff
 }
+auto
 hello.this.is a . big stuff, followed by another is()
 extern (D);
 final int x(5);
 this = hello ? whatever : dkjfkd;
 wstring char[]
+auto twice  = function (int x) => x * 2;
+auto square = delegate (int x) => x * x;
+
+asm {
+  mov EAX,x; // load x and put it in register EAX
+}
+alias this that;
+auto n = 5;
+auto mul_n = (int x) => x * n;
+
+writeln(twice(i));   // prints 6
+writeln(square(i));  // prints 9
+writeln(mul_n(i));   // prints 15
 import std.stdio, std.string;  // References to  commonly used I/O routines.
 void main(char[][] args)   // 'void' here means return 0 by default.
 {
@@ -175,14 +214,14 @@ void main(char[][] args)   // 'void' here means return 0 by default.
       params:
         argc = ordinal count of this argument.
         argv = text of the parameter
-  *********/
+      *********/
      this(int argc, char[] argv)
     {
         _argc = argc + 1;
         _argv = argv;
         _totalc++;
     }
-
+@safe 
     ~this() /// Object destructor
      {
         // Doesn't actually do anything for this example.
@@ -215,7 +254,52 @@ void main(char[][] args)   // 'void' here means return 0 by default.
         }
         return suffix;
     }
+switch (x)
+{
+  case 3:
+    goto case;
+  case 4:
+    goto default;
+  case 5:
+    goto case 4;
+  default:
+    x = 4;
+    break;
+}
+foreach (int i, char c; a) {
+  writefln("a[%d] = '%c'", i, c);
+}
+with( a == b) {
+  printf("something!");
+}
+synchronized (dkfjkdjf)
 
+int number;
+string message;
+switch (number)
+{
+  default:    // valid: ends with 'throw'
+    throw new Exception("unknown number");
+
+  case 3:     // valid: ends with 'break' (break out of the 'switch' only)
+    message ~= "three ";
+    break;
+
+  case 4:     // valid: ends with 'continue' (continue the enclosing loop)
+    message ~= "four ";
+    continue;
+
+  case 5:     // valid: ends with 'goto' (explicit fall-through to next case.)
+    message ~= "five ";
+    goto case;
+
+  case 6:     // ERROR: implicit fall-through
+    message ~= "six ";
+
+  case 1:     // valid: the body is empty
+  case 2:     // valid: this is the last case in the switch statement.
+    message = "one or two";
+}
 /* **************
       * A property of the whole class, not just an instance.
       * returns: The total number of commandline args added.
