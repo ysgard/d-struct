@@ -126,7 +126,7 @@ if (x == 3) {
 }
 auto
 hello.this.is a . big stuff, followed by another is()
-extern (D);
+extern (C);
 final int x(5);
 this = hello ? whatever : dkjfkd;
 wstring char[]
@@ -200,7 +200,7 @@ void main(char[][] args)   // 'void' here means return 0 by default.
 /**
    Stores a single command line argument.
  */
- class CmdLin
+class CmdLin
 {
     private {
      int _argc;
@@ -221,7 +221,7 @@ void main(char[][] args)   // 'void' here means return 0 by default.
         _argv = argv;
         _totalc++;
     }
-@safe 
+@safe
     ~this() /// Object destructor
      {
         // Doesn't actually do anything for this example.

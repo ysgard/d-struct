@@ -915,7 +915,8 @@
       'patterns': [
         { 'include': '#function-attribute' },
         { 'include': '#function-prelude' },
-        { 'include': '#function-parameters' }
+        { 'include': '#function-parameters' },
+        { 'include': '#class-members' }
       ]
     },
     'function-prelude': {
@@ -942,6 +943,15 @@
     #     { 'include': '#parameters' }
     #   ]
     # },
+    'class-members': {
+      'patterns': [
+        { 'include': '#shared-static-constructor' },
+        { 'include': '#shared-static-destructor' },
+        { 'include': '#constructor' },
+        { 'include': '#destructor' },
+        { 'include': '#postblit' }
+      ]
+    },
     'parameters': {
       'patterns': [
         {
@@ -1168,7 +1178,6 @@
       'patterns': [
         { 'include': '#attribute' },
         { 'include': '#colon' },
-        { 'include': '#declaration-block' }
       ]
     },
     'attribute': {
@@ -1185,18 +1194,7 @@
         { 'include': '#property' },
       ]
     },
-    'declaration-block': {
-      'patterns': [
-        {
-          'begin': '\\{',
-          'end': '\\}',
-          'patterns': [
-            { 'include': '#decl-defs' },
-          ]
-        }
-        { 'include': '#decl-def' },
-      ]
-    }
+
     'linkage-attribute': {
       'patterns': [
         {
@@ -1535,6 +1533,7 @@
         { 'include': '#integer-literal' },
         { 'include': '#special-tokens' },
         { 'include': '#special-token-sequence' },
+        { 'include': '#class-identifier' },
         { 'include': '#identifier' },
       ]
     },
@@ -1799,6 +1798,14 @@
           'name': 'keyword.other.comma.d'
         },
         { 'include': '#identifier' }
+      ]
+    },
+    'class-identifier': {
+      'patterns': [
+        {
+          'match': '(\\.?[A-Z][_\\d\\w]*)+\\s*(?!\\()',
+          'name': 'entity.name.instance.d',
+        }
       ]
     },
     'identifier': {
