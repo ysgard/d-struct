@@ -1,3 +1,6 @@
+## 0.3.1
+* Fixed many problems with the syntax highlighting, still bugs to work out, but more or less complete now.
+
 ## 0.3.0
 * Full grammar in syntax, now being extensively debugged.
 
