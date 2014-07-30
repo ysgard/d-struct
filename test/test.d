@@ -8,6 +8,7 @@
    or to get generated documentation:
      dmd hello.d -D
   */
+  1 + 2
 import this;
 some_label: This isa  label
 import( a=b );
@@ -35,8 +36,9 @@ assert ( q => function(a, b)  )
 assert(keys == [ -1.5, 0.5, -0.5 ]);
 meh[1 .. 3]
 args = args[1 .. $ 4 ];
+cond(a, b, c)
 alias T elementtype;
-template Select(T1, T, U)(bool, cond, T1, T2) {
+template Select(T1, T, U)(bool what, string[] cond, char* T1, T2) {
   static if(cond) {
     alias T1 Type;
   } else {
@@ -58,7 +60,7 @@ try {
     writeln("catch %s", e.msg);
   }
   writeln("done");
-
+deprecated( this );
 __FILE__
 struct {
 
@@ -117,7 +119,7 @@ __VERSION__
 0.0
 3.
 .5
-.5f
+.5f + 3
 .5f
 if (x == 3) {
   This is a block

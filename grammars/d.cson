@@ -100,7 +100,6 @@
           'match': '(bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)',
           'name': 'storage.type.basic-type.d'
         },
-        { 'include': '#defined-type' }
       ]
     },
     # defined in object.di, not actually part of grammar
@@ -439,6 +438,7 @@
     },
     'non-block-statement': {
       'patterns': [
+        { 'include': '#module-declaration' },
         { 'include': '#labeled-statement' },
         { 'include': '#declaration-statement' },
         { 'include': '#if-statement' },
@@ -464,26 +464,14 @@
         { 'include': '#mixin-statement' },
         { 'include': '#conditional-statement' },
         { 'include': '#static-assert' },
-        { 'include': '#import-declaration' },
+        { 'include': '#deprecated-statement' },
+        { 'include': '#unit-test' },
       ]
     },
     'labeled-statement': {
       'patterns': [
         'match': '[a-zA-Z_][a-zA-Z_0-9]*:',
         'name': 'keyword.other.label.d'
-      ]
-    },
-    'block-statement': {
-      'patterns': [
-        {
-          'begin': '\\{',
-          'beginCaptures': { '0': { 'name': 'support.type.brackets-expression.begin.d' } },
-          'end': '\\}',
-          'encCaptures': { '0': { 'name': 'support.type.brackets-expression.end.d' } },
-          'patterns': [
-            { 'include': '#statement' }
-          ]
-        },
       ]
     },
     'declaration-statement': {
@@ -711,7 +699,7 @@
           ]
         },
         {
-          'match': 'synchronized\\s+(?!\\()',
+          'match': 'synchronized\\s*(?!\\()',
           'name': 'keyword.control.synchronized.d'
         },
       ]
@@ -803,6 +791,23 @@
         'patterns': [
           { 'include': '#expression' }
         ]
+      ]
+    },
+    'deprecated-statement': {
+      'patterns': [
+        {
+          'begin': 'deprecated\\s*\\(',
+          'beginCaptures': { '0': { 'name': 'keyword.other.deprecated.begin.d' } },
+          'end': '\\)',
+          'endCaptures': { '0': { 'name': 'keyword.other.deprecated.end.d' } },
+          'patterns': [
+            { 'include': '#string-literal' },
+          ]
+        },
+        {
+          'match': 'deprecated\\s*[^\\(]',
+          'name': 'keyword.other.deprecated.plain.d'
+        }
       ]
     },
     # ###########################################################################
@@ -916,7 +921,6 @@
         { 'include': '#function-attribute' },
         { 'include': '#function-prelude' },
         { 'include': '#function-parameters' },
-        { 'include': '#class-members' }
       ]
     },
     'function-prelude': {
@@ -934,22 +938,15 @@
         { 'include': '#parameters' }
       ],
     },
-    # 'anonymous-function': {
-    #   'begin': '(bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)\\(',
-    #   'beginCaptures': 'entity.name.function.begin.d',
-    #   'end': '\\)',
-    #   'endCaptures': 'entity.name.function.end.d',
-    #   'patterns': [
-    #     { 'include': '#parameters' }
-    #   ]
-    # },
     'class-members': {
       'patterns': [
         { 'include': '#shared-static-constructor' },
         { 'include': '#shared-static-destructor' },
         { 'include': '#constructor' },
         { 'include': '#destructor' },
-        { 'include': '#postblit' }
+        { 'include': '#postblit' },
+        { 'include': '#invariant' },
+        { 'include': '#member-function-attribute' }
       ]
     },
     'parameters': {
@@ -1113,7 +1110,8 @@
         { 'include': '#class-declaration' },
         { 'include': '#interface-declaration' },
         { 'include': '#struct-declaration' },
-        { 'include': '#union-declaration' }
+        { 'include': '#union-declaration' },
+        { 'include': '#template-declaration' }
       ]
     },
     'class-declaration': {
@@ -1122,6 +1120,8 @@
           'match': 'class',
           'name': 'entity.name.class.d'
         },
+        { 'include': '#protection-attribute' },
+        { 'include': '#class-members' }
       ]
     },
     'interface-declaration': {
@@ -1174,12 +1174,6 @@
     # ###########################################################################
     # # Attribute
     # ###########################################################################
-    'attribute-specifier': {
-      'patterns': [
-        { 'include': '#attribute' },
-        { 'include': '#colon' },
-      ]
-    },
     'attribute': {
       'patterns': [
         { 'include': '#linkage-attribute' },
@@ -1240,23 +1234,7 @@
         }
       ]
     },
-    'deprecated-attribute': {
-      'patterns': [
-        {
-          'begin': 'deprecated\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.other.deprecated.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.other.deprecated.end.d' } },
-          'patterns': [
-            { 'include': '#string-literal' },
-          ]
-        },
-        {
-          'match': 'deprecated\\s*[^\\(]',
-          'name': 'keyword.other.deprecated.plain.d'
-        }
-      ]
-    },
+
     'protection-attribute': {
       'patterns': [
         'match': 'private|package|protected|public|export',
@@ -1269,12 +1247,7 @@
           'match': '@(property|safe|trusted|system|disable|nogc)',
           'name': 'entity.name.tag.property.d',
         },
-      ]
-    },
-    'property-identifier': {
-      'patterns': [
-        'match': 'property|safe|trusted|system|disable|nogc',
-        'name': 'entity.name.tag.property.d'
+        { 'include': '#user-defined-attribute' }
       ]
     },
     'user-defined-attribute': {
@@ -1369,7 +1342,8 @@
             { 'include': '#integer-literal' },
             { 'include': '#identifier' }
           ]
-        }
+        },
+        { 'include': '#version-specification' }
       ]
     },
     'debug-condition': {
@@ -1430,39 +1404,11 @@
     'module': {
       'packages': [
         { 'import': '#module-declaration' },
-        { 'import': '#decl-def' }
-      ]
-    },
-    'decl-def': {
-      'packages': [
-        { 'include': '#attribute-specifier' },
-        { 'include': '#declaration' },
-        { 'include': '#constructor' },
-        { 'include': '#destructor' },
-        { 'include': '#postblit' },
-        { 'include': '#allocator' },
-        { 'include': '#deallocator' },
-        { 'include': '#invariant' },
-        { 'include': '#unit-test' },
-        { 'include': '#alias-this' },
-        { 'include': '#static-constructor' },
-        { 'include': '#static-destructor' },
-        { 'include': '#conditional-declaration' },
-        { 'include': '#debug-specification' },
-        { 'include': '#version-specification' },
-        { 'include': '#static-assert' },
-        { 'include': '#template-declaration' },
-        { 'include': '#template-mixin-declaration' },
-        { 'include': '#template-mixin' },
-        { 'include': '#mixin-declaration' },
-        { 'include': '#shared-static-constructor' },
-        { 'include': '#shared-static-destructor' },
-        { 'include': '#semi-colon' },
       ]
     },
     'module-declaration': {
       'patterns': [
-        'begin': 'module\\s+',
+        'match': 'module\\s+',
         'name': 'keyword.package.module.d'
       ]
     },
@@ -1514,9 +1460,16 @@
       ]
     },
     'semi-colon': {
+      # Don't highlight if it's the last token on a line
       'patterns': [
-        'match': ';',
-        'name': 'keyword.operator.semi-colon.d'
+        {
+          'match': ';\\s*$',
+          'name': 'meta.statement.end.d'
+        },
+        {
+          'match': ';',
+          'name': 'keyword.operator.semi-colon.d'
+        }
       ]
     },
 
