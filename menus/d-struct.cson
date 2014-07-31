@@ -9,8 +9,7 @@
     'submenu': [
       'label': 'd-struct'
       'submenu': [
-        { 'label': 'Run dub', 'command': 'd-struct:dub' },
-        { 'label': 'Toggle', 'command': 'd-struct:toggle' }
+        { 'label': 'Run dub in project root', 'command': 'd-struct:dub' },
       ]
     ]
   }

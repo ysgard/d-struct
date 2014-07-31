@@ -8,5 +8,4 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
 '.workspace':
-  'ctrl-alt-o': 'd-struct:toggle'
   'ctrl-alt-d': 'd-struct:dub'

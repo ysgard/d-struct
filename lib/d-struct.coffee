@@ -1,16 +1,17 @@
-DStructView = require './d-struct-view'
+# Grab a few objects that we'll need
+popen = require('child_process').exec
+path = require('path')
+platform = require('os').platform
+
+# Open a terminal and run dub
+run_dub = ->
+  # Run the terminal app
+  cmdline = "osascript -e \'tell application \"Terminal\" to do script \"cd #{atom.project.path}; dub\"\'"
+  popen cmdline
 
 module.exports =
-  dStructView: null
-
+  # Bind workspace command to run_dub
   activate: (state) ->
-    @dStructView = new DStructView(state.dStructViewState)
-    atom.config.set('d-struct.dub_location', 'Where is dub?')
-    atom.config.observe 'd-struct.dub_location', ->
-      console.log 'My config changed!  New dub loc:', atom.config.get('d-struct.dub_location')
-
-  deactivate: ->
-    @dStructView.destroy()
-
-  serialize: ->
-    dStructViewState: @dStructView.serialize()
+    atom.workspaceView.command "d-struct:dub", => @rundub()
+  rundub: ->
+    run_dub()
