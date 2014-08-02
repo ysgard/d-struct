@@ -1,13 +1,20 @@
 #!/usr/bin/dmd -run
-/* sh style script syntax is supported! */
-/* Hello World in D
-   To compile:
-     dmd hello.d
-   or to optimize:
-     dmd -O -inline -release hello.d
-   or to get generated documentation:
-     dmd hello.d -D
-  */
+
+// Single line C++ style comment
+
+/*
+ * Multiline C-style comment
+ */
+
+/+
+ + Nesting block comments
+ +/
+
+module i.am.a.module;
+
+import one.such.package, another.such.package;
+
+
   1 + 2
 import this;
 some_label: This isa  label
@@ -23,6 +30,7 @@ auto x = [
 version( Demo ) {
   do_stuff...
 }
+
 static assert ()
 static if ()
 mixin("
@@ -67,7 +75,7 @@ struct {
 a = b ? c : d;
 q = new ba;
 delete ba;
-a => function
+(a) => function
 }
 double**
 double**[string*, bool*] , arg[fun]
@@ -202,7 +210,8 @@ void main(char[][] args)   // 'void' here means return 0 by default.
 /**
    Stores a single command line argument.
  */
-class CmdLin
+nfername
+class CmdLin : Interface1, Interface2
 {
     private {
      int _argc;

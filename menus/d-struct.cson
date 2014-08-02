@@ -1,7 +1,7 @@
 # See https://atom.io/docs/latest/creating-a-package#menus for more details
-'context-menu':
-  '.overlayer':
-      'Enable d-struct': 'd-struct:toggle'
+# 'context-menu':
+#   '.overlayer':
+#       'Enable d-struct': 'd-struct:toggle'
 
 'menu': [
   {
@@ -9,7 +9,7 @@
     'submenu': [
       'label': 'd-struct'
       'submenu': [
-        { 'label': 'Run dub in project root', 'command': 'd-struct:dub' },
+        { 'label': 'dub build', 'command': 'd-struct:dub-build' },
       ]
     ]
   }

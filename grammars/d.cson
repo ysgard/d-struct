@@ -81,7 +81,6 @@
   ],
 
   'repository': {
-
     # Type definitions
     'type': {
       'patterns': [
@@ -97,7 +96,7 @@
     'base-type': {
       'patterns': [
         {
-          'match': '(bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)',
+          'match': '(auto|bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)\\s*\\**',
           'name': 'storage.type.basic-type.d'
         },
       ]
@@ -105,7 +104,7 @@
     # defined in object.di, not actually part of grammar
     'defined-type': {
       'patterns': [
-        'match': '(wstring|dstring|string|size_t|ptrdiff_t)',
+        'match': '(wstring|dstring|string|size_t|ptrdiff_t)\\**',
         'name': 'storage.type.defined.d'
       ]
     },
@@ -147,9 +146,9 @@
         { 'include': '#expression' }
       ],
     },
-    # ###########################################################################
-    # # Expression
-    # ###########################################################################
+    ###########################################################################
+    # Expression
+    ###########################################################################
     'expression': {
       'patterns': [
         { 'include': '#index-expression' },
@@ -160,7 +159,6 @@
         { 'include': '#mixin-expression' },
         { 'include': '#import-expression' },
         { 'include': '#traits-expression' },
-        { 'include': '#is-expression' },
         { 'include': '#typeid-expression' },
         { 'include': '#shift-expression' },
         { 'include': '#logical-expression' },
@@ -169,7 +167,7 @@
         { 'include': '#identity-expression' },
         { 'include': '#in-expression' },
         { 'include': '#conditional-expression' },
-        { 'include': '#arithmetic expression' },
+        { 'include': '#arithmetic-expression' },
         { 'include': '#new-expression' },
         { 'include': '#delete-expression' },
         { 'include': '#cast-expression' },
@@ -216,7 +214,7 @@
     'identity-expression': {
       'patterns': [
         {
-          'match': '\\s(is|!is)\\s',
+          'match': '\\s+(is|!is)\\s+',
           'name': 'keyword.operator.identity.d'
         },
       ]
@@ -232,7 +230,7 @@
     'in-expression': {
       'patterns': [
         {
-          'match': '\\s(in|\\!in)\\s',
+          'match': '\\s+(in|!in)\\s+',
           'name': 'keyword.operator.in.d'
         },
       ]
@@ -296,6 +294,7 @@
               'match': '\\.\\.|\\$',
               'name': 'keyword.operator.slice.d'
             },
+            { 'include': '#type' },
             { 'include': '#expression' }
           ]
         }
@@ -341,7 +340,7 @@
     },
     'import-expression': {
       'patterns': [
-        'begin': 'import\\s*\\(',
+        'begin': 'import\\s*(?=\\()',
         'beginCaptures': { '0': { 'name': 'keyword.other.import.begin.d' } },
         'end': '\\)',
         'endCaptures': { '0': { 'name': 'keyword.other.import.end.d' } },
@@ -352,33 +351,8 @@
     },
     'typeid-expression': {
       'patterns': [
-        'begin': 'typeid\\s*\\(',
-        'beginCaptures': { '0': { 'name': 'keyword.other.typeid.begin.d' } },
-        'end': '\\)',
-        'endCaptures': { '0': { 'name': 'keyword.other.typeid.end.d' } },
-        'patterns': [
-          { 'include': '#type' },
-          { 'include': '#expression' }
-        ]
-      ]
-    },
-    'is-expression': {
-      'patterns': [
-        'begin': 'is\\s*\\(',
-        'beginCaptures': { '0': { 'name': 'keyword.operator.is.begin.d' } },
-        'end': '\\)',
-        'endCaptures': { '0': { 'name': 'keyword.operator.is.end.d' } },
-        'patterns': [
-          { 'include': '#type' },
-          {
-            'match': '==',
-            'name': 'keyword.operator.equivalency.d'
-          },
-          { 'include': '#colon' },
-          { 'include': '#comma' },
-          { 'include': '#identifier' },
-          { 'include': '#type-specialization' }
-        ]
+        'match': 'typeid\\s*(?=\\()',
+        'name': 'keyword.other.typeid.d'
       ]
     },
     'type-specialization': {
@@ -471,7 +445,7 @@
     'labeled-statement': {
       'patterns': [
         'match': '[a-zA-Z_][a-zA-Z_0-9]*:',
-        'name': 'keyword.other.label.d'
+        'name': 'entity.name.d'
       ]
     },
     'declaration-statement': {
@@ -482,43 +456,21 @@
     'if-statement': {
       'patterns': [
         {
-          'begin': 'if\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.if.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.control.if.end.d' } },
-          'patterns': [
-            { 'include': '#if-condition' }
-          ]
+          'match': 'if\\s*(?=\\()',
+          'name': 'keyword.control.if.d'
         },
         {
-          'match': 'else\\s+',
+          'match': 'else',
           'name': 'keyword.control.else.d'
         },
-      ]
-    },
-    'if-condition': {
-      'patterns': [
-        {
-          'match': 'auto',
-          'name': 'storage.modifier.auto.d'
-        },
-        { 'include': '#type'}
-        { 'include': '#expression' },
-        { 'include': '#identifier' }
       ]
     },
     'while-statement': {
       'patterns': [
         {
-          'begin': 'while\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.while.begin.d' } },
-          'end': '\\)',
-          'encCaptures': { '0': { 'name': 'keyword.control.while.end.d' } },
-          'patterns': [
-            { 'include': '#expression' }
-          ]
+          'match': 'while\\s*(?=\\()',
+          'name': 'keyword.control.while.d'
         },
-
       ]
     },
     'do-statement': {
@@ -532,42 +484,24 @@
     'for-statement': {
       'patterns': [
         {
-          'begin': 'for\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.for.begin.d' } },
-          'end': '\\)',
-          'encCaptures': { '0': { 'name': 'keyword.control.for.end.d' } },
-          'patterns': [
-            { 'include': '#non-block-statement' },
-            { 'include': '#semi-colon' },
-          ]
+          'match': 'for\\s+(?=\\()',
+          'name': 'keyword.control.for.d'
         }
       ]
     },
     'foreach-statement': {
       'patterns': [
         {
-          'begin': '(foreach|foreach_reverse)\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.foreach.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.control.foreach.end.d' } },
-          'patterns': [
-            { 'include': '#type' },
-            { 'include': '#expression' },
-            { 'include': '#semi-colon' },
-          ]
+          'match': 'foreach\\s*(?=\\()',
+          'name': 'keyword.control.foreach.d'
         },
       ]
     },
     'switch-statement': {
       'patterns': [
         {
-          'begin': 'switch\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.switch.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.control.switch.end.d' } },
-          'patterns': [
-            { 'include': '#expression' }
-          ]
+          'match': 'switch\\s*(?=\\()',
+          'name': 'keyword.control.switch.d'
         }
       ]
     },
@@ -581,7 +515,6 @@
           'match': ':',
           'name': 'keyword.control.case.colon.d'
         },
-        { 'include': '#statement' }
       ]
     },
     'case-range-statement': {
@@ -598,17 +531,6 @@
           'match': '\\.\\.\\s*case\\s+',
           'name': 'keyword.control.case.range-2.d'
         },
-        { 'include': '#expression' }
-      ]
-    },
-    'first-exp': {
-      'patterns': [
-        { 'include': '#assign-expression' }
-      ]
-    },
-    'last-exp': {
-      'patterns': [
-        { 'include': '#assign-expression' }
       ]
     },
     'default-statement': {
@@ -622,13 +544,8 @@
     'final-switch-statement': {
       'patterns': [
         {
-          'begin': 'final\\s+switch\\s+\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.final-switch.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.control.final-switch.end.d' } },
-          'patterns': [
-            { 'include': '#expression' }
-          ]
+          'match': 'final\\s+switch\\s*(?=\\()',
+          'name': 'keyword.control.final.switch.d'
         }
       ]
     },
@@ -675,32 +592,16 @@
     'with-statement': {
       'patterns': [
         {
-          'begin': 'with\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.with.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.control.with.end.d' } },
-          'patterns': [
-            { 'include': '#symbol' },
-            { 'include': '#template-instance' },
-            { 'include': '#expression' },
-          ]
+          'match': 'with\\s*(?=\\()',
+          'name': 'keyword.control.with.d'
         },
       ]
     },
     'synchronized-statement': {
       'patterns': [
         {
-          'begin': 'synchronized\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.synchronized.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.control.synchronized.end.d' } },
-          'patterns': [
-            { 'include': '#expression' }
-          ]
-        },
-        {
-          'match': 'synchronized\\s*(?!\\()',
-          'name': 'keyword.control.synchronized.d'
+          'match': 'synchronized\\s*(?=\\()',
+          'name': 'keyword.other.synchronized.d'
         },
       ]
     },
@@ -716,13 +617,12 @@
       'patterns': [
         { 'include': '#last-catch' },
         { 'include': '#catch' },
-        { 'include': '#catches' }
       ]
     },
     'last-catch': {
       'patterns': [
         {
-          'match': 'catch\\s*(?!\\()',
+          'match': 'catch\\s*(?=\\()',
           'name': 'keyword.control.catch.d'
         },
       ]
@@ -730,14 +630,8 @@
     'catch': {
       'patterns': [
         {
-          'begin': 'catch\\s*\\(',
-          'beginCaptures': { '0': { 'name': 'keyword.control.catch.begin.d' } },
-          'end': '\\)',
-          'endCaptures': { '0': { 'name': 'keyword.control.catch.end.d' } },
-          'patterns': [
-            { 'include': '#basic-type' },
-            { 'include': '#identifier' }
-          ]
+          'match': 'catch\\s*(?=\\()',
+          'name': 'keyword.control.catch.d'
         },
       ]
     },
@@ -810,9 +704,9 @@
         }
       ]
     },
-    # ###########################################################################
-    # # Iasm
-    # ###########################################################################
+    ###########################################################################
+    # Iasm
+    ###########################################################################
     'asm-instruction': {
       'patterns': [
         { 'include': '#comment' },
@@ -872,9 +766,9 @@
         'name': 'storage.type.assembly.register-64.d'
       ]
     },
-    # ###########################################################################
-    # # Declaration
-    # ###########################################################################
+    ###########################################################################
+    # Declaration
+    ###########################################################################
     'declaration': {
       'patterns': [
         { 'include': '#alias-declaration' },
@@ -925,7 +819,7 @@
     },
     'function-prelude': {
       'patterns': [
-        'match': '((\\.?[_\\w][_\\d\\w]*)+)\\s*(?=\\()',
+        'match': '[_\\w][_\\d\\w]*\\s*(?=\\()',
         'name': 'entity.name.function.d'
       ]
     },
@@ -1015,7 +909,7 @@
     'in-statement': {
       'patterns': [
         {
-          'match': 'in',
+          'match': 'in\\s+',
           'name': '#keyword.control.in.d'
         },
       ]
@@ -1102,9 +996,9 @@
         },
       ]
     },
-    # ###########################################################################
-    # # Aggregate
-    # ###########################################################################
+    ###########################################################################
+    # Aggregate
+    ###########################################################################
     'aggregate-declaration': {
       'patterns': [
         { 'include': '#class-declaration' },
@@ -1117,8 +1011,11 @@
     'class-declaration': {
       'patterns': [
         {
-          'match': 'class',
-          'name': 'entity.name.class.d'
+          'match': '(class)\\s+([A-Z][\\w_\\d]*)',
+          'captures': {
+             '1': { 'name': 'keyword.other.class.d' },
+             '2': { 'name': 'entity.name.class.d' }
+          }
         },
         { 'include': '#protection-attribute' },
         { 'include': '#class-members' }
@@ -1159,9 +1056,9 @@
         },
       ]
     },
-    # ###########################################################################
-    # # Template
-    # ###########################################################################
+    ###########################################################################
+    # Template
+    ###########################################################################
     'template-declaration': {
       'patterns': [
         {
@@ -1171,9 +1068,9 @@
       ]
     },
 
-    # ###########################################################################
-    # # Attribute
-    # ###########################################################################
+    ###########################################################################
+    # Attribute
+    ###########################################################################
     'attribute': {
       'patterns': [
         { 'include': '#linkage-attribute' },
@@ -1221,7 +1118,7 @@
     'align-attribute': {
       'patterns': [
         {
-          'begin': 'align\\(',
+          'begin': 'align\\s*\\(',
           'end': '\\)',
           'name': 'storage.modifier.align-attribute.d',
           'patterns': [
@@ -1287,9 +1184,9 @@
         }
       ]
     },
-    # ###########################################################################
-    # # Conditional
-    # ###########################################################################
+    ###########################################################################
+    # Conditional
+    ###########################################################################
     'conditional-declaration': {
       'patterns': [
         { 'include': '#condition' },
@@ -1408,25 +1305,32 @@
     },
     'module-declaration': {
       'patterns': [
-        'match': 'module\\s+',
-        'name': 'keyword.package.module.d'
+        'match': '(module)\\s+(.+)(?=;)',
+        'captures': {
+          '1': { 'name': 'keyword.package.module.d' },
+          '2': { 'name': 'variable.parameter.module.d' }
+        }
       ]
     },
 
-    # ###########################################################################
-    # # Import Declarations
-    # ###########################################################################
+    ###########################################################################
+    # Import Declarations
+    ###########################################################################
     'import-declaration': {
       'patterns': [
         {
-          'match': '(static\\s+)?import\\s+',
-          'name': 'keyword.package.import.d'
+          'match': '(static\\s+)?(import)\\s+(.+)(?=;)',
+          'captures': {
+            '1': { 'name': 'keyword.package.import.d' },
+            '2': { 'name': 'keyword.package.import.d' },
+            '3': { 'name': 'variable.parameter.import.d' }
+          }
         },
       ]
     },
-    # ###########################################################################
-    # # Mixin Decl
-    # ###########################################################################
+    ###########################################################################
+    # Mixin Decl
+    ###########################################################################
     'mixin-declaration': {
       'patterns': [
         'begin': 'mixin\\s*\\(',
@@ -1438,9 +1342,9 @@
         ]
       ]
     },
-    # ###########################################################################
-    # # Misc
-    # ###########################################################################
+    ###########################################################################
+    # Misc
+    ###########################################################################
     'comma': {
       'patterns': [
         'match': ',',
@@ -1802,9 +1706,6 @@
           'begin': '/\\+',
           'end': '\\+/',
           'name': 'comment.block.documentation.d',
-          'patterns': [
-            { 'include': '$self' }
-          ]
         }
       ]
     },
