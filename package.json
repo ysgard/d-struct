@@ -1,7 +1,7 @@
 {
   "name": "d-struct",
   "main": "./lib/d-struct",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A package providing syntax and dub integration for the D programming language (Dlang)",
   "activationEvents": [
     "d-struct:dub-build"
@@ -14,9 +14,13 @@
     "atom": ">0.50.0",
     "node": ">0.10.0"
   },
-  "dependencies": {
-  },
-  "keywords": ["d", "dlang", "dub", "syntax"],
+  "dependencies": {},
+  "keywords": [
+    "d",
+    "dlang",
+    "dub",
+    "syntax"
+  ],
   "bugs": {
     "url": "https://github.com/ysgard/d-struct/issues"
   },
