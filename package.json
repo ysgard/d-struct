@@ -2,13 +2,13 @@
   "name": "d-struct",
   "main": "./lib/d-struct",
   "version": "1.0.0",
-  "description": "A package providing syntax, snippets and dub integration for the D programming language (Dlang)",
+  "description": "A package providing syntax and dub integration for the D programming language (Dlang)",
   "activationEvents": [
     "d-struct:dub-build"
   ],
   "repository": "https://github.com/ysgard/d-struct",
   "license": "MIT",
-  "readme": "# Support for the D language\nSyntax highlighting, snippets and dub integration.\n",
+  "readme": "# Support for the D language\nSyntax highlighting and dub integration.\n",
   "readmeFilename": "README.md",
   "engines": {
     "atom": ">0.50.0",
