@@ -14,7 +14,7 @@ module i.am.a.module;
 
 import one.such.package, another.such.package;
 
-
+bool intersect(Ray ray, float* distance)
   1 + 2
 import this;
 some_label: This isa  label

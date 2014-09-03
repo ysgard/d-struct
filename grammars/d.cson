@@ -96,7 +96,7 @@
     'base-type': {
       'patterns': [
         {
-          'match': '(auto|bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)\\s*\\**',
+          'match': '(auto|bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)\\s+\\**',
           'name': 'storage.type.basic-type.d'
         },
       ]
@@ -484,7 +484,7 @@
     'for-statement': {
       'patterns': [
         {
-          'match': 'for\\s+(?=\\()',
+          'match': 'for\\s*(?=\\()',
           'name': 'keyword.control.for.d'
         }
       ]
