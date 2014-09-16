@@ -1,7 +1,7 @@
 {
   "name": "d-struct",
   "main": "./lib/d-struct",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A package providing syntax and dub integration for the D programming language (Dlang)",
   "activationEvents": [
     "d-struct:dub-build"
