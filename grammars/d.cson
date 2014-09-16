@@ -96,7 +96,7 @@
     'base-type': {
       'patterns': [
         {
-          'match': '(auto|bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)\\s+\\**',
+          'match': '(auto|bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)\\**(?!\\w)',
           'name': 'storage.type.basic-type.d'
         },
       ]
@@ -104,7 +104,7 @@
     # defined in object.di, not actually part of grammar
     'defined-type': {
       'patterns': [
-        'match': '(wstring|dstring|string|size_t|ptrdiff_t)\\**',
+        'match': '(wstring|dstring|string|size_t|ptrdiff_t)\\**(?!\\w)',
         'name': 'storage.type.defined.d'
       ]
     },
@@ -130,7 +130,7 @@
     },
     'type-ctor': {
       'patterns': [
-        'match': 'const|immutable|inout|shared',
+        'match': '(const|immutable|inout|shared)(?!\\w)',
         'name': 'storage.type.modifier.d'
       ]
     },
@@ -358,7 +358,7 @@
     'type-specialization': {
       'patterns': [
         {
-          'match': 'struct|union|class|interface|enum|function|delegate|super|const|immutable|inout|shared|return|__parameters',
+          'match': '(struct|union|class|interface|enum|function|delegate|super|const|immutable|inout|shared|return|__parameters)(?!\\w)',
           'name': 'keyword.other.storage.type-specialization.d'
         },
       ]
