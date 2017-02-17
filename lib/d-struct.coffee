@@ -3,7 +3,7 @@ popen = require('child_process').exec
 platform = require('os').platform
 paths = atom.project.getPaths().shift()
 
-# TODO: linux support still needs to be added
+# TODO:--linux-support-still-needs-to-be-added-- Nope! All done
 commands =
     build:
         win32: "start cmd /k \"cd #{paths} && dub run\""
@@ -33,4 +33,3 @@ module.exports =
     dub_build()
   dubrun: ->
     dub_run()
-    
