@@ -1,15 +1,18 @@
 # Grab a few objects that we'll need
 popen = require('child_process').exec
 platform = require('os').platform
+paths = atom.project.getPaths().shift()
 
-# TODO: linux support still needs to be added
+# TODO:--linux-support-still-needs-to-be-added-- Nope! All done
 commands =
     build:
-        win32: "start cmd /k \"cd #{atom.project.getPaths().shift()} && dub run\""
-        darwin: "osascript -e \'tell application \"Terminal\" to do script \"cd #{atom.project.getPaths().shift()}; dub run\"\'"
+        win32: "start cmd /k \"cd #{paths} && dub run\""
+        darwin: "osascript -e \'tell application \"Terminal\" to do script \"cd #{paths}; dub run\"\'"
+        linux: "gnome-terminal -e \"bash -ic \'cd #{paths} && dub run && read -s -n 1 line\'\""
     run:
-        win32: "start cmd /k \"cd \"#{atom.project.getPaths().shift()}\" && dub build\""
-        darwin: "osascript -e \'tell application \"Terminal\" to do script \"cd #{atom.project.getPaths().shift()}; dub build\"\'"
+        win32: "start cmd /k \"cd \"#{paths}\" && dub build\""
+        darwin: "osascript -e \'tell application \"Terminal\" to do script \"cd #{paths}; dub build\"\'"
+        linux: "gnome-terminal -e \"bash -ic \'cd #{paths} && dub build && read -s -n 1 line\'\""
 
 # Open a terminal and run dub
 dub_build = ->
@@ -24,8 +27,8 @@ dub_run = ->
 module.exports =
   # Bind workspace command to run_dub
   activate: (state) ->
-    atom.workspaceView.command "d-struct:dub-build", => @dubbuild()
-    atom.workspaceView.command "d-struct:dub-run", => @dubrun()
+    atom.commands.add "atom-workspace", "d-struct:dub-build", => @dubbuild()
+    atom.commands.add "atom-workspace", "d-struct:dub-run", => @dubrun()
   dubbuild: ->
     dub_build()
   dubrun: ->
