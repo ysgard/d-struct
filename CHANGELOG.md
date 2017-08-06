@@ -1,3 +1,7 @@
+## 1.0.5s
+* Updated to use old API #8 (Failed to activate the d-struct package)
+  (Thanks MggMuggins!)
+
 ## 1.0.3
 * Fixed problem with type boundaries.
 
