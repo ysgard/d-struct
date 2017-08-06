@@ -210,7 +210,12 @@ void main(char[][] args)   // 'void' here means return 0 by default.
 /**
    Stores a single command line argument.
  */
-nfername
+interface Test {
+  void something();
+}
+
+
+
 class CmdLin : Interface1, Interface2
 {
     private {

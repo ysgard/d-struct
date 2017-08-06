@@ -1025,7 +1025,7 @@
       'patterns': [
         {
           'match': 'interface',
-          'name': 'entity.name.class.interface.d'
+          'name': 'keyword.other.class.interface.d'
         },
       ]
     },
