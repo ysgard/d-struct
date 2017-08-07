@@ -1,4 +1,7 @@
-## 1.0.5s
+## 1.2.0
+* 'interface' now shares the same syntax color as 'class'
+
+## 1.1.0
 * Updated to use old API #8 (Failed to activate the d-struct package)
   (Thanks MggMuggins!)
 
