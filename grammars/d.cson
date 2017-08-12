@@ -96,7 +96,7 @@
     'base-type': {
       'patterns': [
         {
-          'match': '(auto|bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)\\**(?!\\w)',
+          'match': '(auto|bool|byte|ubyte|short|ushort|int|uint|long|ulong|char|wchar|dchar|float|double|real|ifloat|idouble|ireal|cfloat|cdouble|creal|void)\\**\\b',
           'name': 'storage.type.basic-type.d'
         },
       ]
@@ -104,7 +104,7 @@
     # defined in object.di, not actually part of grammar
     'defined-type': {
       'patterns': [
-        'match': '(wstring|dstring|string|size_t|ptrdiff_t)\\**(?!\\w)',
+        'match': '(wstring|dstring|string|size_t|ptrdiff_t)\\**\\b',
         'name': 'storage.type.defined.d'
       ]
     },
@@ -130,7 +130,7 @@
     },
     'type-ctor': {
       'patterns': [
-        'match': '(const|immutable|inout|shared)(?!\\w)',
+        'match': '(const|immutable|inout|shared)\\b',
         'name': 'storage.type.modifier.d'
       ]
     },
@@ -214,7 +214,7 @@
     'identity-expression': {
       'patterns': [
         {
-          'match': '\\s+(is|!is)\\s+',
+          'match': '\\b(is|!is)\\b',
           'name': 'keyword.operator.identity.d'
         },
       ]
@@ -230,7 +230,7 @@
     'in-expression': {
       'patterns': [
         {
-          'match': '\\s+(in|!in)\\s+',
+          'match': '\\b(in|!in)\\b',
           'name': 'keyword.operator.in.d'
         },
       ]
@@ -303,7 +303,7 @@
     'function-literal': {
       'patterns': [
         {
-          'match': '(function|delegate)',
+          'match': '(function|delegate)\\b',
           'name': 'keyword.other.function-literal.d'
         },
       ]
@@ -358,7 +358,7 @@
     'type-specialization': {
       'patterns': [
         {
-          'match': '(struct|union|class|interface|enum|function|delegate|super|const|immutable|inout|shared|return|__parameters)(?!\\w)',
+          'match': '(struct|union|class|interface|enum|function|delegate|super|const|immutable|inout|shared|return|__parameters)\\b',
           'name': 'keyword.other.storage.type-specialization.d'
         },
       ]
@@ -396,7 +396,7 @@
     },
     'special-keyword': {
       'patterns': [
-        'match': '__FILE__|__MODULE__|__LINE__|__FUNCTION__|__PRETTY_FUNCTION__',
+        'match': '(__FILE__|__MODULE__|__LINE__|__FUNCTION__|__PRETTY_FUNCTION__)\\b',
         'name': 'constant.language.special-keyword.d'
       ]
     },
@@ -926,7 +926,7 @@
           ]
         },
         {
-          'match': 'out',
+          'match': 'out\\b',
           'name': 'keyword.control.out.d'
         },
       ]
@@ -934,7 +934,7 @@
     'body-statement': {
       'patterns': [
         {
-          'match': 'body',
+          'match': 'body\\b',
           'name': 'keyword.control.body.d'
         },
       ]
@@ -942,7 +942,7 @@
     'constructor': {
       'patterns': [
         {
-          'match': 'this',
+          'match': 'this\\b',
           'name': 'entity.name.function.constructor.d'
         },
       ]
@@ -974,7 +974,7 @@
     'unit-test': {
       'patterns': [
         {
-          'match': 'unittest',
+          'match': 'unittest\\b',
           'name': 'entity.name.function.unit-test.d'
         },
       ]
@@ -1024,7 +1024,7 @@
     'interface-declaration': {
       'patterns': [
         {
-          'match': 'interface',
+          'match': 'interface\\b',
           'name': 'keyword.other.class.interface.d'
         },
       ]
@@ -1032,7 +1032,7 @@
     'struct-declaration': {
       'patterns': [
         {
-          'match': 'struct',
+          'match': 'struct\\b',
           'name': 'storage.type.struct.d'
         },
       ]
@@ -1040,7 +1040,7 @@
     'union-declaration': {
       'patterns': [
         {
-          'match': 'union',
+          'match': 'union\\b',
           'name': 'storage.type.union.d'
         },
       ]
@@ -1051,7 +1051,7 @@
     'enum-declaration': {
       'patterns': [
         {
-          'match': 'enum',
+          'match': 'enum\\b',
           'name': 'storage.type.enum.d'
         },
       ]
@@ -1062,7 +1062,7 @@
     'template-declaration': {
       'patterns': [
         {
-          'match': 'template',
+          'match': 'template\\b',
           'name': 'support.class.template.d',
         },
       ]
@@ -1134,7 +1134,7 @@
 
     'protection-attribute': {
       'patterns': [
-        'match': 'private|package|protected|public|export',
+        'match': '(private|package|protected|public|export)\\b',
         'name': 'keyword.other.protections.d'
       ]
     },
@@ -1192,7 +1192,7 @@
         { 'include': '#condition' },
         { 'include': '#declaration-block' },
         {
-          'match': 'else',
+          'match': 'else\\b',
           'name': 'keyword.control.else.d'
         },
         { 'include': '#colon' },
@@ -1204,7 +1204,7 @@
         { 'include': '#condition' },
         { 'include': '#no-scope-non-empty-statement' },
         {
-          'match': 'else',
+          'match': 'else\\b',
           'name': 'keyword.control.else.d'
         },
       ]
