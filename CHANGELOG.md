@@ -1,3 +1,6 @@
+## 1.2.3
+* Many keywords now match properly on word boundaries (Thanks WebFreak001)
+
 ## 1.2.0
 * 'interface' now shares the same syntax color as 'class'
 
