@@ -1,0 +1,26 @@
+{
+  "menu": [
+    {
+      "label": "Packages",
+      "submenu": [
+        {
+          "label": "d-struct",
+          "submenu": [
+            {
+              "label": "Toggle",
+              "command": "d-struct:toggle"
+            },
+            {
+              "label": "dub build",
+              "command": "d-struct:build"
+            },
+            {
+              "label": "dub run",
+              "command": "d-struct:run"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
