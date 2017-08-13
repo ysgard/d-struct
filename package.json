@@ -6,6 +6,12 @@
   "activationEvents": [
     "d-struct:dub-build"
   ],
+  "activationCommands": {
+    "atom-workspace": [
+      "d-struct:build",
+      "d-struct:run"
+    ]
+  },
   "repository": "https://github.com/ysgard/d-struct",
   "license": "MIT",
   "readme": "# Support for the D language\nSyntax highlighting and dub integration.\n",
