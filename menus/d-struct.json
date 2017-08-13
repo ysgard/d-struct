@@ -7,10 +7,6 @@
           "label": "d-struct",
           "submenu": [
             {
-              "label": "Toggle",
-              "command": "d-struct:toggle"
-            },
-            {
               "label": "dub build",
               "command": "d-struct:build"
             },
