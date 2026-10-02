@@ -1,3 +1,5 @@
+> ❗This repo is no longer maintained. 
+
 # D-Struct package
 
 A D language package for Atom.  Includes syntax highlighting, snippets and
